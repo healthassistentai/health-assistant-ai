@@ -1,80 +1,69 @@
-=========================================================
- GOOGLE WEB STORY (AMP STORY) — DEPLOYMENT README
-=========================================================
+Story Title:
+A Complete Overview of Medical Service in Today's Healthcare System
 
-STORY: Report Analysis: The Ultimate Guide to Understanding
-       Business Reports and Making Better Decisions
+Story Slug:
+medical-service-modern-healthcare-guide-2026
 
-STORY SLUG: report-analysis-guide
+Canonical URL:
+https://www.healthassistentai.com/2026/06/medical-service-modern-healthcare-guide-2026.html
 
----------------------------------------------------------
-1) WHERE TO UPLOAD (GitHub)
----------------------------------------------------------
-Repository : https://github.com/healthassistentai/health-assistant-ai
-Upload the ENTIRE "report-analysis-guide/" folder AS-IS into the
-ROOT of the repository (GitHub Pages branch), so the final path is:
+Live Story URL:
+https://healthassistentai.github.io/health-assistant-ai/medical-service-modern-healthcare-guide-2026/medical-service-modern-healthcare-guide-2026.html
 
-  health-assistant-ai/report-analysis-guide/report-analysis-guide.html
-  health-assistant-ai/report-analysis-guide/poster.jpg
-  health-assistant-ai/report-analysis-guide/publisher-logo.jpg
-  health-assistant-ai/report-analysis-guide/slide-1.jpg
-  health-assistant-ai/report-analysis-guide/slide-2.jpg
-  health-assistant-ai/report-analysis-guide/slide-3.jpg
-  health-assistant-ai/report-analysis-guide/slide-4.jpg
-  health-assistant-ai/report-analysis-guide/slide-5.jpg
-  health-assistant-ai/report-analysis-guide/slide-6.jpg
+GitHub Repository:
+https://github.com/healthassistentai/health-assistant-ai
 
----------------------------------------------------------
-2) LIVE STORY URL (after upload)
----------------------------------------------------------
-  https://healthassistentai.github.io/health-assistant-ai/report-analysis-guide/report-analysis-guide.html
+GitHub Folder:
+medical-service-modern-healthcare-guide-2026/
 
-This is the actual URL that will open in a browser or iframe.
+--------------------------------------------------
+UPLOAD INSTRUCTIONS
+--------------------------------------------------
 
----------------------------------------------------------
-3) CANONICAL URL (inside the HTML <head>)
----------------------------------------------------------
-  https://www.healthassistentai.com/2026/06/report-analysis-guide.html
+1. Unzip medical-service-modern-healthcare-guide-2026.zip.
+2. Copy the entire "medical-service-modern-healthcare-guide-2026" folder
+   into the root of the health-assistant-ai GitHub repository
+   (do not place it inside another Story's folder).
+3. Commit and push to the branch that GitHub Pages is configured to
+   serve (commonly "main" or "gh-pages").
+4. After GitHub Pages rebuilds, the Story will be live at the URL above.
 
-This points search engines to the original blog post as the
-authoritative content source. It is DIFFERENT from the live
-GitHub Pages story URL above — both are correct and intentional.
+--------------------------------------------------
+IMPORTANT
+--------------------------------------------------
 
----------------------------------------------------------
-4) PUBLISHER LOGO — ACTION NEEDED
----------------------------------------------------------
-The publisher logo URL provided (blogger.googleusercontent.com)
-could not be downloaded in this environment (access blocked / 403).
-A simple placeholder logo ("HA" monogram, teal background,
-128x128 JPG) has been generated instead as publisher-logo.jpg.
+Do not overwrite or merge this Story folder with another Story folder.
+Every Story must keep its own unique slug, folder name, HTML filename,
+and asset set. Do not rename files inside this folder without also
+updating the matching paths inside the HTML file.
 
->>> Please replace publisher-logo.jpg with your real logo <<<
-    (square image, minimum 96x96px, JPG format) before/after
-    upload if you want your actual brand logo to appear.
+--------------------------------------------------
+PUBLISHER LOGO NOTICE
+--------------------------------------------------
 
----------------------------------------------------------
-5) IMAGE NOTE
----------------------------------------------------------
-The 6 source Canva images were supplied at roughly a 2:3 ratio
-(not 9:16). To meet Google's real AMP Story standard (9:16,
-720x1280) WITHOUT cropping out any text or design elements,
-each image was placed on a 720x1280 white canvas (letterboxed
-top/bottom) rather than cropped. All original content is fully
-intact on every slide.
+The publisher-logo.jpg included in this package is a PLACEHOLDER
+("GD" on a solid blue square, 192x192px). The real Publisher Logo URL
+provided in the master prompt (hosted on blogger.googleusercontent.com)
+could not be downloaded in this environment because that domain is not
+reachable from the sandbox's network. Replace publisher-logo.jpg with
+the actual logo image before publishing, keeping the same filename and
+a square (1:1) aspect ratio of at least 96x96px, or update the
+publisher-logo-src path in the HTML if you use a different filename.
 
-poster.jpg was generated at 640x853 (3:4 — AMP's official
-poster-portrait-src standard) from slide 1.
+--------------------------------------------------
+AMP VALIDATION NOTICE
+--------------------------------------------------
 
----------------------------------------------------------
-6) IMPORTANT — DO NOT OVERWRITE OTHER STORIES
----------------------------------------------------------
-This folder ("report-analysis-guide/") is fully self-contained
-and uniquely named. When uploading to the repository:
-
-  - Do NOT rename this folder to match any other existing story.
-  - Do NOT overwrite or merge this folder with any other
-    story folder already in the repo.
-  - Every future story must use its own unique slug/folder/
-    filename/canonical URL — never reuse this one.
-
-=========================================================
+An automated AMP validator (amphtml-validator, which fetches AMP's
+official validator engine from cdn.ampproject.org) was attempted, but
+that domain is not reachable from this sandbox's network, so live
+validator output could not be obtained. Instead, the HTML was checked
+manually against the official AMP Web Story specification, including:
+required boilerplate/runtime scripts, required amp-story metadata
+(publisher, publisher-logo-src, poster-portrait-src), unique page IDs,
+local (non-external) image paths, presence of alt text, amp-custom CSS
+only (no external CSS/JS/onclick), and correct CTA markup. All checks
+passed. External AMP validation (e.g. via
+https://validator.ampproject.org/ or the AMP Test tool in Google
+Search Console) is still recommended before considering this Story
+fully AMP-validated.
