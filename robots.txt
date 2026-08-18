@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://healthassistentai.github.io/health-assistant-ai/sitemap.xml
