@@ -1,33 +1,80 @@
-গুরুত্বপূর্ণ নোট — আগের স্টোরি ওভাররাইট এড়াতে
-================================================
+=========================================================
+ GOOGLE WEB STORY (AMP STORY) — DEPLOYMENT README
+=========================================================
 
-আগেরবার একই ফোল্ডার/ফাইলনেম (health-assistant-ai/health-assistant-ai.html)
-ব্যবহার করার কারণে নতুন আপলোড পুরনো স্টোরিটাকে ওভাররাইট করে দিয়েছিল।
+STORY: Report Analysis: The Ultimate Guide to Understanding
+       Business Reports and Making Better Decisions
 
-এবার সেই সমস্যা এড়াতে এই প্যাকেজে ফোল্ডার ও HTML ফাইলের নাম বদলে দেওয়া হয়েছে:
+STORY SLUG: report-analysis-guide
 
-    health-assistant-ai-v2/
-    ├── health-assistant-ai-v2.html   <-- নতুন, ইউনিক নাম
-    ├── poster.jpg
-    ├── publisher-logo.jpg
-    ├── slide-1.jpg
-    └── slide-2.jpg
+---------------------------------------------------------
+1) WHERE TO UPLOAD (GitHub)
+---------------------------------------------------------
+Repository : https://github.com/healthassistentai/health-assistant-ai
+Upload the ENTIRE "report-analysis-guide/" folder AS-IS into the
+ROOT of the repository (GitHub Pages branch), so the final path is:
 
-GitHub রিপোতে আপলোড করার সময়:
---------------------------------
-১. এই পুরো "health-assistant-ai-v2" ফোল্ডারটা আপনার রিপোর রুটে আলাদা
-   ফোল্ডার হিসেবে রাখুন (আগের "health-assistant-ai" ফোল্ডারের পাশে,
-   ভেতরে না — যাতে কোনো ফাইল ওভাররাইট না হয়)।
+  health-assistant-ai/report-analysis-guide/report-analysis-guide.html
+  health-assistant-ai/report-analysis-guide/poster.jpg
+  health-assistant-ai/report-analysis-guide/publisher-logo.jpg
+  health-assistant-ai/report-analysis-guide/slide-1.jpg
+  health-assistant-ai/report-analysis-guide/slide-2.jpg
+  health-assistant-ai/report-analysis-guide/slide-3.jpg
+  health-assistant-ai/report-analysis-guide/slide-4.jpg
+  health-assistant-ai/report-analysis-guide/slide-5.jpg
+  health-assistant-ai/report-analysis-guide/slide-6.jpg
 
-২. লাইভ লিংক হবে:
-   https://healthassistentai.github.io/health-assistant-ai/health-assistant-ai-v2/health-assistant-ai-v2.html
-   (যদি রিপোর নাম আগেরটাই থাকে)
+---------------------------------------------------------
+2) LIVE STORY URL (after upload)
+---------------------------------------------------------
+  https://healthassistentai.github.io/health-assistant-ai/report-analysis-guide/report-analysis-guide.html
 
-৩. ভবিষ্যতে নতুন কোনো Web Story বানালে সবসময় আলাদা ফোল্ডার/ফাইলনেম
-   ব্যবহার করুন (যেমন health-assistant-ai-v3, অথবা তারিখ দিয়ে যেমন
-   health-assistant-ai-2026-08)। এতে একই path-এ দুটো ভিন্ন স্টোরি
-   কখনো একে অপরকে মুছে ফেলবে না, এবং দুটোই আলাদাভাবে লাইভ থাকবে।
+This is the actual URL that will open in a browser or iframe.
 
-৪. Blog Post URL এবার খালি দেওয়া ছিল, তাই canonical ট্যাগ ও দুটো
-   CTA বাটনই ওয়েবসাইট হোমপেজ (https://www.healthassistentai.com)-এ
-   পয়েন্ট করছে। ব্লগ পোস্ট রেডি হলে জানাবেন, আমি সেটা আপডেট করে দেব।
+---------------------------------------------------------
+3) CANONICAL URL (inside the HTML <head>)
+---------------------------------------------------------
+  https://www.healthassistentai.com/2026/06/report-analysis-guide.html
+
+This points search engines to the original blog post as the
+authoritative content source. It is DIFFERENT from the live
+GitHub Pages story URL above — both are correct and intentional.
+
+---------------------------------------------------------
+4) PUBLISHER LOGO — ACTION NEEDED
+---------------------------------------------------------
+The publisher logo URL provided (blogger.googleusercontent.com)
+could not be downloaded in this environment (access blocked / 403).
+A simple placeholder logo ("HA" monogram, teal background,
+128x128 JPG) has been generated instead as publisher-logo.jpg.
+
+>>> Please replace publisher-logo.jpg with your real logo <<<
+    (square image, minimum 96x96px, JPG format) before/after
+    upload if you want your actual brand logo to appear.
+
+---------------------------------------------------------
+5) IMAGE NOTE
+---------------------------------------------------------
+The 6 source Canva images were supplied at roughly a 2:3 ratio
+(not 9:16). To meet Google's real AMP Story standard (9:16,
+720x1280) WITHOUT cropping out any text or design elements,
+each image was placed on a 720x1280 white canvas (letterboxed
+top/bottom) rather than cropped. All original content is fully
+intact on every slide.
+
+poster.jpg was generated at 640x853 (3:4 — AMP's official
+poster-portrait-src standard) from slide 1.
+
+---------------------------------------------------------
+6) IMPORTANT — DO NOT OVERWRITE OTHER STORIES
+---------------------------------------------------------
+This folder ("report-analysis-guide/") is fully self-contained
+and uniquely named. When uploading to the repository:
+
+  - Do NOT rename this folder to match any other existing story.
+  - Do NOT overwrite or merge this folder with any other
+    story folder already in the repo.
+  - Every future story must use its own unique slug/folder/
+    filename/canonical URL — never reuse this one.
+
+=========================================================
