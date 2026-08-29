@@ -93,19 +93,6 @@
     document.getElementById("pot-legend-ovulation").textContent = t.legendOvulation;
     document.getElementById("pot-upcoming-title").textContent = t.upcomingTitle;
     document.getElementById("pot-footer-note").textContent = t.footer;
-    var btns = root.querySelectorAll(".pot-lang-btn");
-    for(var i=0;i<btns.length;i++){
-      var b = btns[i];
-      if(b.getAttribute("data-lang") === lang){
-        b.style.background = "#B4485B";
-        b.style.borderColor = "#B4485B";
-        b.style.color = "#ffffff";
-      } else {
-        b.style.background = "#FFFFFF";
-        b.style.borderColor = "#EBD3D6";
-        b.style.color = "#3A1F2B";
-      }
-    }
     clearMessage();
     if(lastResult){
       render(lastResult);
@@ -182,9 +169,14 @@
     document.getElementById("pot-results").classList.add("show");
   }
 
-  var langBtns = root.querySelectorAll(".pot-lang-btn");
-  for(var i=0;i<langBtns.length;i++){
-    langBtns[i].addEventListener("click", function(e){
+  var langRadios = [
+    document.getElementById("pot-lang-en"),
+    document.getElementById("pot-lang-bn"),
+    document.getElementById("pot-lang-hi")
+  ];
+  for(var i=0;i<langRadios.length;i++){
+    if(!langRadios[i]) continue;
+    langRadios[i].addEventListener("change", function(e){
       applyLang(e.currentTarget.getAttribute("data-lang"));
     });
   }
