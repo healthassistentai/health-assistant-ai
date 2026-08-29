@@ -13,7 +13,7 @@
      and its hash must match the file's sha384 digest exactly. If you edit the JS file,
      recompute the hash with:
      openssl dgst -sha384 -binary pot-tracker.js | openssl base64 -A -->
-<meta name="amp-script-src" content="sha384-A2+iubSqlQF5LGs57J9doFcZeUHNgqZhfcTEacQrQUk3LfVkr6HtcoeeWIQkKDht https://healthassistentai.github.io/health-assistant-ai/pot-tracker.js">
+<meta name="amp-script-src" content="sha384-K1lk85e3HpmC2s37KunYH2NJXyVKH6jr3qJMRfGNufgpqnIlloxaQv6JNoPMSdYd https://healthassistentai.github.io/health-assistant-ai/pot-tracker.js">
 
 <link href="https://fonts.googleapis.com" rel="preconnect">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;family=Noto+Sans+Devanagari:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -145,9 +145,9 @@
 <amp-script src="https://healthassistentai.github.io/health-assistant-ai/pot-tracker.js" layout="container">
 <div class="pot-root" id="pot-root">
 
-  <div class="pot-eyebrow" id="pot-eyebrow">HEALTH TOOL</div>
-  <h1 id="pot-title">Period &amp; Ovulation Tracker</h1>
-  <p class="pot-sub" id="pot-subtitle">Enter your last period start date and cycle details to estimate your next period, fertile window, and ovulation day.</p>
+  <div class="pot-eyebrow" id="pot-eyebrow"></div>
+  <h1 id="pot-title"></h1>
+  <p class="pot-sub" id="pot-subtitle"></p>
 
   <div class="pot-langbar">
     <button class="pot-lang-btn active" data-lang="en">English</button>
@@ -160,19 +160,19 @@
   <div class="pot-card">
     <div class="pot-grid2">
       <div class="pot-field">
-        <label id="pot-label-date">Last period start date</label>
+        <label id="pot-label-date"></label>
         <input id="pot-date" type="date">
       </div>
       <div class="pot-field">
-        <label id="pot-label-cycle">Average cycle length (days)</label>
+        <label id="pot-label-cycle"></label>
         <input id="pot-cycle" max="45" type="number" value="28">
       </div>
       <div class="pot-field">
-        <label id="pot-label-period">Average period length (days)</label>
+        <label id="pot-label-period"></label>
         <input id="pot-period" max="10" type="number" value="5">
       </div>
     </div>
-    <button class="pot-btn" id="pot-calc"><span id="pot-calc-label">Calculate</span></button>
+    <button class="pot-btn" id="pot-calc"><span id="pot-calc-label"></span></button>
     <div class="pot-msg" id="pot-msg"></div>
   </div>
 
@@ -180,30 +180,30 @@
 
     <div class="pot-stat-grid">
       <div class="pot-stat">
-        <div class="pot-stat-label" id="pot-stat-next-label">Next period</div>
-        <div class="pot-stat-value" id="pot-stat-next-value">--</div>
+        <div class="pot-stat-label" id="pot-stat-next-label"></div>
+        <div class="pot-stat-value" id="pot-stat-next-value"></div>
       </div>
       <div class="pot-stat fertile">
-        <div class="pot-stat-label" id="pot-stat-fertile-label">Fertile window</div>
-        <div class="pot-stat-value" id="pot-stat-fertile-value">--</div>
+        <div class="pot-stat-label" id="pot-stat-fertile-label"></div>
+        <div class="pot-stat-value" id="pot-stat-fertile-value"></div>
       </div>
       <div class="pot-stat ovulation">
-        <div class="pot-stat-label" id="pot-stat-ovulation-label">Estimated ovulation</div>
-        <div class="pot-stat-value" id="pot-stat-ovulation-value">--</div>
+        <div class="pot-stat-label" id="pot-stat-ovulation-label"></div>
+        <div class="pot-stat-value" id="pot-stat-ovulation-value"></div>
       </div>
     </div>
 
     <div class="pot-timeline-wrap">
-      <div class="pot-timeline-title" id="pot-timeline-title">This cycle at a glance</div>
+      <div class="pot-timeline-title" id="pot-timeline-title"></div>
       <div class="pot-timeline" id="pot-timeline"></div>
       <div class="pot-legend">
-        <span class="pot-legend-item"><span class="pot-legend-dot" style="background:#FBE9E6;border:1px solid #C24B3F;"></span><span id="pot-legend-period">Period days</span></span>
-        <span class="pot-legend-item"><span class="pot-legend-dot" style="background:#E4F1EA;border:1px solid #3E8067;"></span><span id="pot-legend-fertile">Fertile window</span></span>
-        <span class="pot-legend-item"><span class="pot-legend-dot" style="background:#B4485B;"></span><span id="pot-legend-ovulation">Ovulation day</span></span>
+        <span class="pot-legend-item"><span class="pot-legend-dot" style="background:#FBE9E6;border:1px solid #C24B3F;"></span><span id="pot-legend-period"></span></span>
+        <span class="pot-legend-item"><span class="pot-legend-dot" style="background:#E4F1EA;border:1px solid #3E8067;"></span><span id="pot-legend-fertile"></span></span>
+        <span class="pot-legend-item"><span class="pot-legend-dot" style="background:#B4485B;"></span><span id="pot-legend-ovulation"></span></span>
       </div>
     </div>
 
-    <div class="pot-result-title" id="pot-upcoming-title">Upcoming cycles</div>
+    <div class="pot-result-title" id="pot-upcoming-title"></div>
     <div id="pot-cycle-list"></div>
 
   </div>
