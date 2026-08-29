@@ -1,0 +1,192 @@
+<!doctype html>
+<html ⚡ lang="en">
+<head>
+<meta charset="utf-8">
+<script async src="https://cdn.ampproject.org/v0.js"></script>
+<script async custom-element="amp-script" src="https://cdn.ampproject.org/v0/amp-script-0.1.js"></script>
+<title>AI Medicine Interaction Checker | Health Assistent AI</title>
+<link rel="canonical" href="https://healthassistentai.github.io/health-assistant-ai/medicine-interaction-checker-amp.html">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+
+<!-- IMPORTANT: this must match the exact URL where mic-checker.js is hosted,
+     and the hash must match the file's sha384 digest exactly. If you edit the JS file,
+     recompute with: openssl dgst -sha384 -binary mic-checker.js | openssl base64 -A -->
+<meta name="amp-script-src" content="sha384-yl+D5252WFALb7PfVduieQIEJtyXWapxaQxSuasx58/xKLbgFYt1xC4BGhhT7cIK https://healthassistentai.github.io/health-assistant-ai/mic-checker.js">
+
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;family=Noto+Sans+Devanagari:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+
+<style amp-custom>
+#mic-root, #mic-root *{
+  box-sizing:border-box;
+  margin:0; padding:0;
+  list-style:none;
+  text-align:left;
+}
+#mic-root{
+  --mic-ink:#16332E;
+  --mic-paper:#EEF3EF;
+  --mic-card:#FFFFFF;
+  --mic-line:#CEDAD3;
+  --mic-teal:#1F5C50;
+  --mic-teal-dark:#123B33;
+  --mic-major:#C24B3F;
+  --mic-major-bg:#FBE9E6;
+  --mic-moderate:#B5791C;
+  --mic-moderate-bg:#FBF0DD;
+  --mic-minor:#3E7A54;
+  --mic-minor-bg:#E7F2EA;
+  --mic-none:#5A6B66;
+  --mic-none-bg:#EEF3EF;
+  font-family:'IBM Plex Sans','Noto Sans Bengali','Noto Sans Devanagari','Segoe UI',sans-serif;
+  color:var(--mic-ink);
+  background:var(--mic-paper);
+  max-width:860px;
+  margin:0 auto;
+  padding:28px 20px 40px;
+  border:1px solid var(--mic-line);
+  border-radius:14px;
+}
+#mic-root .mic-eyebrow{
+  font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--mic-teal); font-weight:600; margin-bottom:6px;
+}
+#mic-root h1{
+  font-family:'Fraunces','Noto Sans Bengali','Noto Sans Devanagari', serif;
+  font-weight:600;
+  font-size:28px;
+  margin:0 0 6px;
+  color:var(--mic-teal-dark);
+  line-height:1.2;
+}
+#mic-root .mic-sub{
+  font-size:14.5px; color:#3E5750; margin:0 0 18px; line-height:1.5;
+}
+#mic-root .mic-langbar{
+  display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap;
+}
+#mic-root .mic-lang-btn{
+  border:1px solid var(--mic-line); background:var(--mic-card);
+  color:var(--mic-ink); padding:6px 14px; border-radius:999px;
+  font-size:13px; cursor:pointer; font-weight:600; display:inline-block;
+}
+#mic-root .mic-lang-radio{ position:absolute; opacity:0; width:1px; height:1px; }
+#mic-root .mic-lang-radio:checked + label.mic-lang-btn{
+  background:var(--mic-teal); border-color:var(--mic-teal); color:#fff;
+}
+#mic-root .mic-card{
+  background:var(--mic-card); border:1px solid var(--mic-line);
+  border-radius:12px; padding:20px; margin-bottom:18px;
+}
+#mic-root .mic-row{
+  display:flex; gap:8px; margin-bottom:10px;
+}
+#mic-root .mic-row input{
+  flex:1; padding:10px 12px; border:1px solid var(--mic-line);
+  border-radius:8px; font-size:14.5px; color:var(--mic-ink);
+  background:#FBFCFB;
+}
+#mic-root .mic-row input:focus{outline:2px solid var(--mic-teal); outline-offset:1px;}
+#mic-root .mic-remove{
+  background:none; border:1px solid var(--mic-line); color:var(--mic-major);
+  border-radius:8px; width:38px; cursor:pointer; font-size:16px; line-height:1;
+}
+#mic-root .mic-actions{
+  display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;
+}
+#mic-root .mic-btn{
+  border:none; border-radius:8px; padding:11px 18px; font-size:14.5px;
+  font-weight:600; cursor:pointer;
+}
+#mic-root .mic-btn-add{ background:#fff; border:1px solid var(--mic-teal); color:var(--mic-teal); }
+#mic-root .mic-btn-check{ background:var(--mic-teal); color:#fff; }
+#mic-root .mic-btn-check:hover{ background:var(--mic-teal-dark); }
+#mic-root .mic-btn-add:hover{ background:#EEF6F3; }
+
+#mic-root .mic-msg{
+  display:none; font-size:13px; color:var(--mic-teal-dark); background:#E3EEE8;
+  border:1px solid var(--mic-line); border-radius:8px; padding:10px 12px; margin-top:10px;
+}
+
+#mic-root .mic-disclaimer{
+  font-size:12.5px; color:#4A5F58; background:#E3EEE8; border:1px solid var(--mic-line);
+  border-left:4px solid var(--mic-teal); border-radius:8px; padding:12px 14px; margin-bottom:18px; line-height:1.55;
+}
+
+#mic-root .mic-results{ display:none; }
+#mic-root .mic-results.show{ display:block; }
+#mic-root .mic-result-title{
+  font-family:'Fraunces','Noto Sans Bengali','Noto Sans Devanagari', serif; font-size:18px; color:var(--mic-teal-dark);
+  margin:6px 0 12px; font-weight:600;
+}
+#mic-root .mic-pair-card{
+  border-radius:10px; padding:14px 16px; margin-bottom:10px; border:1px solid var(--mic-line);
+}
+#mic-root .mic-pair-head{
+  display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
+}
+#mic-root .mic-pair-names{ font-weight:700; font-size:14.5px; }
+#mic-root .mic-badge{
+  font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap;
+}
+#mic-root .mic-badge-major{ color:var(--mic-major); background:var(--mic-major-bg); }
+#mic-root .mic-badge-moderate{ color:var(--mic-moderate); background:var(--mic-moderate-bg); }
+#mic-root .mic-badge-minor{ color:var(--mic-minor); background:var(--mic-minor-bg); }
+#mic-root .mic-badge-none{ color:var(--mic-none); background:var(--mic-none-bg); }
+#mic-root .mic-pair-text{ font-size:13.5px; margin-top:8px; line-height:1.55; color:#33453F; }
+#mic-root .mic-pair-card.major{ border-left:4px solid var(--mic-major); }
+#mic-root .mic-pair-card.moderate{ border-left:4px solid var(--mic-moderate); }
+#mic-root .mic-pair-card.minor{ border-left:4px solid var(--mic-minor); }
+#mic-root .mic-pair-card.none{ border-left:4px solid var(--mic-none); }
+
+#mic-root .mic-footer-note{
+  font-size:12px; color:#5A6B66; margin-top:16px; line-height:1.6; border-top:1px dashed var(--mic-line); padding-top:14px;
+}
+@media(max-width:480px){
+  #mic-root{padding:20px 14px 30px;}
+  #mic-root .mic-pair-head{flex-direction:column; align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<amp-script src="https://healthassistentai.github.io/health-assistant-ai/mic-checker.js" layout="container">
+<div id="mic-root" class="mic-root">
+
+  <div class="mic-eyebrow" id="mic-eyebrow"></div>
+  <h1 id="mic-title"></h1>
+  <p class="mic-sub" id="mic-subtitle"></p>
+
+  <div class="mic-langbar">
+    <input type="radio" name="mic-lang-radio" id="mic-lang-en" class="mic-lang-radio" data-lang="en" checked>
+    <label for="mic-lang-en" class="mic-lang-btn">English</label>
+    <input type="radio" name="mic-lang-radio" id="mic-lang-bn" class="mic-lang-radio" data-lang="bn">
+    <label for="mic-lang-bn" class="mic-lang-btn">বাংলা</label>
+    <input type="radio" name="mic-lang-radio" id="mic-lang-hi" class="mic-lang-radio" data-lang="hi">
+    <label for="mic-lang-hi" class="mic-lang-btn">हिंदी</label>
+  </div>
+
+  <div class="mic-disclaimer" id="mic-disclaimer"></div>
+
+  <div class="mic-card">
+    <div id="mic-inputs"></div>
+    <div class="mic-actions">
+      <button class="mic-btn mic-btn-add" id="mic-add" type="button">+ <span id="mic-add-label"></span></button>
+      <button class="mic-btn mic-btn-check" id="mic-check" type="button"><span id="mic-check-label"></span></button>
+    </div>
+    <div class="mic-msg" id="mic-msg"></div>
+  </div>
+
+  <div class="mic-results" id="mic-results">
+    <div class="mic-result-title" id="mic-result-title"></div>
+    <div id="mic-result-list"></div>
+  </div>
+
+  <div class="mic-footer-note" id="mic-footer-note"></div>
+
+</div>
+</amp-script>
+
+</body>
+</html>
