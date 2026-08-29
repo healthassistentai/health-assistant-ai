@@ -100,7 +100,13 @@
       else{ b.classList.remove("active"); }
     }
     clearMessage();
-    if(lastResult) render(lastResult);
+    if(lastResult){
+      render(lastResult);
+    } else {
+      document.getElementById("pot-stat-next-value").textContent = "--";
+      document.getElementById("pot-stat-fertile-value").textContent = "--";
+      document.getElementById("pot-stat-ovulation-value").textContent = "--";
+    }
   }
 
   function compute(){
