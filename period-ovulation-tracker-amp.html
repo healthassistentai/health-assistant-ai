@@ -1,0 +1,218 @@
+<!doctype html>
+<html ⚡ lang="en">
+<head>
+<meta charset="utf-8">
+<script async src="https://cdn.ampproject.org/v0.js"></script>
+<script async custom-element="amp-script" src="https://cdn.ampproject.org/v0/amp-script-0.1.js"></script>
+<title>Period & Ovulation Tracker | Health Assistent AI</title>
+<link rel="canonical" href="https://healthassistentai.github.io/health-assistant-ai/period-ovulation-tracker.html">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+
+<!-- IMPORTANT: this meta tag must reference the exact URL where you host pot-tracker.js,
+     and its hash must match the file's sha384 digest exactly. If you edit the JS file,
+     recompute the hash with:
+     openssl dgst -sha384 -binary pot-tracker.js | openssl base64 -A -->
+<meta name="amp-script-src" content="sha384-A2+iubSqlQF5LGs57J9doFcZeUHNgqZhfcTEacQrQUk3LfVkr6HtcoeeWIQkKDht https://healthassistentai.github.io/health-assistant-ai/pot-tracker.js">
+
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;family=Noto+Sans+Devanagari:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+
+<style amp-custom>
+#pot-root, #pot-root *{
+  box-sizing:border-box;
+  margin:0; padding:0;
+  list-style:none;
+  text-align:left;
+}
+#pot-root{
+  --pot-ink:#3A1F2B;
+  --pot-paper:#FBF1F0;
+  --pot-card:#FFFFFF;
+  --pot-line:#EBD3D6;
+  --pot-rose:#B4485B;
+  --pot-rose-dark:#7E2E3C;
+  --pot-plum:#5B3A52;
+  --pot-fertile:#3E8067;
+  --pot-fertile-bg:#E4F1EA;
+  --pot-ovulation:#B4485B;
+  --pot-period:#C24B3F;
+  --pot-period-bg:#FBE9E6;
+  --pot-neutral:#E7DCDD;
+  font-family:'IBM Plex Sans','Noto Sans Bengali','Noto Sans Devanagari','Segoe UI',sans-serif;
+  color:var(--pot-ink);
+  background:var(--pot-paper);
+  max-width:860px;
+  margin:0 auto;
+  padding:28px 20px 40px;
+  border:1px solid var(--pot-line);
+  border-radius:14px;
+}
+#pot-root .pot-eyebrow{
+  font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--pot-rose); font-weight:600; margin-bottom:6px;
+}
+#pot-root h1{
+  font-family:'Fraunces','Noto Sans Bengali','Noto Sans Devanagari', serif;
+  font-weight:600;
+  font-size:28px;
+  margin:0 0 6px;
+  color:var(--pot-rose-dark);
+  line-height:1.2;
+}
+#pot-root .pot-sub{ font-size:14.5px; color:#6B4A54; margin:0 0 18px; line-height:1.5; }
+#pot-root .pot-langbar{ display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap; }
+#pot-root .pot-lang-btn{
+  border:1px solid var(--pot-line); background:var(--pot-card);
+  color:var(--pot-ink); padding:6px 14px; border-radius:999px;
+  font-size:13px; cursor:pointer; font-weight:600;
+}
+#pot-root .pot-lang-btn.active{ background:var(--pot-rose); border-color:var(--pot-rose); color:#fff; }
+#pot-root .pot-card{
+  background:var(--pot-card); border:1px solid var(--pot-line);
+  border-radius:12px; padding:20px; margin-bottom:18px;
+}
+#pot-root .pot-field{ margin-bottom:14px; }
+#pot-root label{ display:block; font-size:13px; font-weight:600; color:var(--pot-plum); margin-bottom:6px; }
+#pot-root input{
+  width:100%; padding:10px 12px; border:1px solid var(--pot-line);
+  border-radius:8px; font-size:14.5px; color:var(--pot-ink); background:#FEFAFA;
+}
+#pot-root input:focus{ outline:2px solid var(--pot-rose); outline-offset:1px; }
+#pot-root .pot-grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+#pot-root .pot-btn{
+  border:none; border-radius:8px; padding:11px 20px; font-size:14.5px;
+  font-weight:600; cursor:pointer; background:var(--pot-rose); color:#fff; margin-top:4px;
+}
+#pot-root .pot-btn:hover{ background:var(--pot-rose-dark); }
+#pot-root .pot-msg{
+  display:none; font-size:13px; color:var(--pot-rose-dark); background:#FBE9E6;
+  border:1px solid var(--pot-line); border-radius:8px; padding:10px 12px; margin-top:10px;
+}
+#pot-root .pot-disclaimer{
+  font-size:12.5px; color:#5A4048; background:#F3E4E4; border:1px solid var(--pot-line);
+  border-left:4px solid var(--pot-rose); border-radius:8px; padding:12px 14px; margin-bottom:18px; line-height:1.55;
+}
+#pot-root .pot-results{ display:none; }
+#pot-root .pot-results.show{ display:block; }
+#pot-root .pot-stat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+#pot-root .pot-stat{
+  background:var(--pot-card); border:1px solid var(--pot-line); border-radius:12px; padding:16px;
+  border-top:4px solid var(--pot-rose);
+}
+#pot-root .pot-stat.fertile{ border-top-color:var(--pot-fertile); }
+#pot-root .pot-stat.ovulation{ border-top-color:var(--pot-ovulation); }
+#pot-root .pot-stat-label{ font-size:12px; color:#6B4A54; font-weight:600; margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em; }
+#pot-root .pot-stat-value{ font-family:'Fraunces','Noto Sans Bengali','Noto Sans Devanagari', serif; font-size:17px; font-weight:600; color:var(--pot-rose-dark); line-height:1.35; }
+#pot-root .pot-timeline-wrap{ margin-bottom:20px; }
+#pot-root .pot-timeline-title{ font-size:13px; font-weight:600; color:var(--pot-plum); margin-bottom:10px; }
+#pot-root .pot-timeline{ display:flex; gap:2px; flex-wrap:wrap; margin-bottom:10px; }
+#pot-root .pot-day{
+  width:22px; height:22px; border-radius:5px; background:var(--pot-neutral);
+  font-size:9px; display:flex; align-items:center; justify-content:center; color:#7A6268;
+}
+#pot-root .pot-day.period{ background:var(--pot-period-bg); color:var(--pot-period); font-weight:700; }
+#pot-root .pot-day.fertile{ background:var(--pot-fertile-bg); color:var(--pot-fertile); font-weight:700; }
+#pot-root .pot-day.ovulation{ background:var(--pot-ovulation); color:#fff; font-weight:700; }
+#pot-root .pot-legend{ display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:#6B4A54; }
+#pot-root .pot-legend-item{ display:flex; align-items:center; gap:6px; }
+#pot-root .pot-legend-dot{ width:12px; height:12px; border-radius:4px; display:inline-block; }
+#pot-root .pot-result-title{
+  font-family:'Fraunces','Noto Sans Bengali','Noto Sans Devanagari', serif;
+  font-size:18px; color:var(--pot-rose-dark); margin:6px 0 12px; font-weight:600;
+}
+#pot-root .pot-cycle-card{
+  border:1px solid var(--pot-line); border-radius:10px; padding:14px 16px; margin-bottom:10px;
+  border-left:4px solid var(--pot-rose);
+}
+#pot-root .pot-cycle-head{ font-weight:700; font-size:14px; margin-bottom:6px; }
+#pot-root .pot-cycle-row{ font-size:13px; color:#5A4048; line-height:1.6; }
+#pot-root .pot-cycle-row b{ color:var(--pot-plum); }
+#pot-root .pot-footer-note{
+  font-size:12px; color:#6B4A54; margin-top:16px; line-height:1.6;
+  border-top:1px dashed var(--pot-line); padding-top:14px;
+}
+@media(max-width:520px){
+  #pot-root{padding:20px 14px 30px;}
+  #pot-root .pot-grid2{grid-template-columns:1fr;}
+  #pot-root .pot-stat-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="pot-eyebrow-wrap">
+<amp-script src="https://healthassistentai.github.io/health-assistant-ai/pot-tracker.js" layout="container">
+<div class="pot-root" id="pot-root">
+
+  <div class="pot-eyebrow" id="pot-eyebrow">HEALTH TOOL</div>
+  <h1 id="pot-title">Period &amp; Ovulation Tracker</h1>
+  <p class="pot-sub" id="pot-subtitle">Enter your last period start date and cycle details to estimate your next period, fertile window, and ovulation day.</p>
+
+  <div class="pot-langbar">
+    <button class="pot-lang-btn active" data-lang="en">English</button>
+    <button class="pot-lang-btn" data-lang="bn">বাংলা</button>
+    <button class="pot-lang-btn" data-lang="hi">हिंदी</button>
+  </div>
+
+  <div class="pot-disclaimer" id="pot-disclaimer"></div>
+
+  <div class="pot-card">
+    <div class="pot-grid2">
+      <div class="pot-field">
+        <label id="pot-label-date">Last period start date</label>
+        <input id="pot-date" type="date">
+      </div>
+      <div class="pot-field">
+        <label id="pot-label-cycle">Average cycle length (days)</label>
+        <input id="pot-cycle" max="45" type="number" value="28">
+      </div>
+      <div class="pot-field">
+        <label id="pot-label-period">Average period length (days)</label>
+        <input id="pot-period" max="10" type="number" value="5">
+      </div>
+    </div>
+    <button class="pot-btn" id="pot-calc"><span id="pot-calc-label">Calculate</span></button>
+    <div class="pot-msg" id="pot-msg"></div>
+  </div>
+
+  <div class="pot-results" id="pot-results">
+
+    <div class="pot-stat-grid">
+      <div class="pot-stat">
+        <div class="pot-stat-label" id="pot-stat-next-label">Next period</div>
+        <div class="pot-stat-value" id="pot-stat-next-value">--</div>
+      </div>
+      <div class="pot-stat fertile">
+        <div class="pot-stat-label" id="pot-stat-fertile-label">Fertile window</div>
+        <div class="pot-stat-value" id="pot-stat-fertile-value">--</div>
+      </div>
+      <div class="pot-stat ovulation">
+        <div class="pot-stat-label" id="pot-stat-ovulation-label">Estimated ovulation</div>
+        <div class="pot-stat-value" id="pot-stat-ovulation-value">--</div>
+      </div>
+    </div>
+
+    <div class="pot-timeline-wrap">
+      <div class="pot-timeline-title" id="pot-timeline-title">This cycle at a glance</div>
+      <div class="pot-timeline" id="pot-timeline"></div>
+      <div class="pot-legend">
+        <span class="pot-legend-item"><span class="pot-legend-dot" style="background:#FBE9E6;border:1px solid #C24B3F;"></span><span id="pot-legend-period">Period days</span></span>
+        <span class="pot-legend-item"><span class="pot-legend-dot" style="background:#E4F1EA;border:1px solid #3E8067;"></span><span id="pot-legend-fertile">Fertile window</span></span>
+        <span class="pot-legend-item"><span class="pot-legend-dot" style="background:#B4485B;"></span><span id="pot-legend-ovulation">Ovulation day</span></span>
+      </div>
+    </div>
+
+    <div class="pot-result-title" id="pot-upcoming-title">Upcoming cycles</div>
+    <div id="pot-cycle-list"></div>
+
+  </div>
+
+  <div class="pot-footer-note" id="pot-footer-note"></div>
+
+</div>
+</amp-script>
+</div>
+
+</body>
+</html>
