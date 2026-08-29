@@ -96,8 +96,15 @@
     var btns = root.querySelectorAll(".pot-lang-btn");
     for(var i=0;i<btns.length;i++){
       var b = btns[i];
-      if(b.getAttribute("data-lang") === lang){ b.classList.add("active"); }
-      else{ b.classList.remove("active"); }
+      if(b.getAttribute("data-lang") === lang){
+        b.style.background = "#B4485B";
+        b.style.borderColor = "#B4485B";
+        b.style.color = "#ffffff";
+      } else {
+        b.style.background = "#FFFFFF";
+        b.style.borderColor = "#EBD3D6";
+        b.style.color = "#3A1F2B";
+      }
     }
     clearMessage();
     if(lastResult){
