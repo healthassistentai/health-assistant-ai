@@ -13,7 +13,7 @@
      and its hash must match the file's sha384 digest exactly. If you edit the JS file,
      recompute the hash with:
      openssl dgst -sha384 -binary pot-tracker.js | openssl base64 -A -->
-<meta name="amp-script-src" content="sha384-CAgSmspQM5EqE1+GX7IzlmpUrQZW2FFg/yH7E3QSjnls5L2OjesKZpqW83v9lO0E https://healthassistentai.github.io/health-assistant-ai/pot-tracker.js">
+<meta name="amp-script-src" content="sha384-ALABCXOnupulkEj0x3Ghgx6amazU861H58wAFYCF6hOppjZ3VnbFVXu5mjXRe03N https://healthassistentai.github.io/health-assistant-ai/pot-tracker.js">
 
 <link href="https://fonts.googleapis.com" rel="preconnect">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Noto+Sans+Bengali:wght@400;500;600;700&amp;family=Noto+Sans+Devanagari:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -68,6 +68,8 @@
   font-size:13px; cursor:pointer; font-weight:600;
 }
 #pot-root .pot-lang-btn.active{ background:var(--pot-rose); border-color:var(--pot-rose); color:#fff; }
+#pot-root .pot-lang-radio{ position:absolute; opacity:0; width:1px; height:1px; }
+#pot-root .pot-lang-radio:checked + label.pot-lang-btn{ background:var(--pot-rose); border-color:var(--pot-rose); color:#fff; }
 #pot-root .pot-card{
   background:var(--pot-card); border:1px solid var(--pot-line);
   border-radius:12px; padding:20px; margin-bottom:18px;
@@ -150,9 +152,12 @@
   <p class="pot-sub" id="pot-subtitle"></p>
 
   <div class="pot-langbar">
-    <button class="pot-lang-btn" data-lang="en">English</button>
-    <button class="pot-lang-btn" data-lang="bn">বাংলা</button>
-    <button class="pot-lang-btn" data-lang="hi">हिंदी</button>
+    <input type="radio" name="pot-lang-radio" id="pot-lang-en" class="pot-lang-radio" data-lang="en" checked>
+    <label for="pot-lang-en" class="pot-lang-btn">English</label>
+    <input type="radio" name="pot-lang-radio" id="pot-lang-bn" class="pot-lang-radio" data-lang="bn">
+    <label for="pot-lang-bn" class="pot-lang-btn">বাংলা</label>
+    <input type="radio" name="pot-lang-radio" id="pot-lang-hi" class="pot-lang-radio" data-lang="hi">
+    <label for="pot-lang-hi" class="pot-lang-btn">हिंदी</label>
   </div>
 
   <div class="pot-disclaimer" id="pot-disclaimer"></div>
