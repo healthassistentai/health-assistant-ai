@@ -164,7 +164,10 @@
     inputsWrap.appendChild(makeRow(0));
     inputsWrap.appendChild(makeRow(1));
   }
-  initRows();
+  // Note: initial two rows are now static HTML (see markup) since JS-created
+  // elements added during the very first synchronous script pass don't
+  // reliably render inside amp-script. initRows() is kept only for reference
+  // and is not called on load.
 
   document.getElementById("mic-add").addEventListener("click", function(){
     var count = inputsWrap.querySelectorAll(".mic-row").length;
