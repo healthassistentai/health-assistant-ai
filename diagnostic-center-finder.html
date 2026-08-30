@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Advanced Diagnostic Center Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:#f7faff; }
+  #dcf-root, #dcf-root * { box-sizing: border-box; }
+  #dcf-root {
+    --dcf-blue-900:#0a2e6b;
+    --dcf-blue-700:#0b5ed7;
+    --dcf-blue-500:#0d6efd;
+    --dcf-green-700:#146c43;
+    --dcf-green-500:#198754;
+    --dcf-sky-100:#eaf2ff;
+    --dcf-bg:#f7faff;
+    --dcf-card:#ffffff;
+    --dcf-ink:#152238;
+    --dcf-muted:#5f6c85;
+    --dcf-amber:#b8611b;
+    --dcf-amber-bg:#fdf1e4;
+    --dcf-red:#c0392b;
+    font-family: "Noto Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    max-width: 620px;
+    margin: 12px auto;
+  }
+  #dcf-root.lang-bn { font-family: "Noto Sans Bengali", "Noto Sans", sans-serif; }
+  #dcf-root.lang-hi { font-family: "Noto Sans Devanagari", "Noto Sans", sans-serif; }
+  #dcf-root .dcf-card, #dcf-root label, #dcf-root button,
+  #dcf-root .dcf-result, #dcf-root .dcf-disclaimer, #dcf-root .dcf-brand {
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+  #dcf-root.lang-bn *, #dcf-root.lang-hi * { line-height: 1.7; }
+
+  .dcf-card {
+    background: var(--dcf-card);
+    border: 1px solid #d9e6fb;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(13,110,253,0.10);
+    overflow: hidden;
+  }
+  .dcf-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, var(--dcf-blue-500), var(--dcf-blue-900));
+    color: #fff;
+  }
+  .dcf-header-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .dcf-avatar {
+    width: 42px; height: 42px; flex: 0 0 42px; font-size: 20px;
+    background: rgba(255,255,255,0.18); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dcf-title { font-size: 16.5px; font-weight: 700; }
+  .dcf-subtitle { font-size: 12px; opacity: .9; margin-top: 2px; }
+  .dcf-lang-switch { display: flex; gap: 4px; flex: 0 0 auto; }
+  .dcf-lang-btn {
+    font-size: 11px; font-weight: 600; padding: 6px 9px;
+    border-radius: 999px; border: 1px solid rgba(255,255,255,.4);
+    background: transparent; color: #eaf2ff; cursor: pointer;
+  }
+  .dcf-lang-btn.is-active { background: #fff; color: var(--dcf-blue-900); }
+
+  .dcf-disclaimer {
+    font-size: 12px; line-height: 1.5;
+    background: var(--dcf-amber-bg); color: var(--dcf-amber);
+    padding: 10px 20px; border-bottom: 1px solid #f3ddc2;
+  }
+
+  .dcf-form { padding: 20px; background: var(--dcf-bg); }
+  .dcf-field { margin-bottom: 14px; }
+  .dcf-field label { display: block; font-size: 13px; font-weight: 600; color: var(--dcf-blue-900); margin-bottom: 6px; }
+  .dcf-field input {
+    width: 100%; padding: 11px 12px; font-size: 14px;
+    border: 1px solid #cfdff5; border-radius: 10px; outline: none;
+    background: #fff; color: var(--dcf-ink);
+  }
+  .dcf-field input:focus {
+    border-color: var(--dcf-blue-500); box-shadow: 0 0 0 3px rgba(13,110,253,.15);
+  }
+  .dcf-secondary-btn {
+    width: 100%; padding: 11px; font-size: 13.5px; font-weight: 600;
+    background: #fff; color: var(--dcf-blue-700); border: 1px solid #cfdff5; border-radius: 10px; cursor: pointer;
+    margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .dcf-secondary-btn:hover { background: var(--dcf-sky-100); }
+  .dcf-find-btn {
+    width: 100%; padding: 13px; font-size: 14.5px; font-weight: 700;
+    background: var(--dcf-blue-500); color: #fff; border: none; border-radius: 10px; cursor: pointer;
+    transition: background .2s ease;
+  }
+  .dcf-find-btn:hover { background: var(--dcf-blue-700); }
+
+  .dcf-result { margin: 0 20px 20px; padding: 18px; border-radius: 12px; background: var(--dcf-sky-100); color: var(--dcf-ink); font-size: 13.5px; line-height: 1.6; }
+  .dcf-result.error { background: #fdecea; color: var(--dcf-red); }
+  .dcf-result h3 { margin: 0 0 8px; font-size: 15px; color: var(--dcf-blue-900); }
+  .dcf-result p { margin: 4px 0; }
+  .dcf-maps-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 10px; padding: 10px 16px;
+    background: var(--dcf-green-500); color: #fff; text-decoration: none;
+    border-radius: 8px; font-size: 13.5px; font-weight: 700;
+  }
+  .dcf-maps-btn:hover { background: var(--dcf-green-700); }
+
+  .dcf-brand {
+    text-align: center; padding: 18px 20px 22px;
+    border-top: 1px solid #d9e6fb; background: #fff;
+  }
+  .dcf-brand-name { font-size: 13px; font-weight: 800; letter-spacing: .06em; color: var(--dcf-blue-900); }
+  .dcf-brand-tag { font-size: 12px; color: var(--dcf-blue-700); font-weight: 600; margin-top: 2px; }
+  .dcf-brand-services { font-size: 11px; color: var(--dcf-muted); margin-top: 6px; }
+  .dcf-brand-site { font-size: 11.5px; margin-top: 8px; }
+  .dcf-brand-site a { color: var(--dcf-blue-700); text-decoration: none; font-weight: 600; }
+  .dcf-brand-site a:hover { text-decoration: underline; }
+
+  @media (max-width: 500px) {
+    #dcf-root { margin: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="dcf-root">
+  <div class="dcf-card">
+
+    <!-- Header -->
+    <div class="dcf-header">
+      <div class="dcf-header-left">
+        <div class="dcf-avatar">🧪</div>
+        <div>
+          <div class="dcf-title" data-i18n="title">Advanced Diagnostic Center Finder</div>
+          <div class="dcf-subtitle" data-i18n="subtitle">Find the right test center near you</div>
+        </div>
+      </div>
+      <div class="dcf-lang-switch">
+        <button class="dcf-lang-btn is-active" data-lang="en">EN</button>
+        <button class="dcf-lang-btn" data-lang="bn">বাংলা</button>
+        <button class="dcf-lang-btn" data-lang="hi">हिंदी</button>
+      </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="dcf-disclaimer" data-i18n="disclaimer">⚠ This tool only opens a Google Maps search for nearby centers. It does not book appointments or verify accreditation — please confirm details directly with the center.</div>
+
+    <!-- Form -->
+    <div class="dcf-form">
+      <div class="dcf-field">
+        <label data-i18n="problemLabel">Enter Test / Problem</label>
+        <input id="dcf-problem" type="text" data-i18n-ph="problemPh" placeholder="Blood Test, MRI, X-Ray" />
+      </div>
+      <div class="dcf-field">
+        <label data-i18n="locationLabel">City / Area</label>
+        <input id="dcf-location" type="text" data-i18n-ph="locationPh" placeholder="Kolkata" />
+      </div>
+      <button id="dcf-geo" class="dcf-secondary-btn" type="button">
+        <span>📍</span> <span data-i18n="geoBtn">Use Current Location</span>
+      </button>
+      <button id="dcf-find" class="dcf-find-btn" type="button" data-i18n="findBtn">Find Diagnostic Center</button>
+    </div>
+
+    <!-- Result -->
+    <div id="dcf-result" class="dcf-result" style="display:none;"></div>
+
+    <!-- Footer / brand -->
+    <div class="dcf-brand">
+      <div class="dcf-brand-name">HEALTH ASSISTENT AI</div>
+      <div class="dcf-brand-tag" data-i18n="brandTag">Your Smart AI Health Companion</div>
+      <div class="dcf-brand-services" data-i18n="brandServices">AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content</div>
+      <div class="dcf-brand-site">Website: <a href="https://www.healthassistentai.com" target="_blank" rel="noopener">healthassistentai.com</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var STRINGS = {
+    en: {
+      title: "Advanced Diagnostic Center Finder",
+      subtitle: "Find the right test center near you",
+      disclaimer: "⚠ This tool only opens a Google Maps search for nearby centers. It does not book appointments or verify accreditation — please confirm details directly with the center.",
+      problemLabel: "Enter Test / Problem", problemPh: "Blood Test, MRI, X-Ray",
+      locationLabel: "City / Area", locationPh: "Kolkata",
+      geoBtn: "Use Current Location",
+      findBtn: "Find Diagnostic Center",
+      geoUnsupported: "Geolocation is not supported by your browser.",
+      geoDenied: "Location access wasn't available here. Please type your city or area instead.",
+      geoFetching: "Fetching your location…",
+      validationMsg: "Please enter both the test/problem and your city or area.",
+      recommended: "Recommended",
+      locationRow: "Location",
+      mapsBtn: "Open in Google Maps",
+      types: { pathology: "Pathology Lab", xray: "X-Ray Center", mri: "MRI Center", ct: "CT Scan Center", cardiac: "Cardiac Diagnostic Center", general: "Diagnostic Center" },
+      brandTag: "Your Smart AI Health Companion",
+      brandServices: "AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content"
+    },
+    bn: {
+      title: "অ্যাডভান্সড ডায়াগনস্টিক সেন্টার ফাইন্ডার",
+      subtitle: "আপনার কাছাকাছি সঠিক টেস্ট সেন্টার খুঁজুন",
+      disclaimer: "⚠ এই টুলটি শুধুমাত্র কাছাকাছি সেন্টারের জন্য একটি Google Maps সার্চ খুলে দেয়। এটি অ্যাপয়েন্টমেন্ট বুক করে না বা স্বীকৃতি যাচাই করে না — বিস্তারিত সরাসরি সেন্টারের সাথে যাচাই করুন।",
+      problemLabel: "টেস্ট / সমস্যা লিখুন", problemPh: "ব্লাড টেস্ট, MRI, এক্স-রে",
+      locationLabel: "শহর / এলাকা", locationPh: "কলকাতা",
+      geoBtn: "বর্তমান লোকেশন ব্যবহার করুন",
+      findBtn: "ডায়াগনস্টিক সেন্টার খুঁজুন",
+      geoUnsupported: "আপনার ব্রাউজার লোকেশন সাপোর্ট করে না।",
+      geoDenied: "এখানে লোকেশন অ্যাক্সেস পাওয়া যায়নি। দয়া করে আপনার শহর বা এলাকা টাইপ করুন।",
+      geoFetching: "আপনার লোকেশন খোঁজা হচ্ছে…",
+      validationMsg: "দয়া করে টেস্ট/সমস্যা এবং আপনার শহর বা এলাকা দুটোই লিখুন।",
+      recommended: "প্রস্তাবিত",
+      locationRow: "লোকেশন",
+      mapsBtn: "Google Maps-এ খুলুন",
+      types: { pathology: "প্যাথলজি ল্যাব", xray: "এক্স-রে সেন্টার", mri: "MRI সেন্টার", ct: "সিটি স্ক্যান সেন্টার", cardiac: "কার্ডিয়াক ডায়াগনস্টিক সেন্টার", general: "ডায়াগনস্টিক সেন্টার" },
+      brandTag: "আপনার স্মার্ট এআই স্বাস্থ্য সহায়ক",
+      brandServices: "এআই স্বাস্থ্য নির্দেশনা • স্বাস্থ্য টুলস • রিপোর্ট বিশ্লেষণ • স্বাস্থ্য শিক্ষা • স্বাস্থ্য কনটেন্ট"
+    },
+    hi: {
+      title: "एडवांस्ड डायग्नोस्टिक सेंटर फाइंडर",
+      subtitle: "अपने पास सही जांच केंद्र खोजें",
+      disclaimer: "⚠ यह टूल केवल पास के केंद्रों के लिए Google Maps सर्च खोलता है। यह अपॉइंटमेंट बुक नहीं करता और मान्यता की पुष्टि नहीं करता — कृपया विवरण सीधे केंद्र से जांच लें।",
+      problemLabel: "जांच / समस्या लिखें", problemPh: "ब्लड टेस्ट, MRI, एक्स-रे",
+      locationLabel: "शहर / क्षेत्र", locationPh: "कोलकाता",
+      geoBtn: "वर्तमान लोकेशन का उपयोग करें",
+      findBtn: "डायग्नोस्टिक सेंटर खोजें",
+      geoUnsupported: "आपका ब्राउज़र लोकेशन सपोर्ट नहीं करता।",
+      geoDenied: "यहाँ लोकेशन एक्सेस उपलब्ध नहीं था। कृपया अपना शहर या क्षेत्र टाइप करें।",
+      geoFetching: "आपकी लोकेशन खोजी जा रही है…",
+      validationMsg: "कृपया जांच/समस्या और अपना शहर या क्षेत्र दोनों दर्ज करें।",
+      recommended: "अनुशंसित",
+      locationRow: "लोकेशन",
+      mapsBtn: "Google Maps में खोलें",
+      types: { pathology: "पैथोलॉजी लैब", xray: "एक्स-रे सेंटर", mri: "MRI सेंटर", ct: "सीटी स्कैन सेंटर", cardiac: "कार्डियक डायग्नोस्टिक सेंटर", general: "डायग्नोस्टिक सेंटर" },
+      brandTag: "आपका स्मार्ट एआई हेल्थ साथी",
+      brandServices: "एआई स्वास्थ्य मार्गदर्शन • हेल्थ टूल्स • रिपोर्ट विश्लेषण • स्वास्थ्य शिक्षा • स्वास्थ्य कंटेंट"
+    }
+  };
+
+  // Guard against Blogger/CMS re-encoding non-Latin text into HTML numeric
+  // entities (&#2377;) when the page is saved.
+  function decodeEntities(str) {
+    if (typeof str !== "string") return str;
+    if (str.indexOf("&#") === -1 && str.indexOf("&amp;") === -1) return str;
+    var el = document.createElement("textarea");
+    el.innerHTML = str;
+    return el.value;
+  }
+  function deepDecode(obj) {
+    if (typeof obj === "string") return decodeEntities(obj);
+    if (Array.isArray(obj)) return obj.map(deepDecode);
+    if (obj && typeof obj === "object") {
+      var out = {};
+      for (var k in obj) out[k] = deepDecode(obj[k]);
+      return out;
+    }
+    return obj;
+  }
+  STRINGS = deepDecode(STRINGS);
+
+  var currentLang = "en";
+  var rootEl = document.getElementById("dcf-root");
+
+  function t(key) { return STRINGS[currentLang][key]; }
+
+  function applyStaticStrings() {
+    document.querySelectorAll("#dcf-root [data-i18n]").forEach(function (el) {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.getElementById("dcf-problem").setAttribute("placeholder", t("problemPh"));
+    document.getElementById("dcf-location").setAttribute("placeholder", t("locationPh"));
+  }
+
+  // Fixed: previously matched "ct" as a raw substring, which wrongly matched
+  // words like "Doctor" or "Fracture" that merely contain the letters c+t.
+  // Now uses word-boundary-aware regex checks instead.
+  function detectType(v) {
+    v = v.toLowerCase();
+    var types = t("types");
+    if (/blood/.test(v)) return types.pathology;
+    if (/x-?ray/.test(v)) return types.xray;
+    if (/\bmri\b/.test(v)) return types.mri;
+    if (/\bct\b|ct\s*scan|cat\s*scan/.test(v)) return types.ct;
+    if (/\becg\b|\bekg\b|\bheart\b|cardiac/.test(v)) return types.cardiac;
+    return types.general;
+  }
+
+  function getLocation() {
+    var locInput = document.getElementById("dcf-location");
+    if (!navigator.geolocation) {
+      alert(t("geoUnsupported"));
+      return;
+    }
+    var originalPh = locInput.placeholder;
+    locInput.placeholder = t("geoFetching");
+    navigator.geolocation.getCurrentPosition(
+      function (pos) {
+        locInput.value = pos.coords.latitude + "," + pos.coords.longitude;
+        locInput.placeholder = originalPh;
+      },
+      function () {
+        // Note: inside a cross-origin embedded iframe (e.g. Blogger's
+        // amp-iframe), browsers may block the geolocation permission
+        // prompt entirely. This message covers both "denied" and
+        // "blocked by the embedding page" cases.
+        alert(t("geoDenied"));
+        locInput.placeholder = originalPh;
+      }
+    );
+  }
+
+  function findCenter() {
+    var problem = document.getElementById("dcf-problem").value.trim();
+    var location = document.getElementById("dcf-location").value.trim();
+    var box = document.getElementById("dcf-result");
+    box.style.display = "block";
+
+    if (!problem || !location) {
+      box.className = "dcf-result error";
+      box.textContent = t("validationMsg");
+      return;
+    }
+
+    var dep = detectType(problem);
+    // Uses Google's documented Maps URL scheme (api=1) instead of the
+    // undocumented /maps/search/<text> path, for more reliable results.
+    var url = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(dep + " " + location);
+
+    box.className = "dcf-result";
+    box.innerHTML =
+      "<h3>" + t("recommended") + ": " + dep + "</h3>" +
+      "<p>" + t("locationRow") + ": " + location + "</p>" +
+      "<a class='dcf-maps-btn' target='_blank' rel='noopener' href='" + url + "'>📍 " + t("mapsBtn") + "</a>";
+  }
+
+  document.querySelectorAll(".dcf-lang-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".dcf-lang-btn").forEach(function (b) { b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      currentLang = btn.getAttribute("data-lang");
+      rootEl.classList.remove("lang-bn", "lang-hi");
+      if (currentLang === "bn") rootEl.classList.add("lang-bn");
+      if (currentLang === "hi") rootEl.classList.add("lang-hi");
+      applyStaticStrings();
+      document.getElementById("dcf-result").style.display = "none";
+    });
+  });
+
+  document.getElementById("dcf-geo").addEventListener("click", getLocation);
+  document.getElementById("dcf-find").addEventListener("click", findCenter);
+
+  applyStaticStrings();
+})();
+</script>
+
+</body>
+</html>
