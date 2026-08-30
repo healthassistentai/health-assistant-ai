@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced AI Hospital Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#dc3545;
+    --primary-dark:#bb2d3b;
+    --blue:#0d6efd;
+    --blue-dark:#0b5ed7;
+    --green:#198754;
+    --green-dark:#157347;
+    --ink:#0f2438;
+    --muted:#5b7086;
+    --line:#e3ecf3;
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --shadow:0 5px 15px rgba(0,0,0,.15);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;
+  }
+  body.lang-bn, body.lang-bn input, body.lang-bn select, body.lang-bn button{ font-family:'Noto Sans Bengali','Inter',sans-serif; }
+  body.lang-hi, body.lang-hi input, body.lang-hi select, body.lang-hi button{ font-family:'Noto Sans Devanagari','Inter',sans-serif; }
+
+  .topbar{max-width:750px;margin:12px auto 0;padding:0 25px;display:flex;justify-content:flex-end;}
+  .lang-select{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:var(--shadow);}
+  .lang-select button{border:none;background:transparent;padding:7px 12px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;}
+  .lang-select button.active{background:var(--primary);color:#fff;}
+
+  .site-header{max-width:750px;margin:14px auto 0;padding:0 25px;text-align:center;}
+  .site-header h1{font-family:'Poppins',sans-serif;font-size:24px;margin:6px 0 2px;color:var(--ink);}
+  .site-header h3.tagline{margin:0 0 10px;font-weight:600;color:var(--primary-dark);font-size:15px;}
+  .site-header .desc{font-size:13.5px;color:var(--muted);margin:2px 0;}
+  .site-header .site-url a{color:var(--primary-dark);text-decoration:none;font-weight:600;}
+
+  .adv-hospital-ai{
+    max-width:750px;margin:20px auto;background:var(--card);padding:25px;
+    border-radius:12px;box-shadow:var(--shadow);
+  }
+  .adv-hospital-ai h2{text-align:center;color:var(--primary);font-family:'Poppins',sans-serif;margin-bottom:8px;margin-top:0;}
+  .intro{text-align:center;color:var(--muted);margin:0 0 10px;font-size:14px;}
+
+  label{display:block;margin-top:15px;font-weight:700;font-size:14px;color:#333;}
+  input,select{
+    width:100%;padding:12px;margin-top:8px;border:1px solid #ccc;
+    border-radius:6px;font-size:16px;outline:none;box-sizing:border-box;font-family:inherit;
+  }
+  input:focus,select:focus{border-color:var(--primary);}
+
+  button.primary{
+    width:100%;padding:14px;margin-top:18px;background:var(--primary);
+    color:#fff;font-size:17px;font-weight:700;border:none;border-radius:6px;cursor:pointer;transition:.3s;
+  }
+  button.primary:hover{background:var(--primary-dark);}
+
+  .location-btn{background:var(--blue);margin-top:10px;}
+  .location-btn:hover{background:var(--blue-dark);}
+
+  .gps-status{
+    display:none;margin-top:8px;padding:9px 12px;border-radius:6px;
+    font-size:12.5px;line-height:1.5;background:#eaf2ff;color:var(--blue-dark);
+  }
+  .gps-status.show{display:block;}
+  .gps-status.error{background:#fdecea;color:var(--primary-dark);}
+
+  #result{
+    display:none;margin-top:25px;padding:18px;background:#fff5f5;
+    border-left:5px solid var(--primary);border-radius:8px;line-height:1.8;
+  }
+  #result.show{display:block;}
+  #result.error{background:#fdecea;border-left-color:var(--primary-dark);}
+  #result h3{margin-bottom:10px;color:var(--primary);font-family:'Poppins',sans-serif;margin-top:0;}
+
+  .map-btn{
+    display:inline-block;margin-top:15px;padding:10px 18px;
+    background:var(--green);color:#fff;text-decoration:none;border-radius:6px;font-weight:600;
+  }
+  .map-btn:hover{background:var(--green-dark);}
+
+  .disclaimer{
+    font-size:12.5px;color:var(--muted);text-align:center;margin:20px 0 0;line-height:1.6;
+  }
+  .disclaimer strong{color:var(--primary);}
+
+  @media(max-width:600px){
+    .adv-hospital-ai{padding:18px;}
+    button.primary{font-size:15px;}
+  }
+</style>
+</head>
+<body class="lang-en">
+
+<div class="topbar">
+  <div class="lang-select" role="group" aria-label="Language selector">
+    <button class="active" data-lang="en">English</button>
+    <button data-lang="bn">বাংলা</button>
+    <button data-lang="hi">हिन्दी</button>
+  </div>
+</div>
+
+<div class="site-header">
+  <h1>HEALTH ASSISTENT AI</h1>
+  <h3 class="tagline" data-i18n="siteTag">Your Smart AI Health Companion</h3>
+  <p class="desc" data-i18n="siteDesc">AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content</p>
+  <p class="desc site-url">Website: <a href="https://www.healthassistentai.com" target="_blank" rel="noopener">https://www.healthassistentai.com</a></p>
+</div>
+
+<div class="adv-hospital-ai">
+  <h2 data-i18n="title">🏥 Advanced AI Hospital Finder</h2>
+  <p class="intro" data-i18n="intro">Tell us your problem and location — we'll point you to the right department nearby.</p>
+
+  <label id="problemLabel" data-i18n="problem">Enter Health Problem</label>
+  <input id="problem" type="text" data-i18n-ph="placeholder1" placeholder="Example: Fever">
+
+  <label id="locationLabel" data-i18n="location">Enter City / Area</label>
+  <input id="location" type="text" data-i18n-ph="placeholder2" placeholder="Example: Kolkata">
+
+  <button class="primary location-btn" id="gpsBtn" data-i18n="gps">📍 Use My Current Location</button>
+  <div id="gpsStatus" class="gps-status"></div>
+  <button class="primary" id="findBtn" data-i18n="find">🔍 Find Hospital</button>
+
+  <div id="result"></div>
+
+  <p class="disclaimer" data-i18n="disclaimer">⚠ Educational purpose only. <strong>In a medical emergency, call emergency services or go to the nearest emergency room immediately — don't wait to search.</strong></p>
+</div>
+
+<script>
+(function(){
+
+  var I18N = {
+    en:{
+      siteTag:"Your Smart AI Health Companion",
+      siteDesc:"AI Health Guidance \u2022 Health Tools \u2022 Report Analysis \u2022 Health Education \u2022 Health Content",
+      title:"\ud83c\udfe5 Advanced AI Hospital Finder",
+      intro:"Tell us your problem and location \u2014 we'll point you to the right department nearby.",
+      problem:"Enter Health Problem",
+      location:"Enter City / Area",
+      find:"\ud83d\udd0d Find Hospital",
+      gps:"\ud83d\udccd Use My Current Location",
+      placeholder1:"Example: Fever",
+      placeholder2:"Example: Kolkata",
+      alertNoProblem:"Please enter your health problem.",
+      alertNoLocation:"Please enter your city or use Current Location.",
+      alertNoGeo:"Geolocation is not supported on this device.",
+      alertLocationAdded:"Current location added successfully.",
+      alertLocationDenied:"Location access wasn't available here. Please type your city instead.",
+      resultTitle:"\ud83c\udfe5 AI Recommendation",
+      problemLabelResult:"Health Problem:",
+      deptLabelResult:"Recommended Department:",
+      locationLabelResult:"Search Location:",
+      mapNote:"The nearest hospitals for this department can be viewed on Google Maps.",
+      mapBtn:"\ud83d\udccd Open Nearby Hospitals",
+      disclaimer:"\u26a0 Educational purpose only. <strong>In a medical emergency, call emergency services or go to the nearest emergency room immediately \u2014 don't wait to search.</strong>",
+      deptCardiology:"Cardiology",
+      deptDermatology:"Dermatology",
+      deptOphthalmology:"Ophthalmology",
+      deptOrthopedics:"Orthopedics",
+      deptPediatrics:"Pediatrics",
+      deptGynecology:"Gynecology",
+      deptDental:"Dental",
+      deptENT:"ENT",
+      deptPsychiatry:"Psychiatry",
+      deptGastro:"Gastroenterology",
+      deptGeneral:"General Hospital"
+    },
+    bn:{
+      siteTag:"\u0986\u09aa\u09a8\u09be\u09b0 \u09b8\u09cd\u09ae\u09be\u09b0\u09cd\u099f AI \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09b8\u09b9\u09be\u09af\u09bc\u0995",
+      siteDesc:"AI \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09aa\u09b0\u09be\u09ae\u09b0\u09cd\u09b6 \u2022 \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u099f\u09c1\u09b2\u09b8 \u2022 \u09b0\u09bf\u09aa\u09cb\u09b0\u09cd\u099f \u09ac\u09bf\u09b6\u09cd\u09b2\u09c7\u09b7\u09a3 \u2022 \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09b6\u09bf\u0995\u09cd\u09b7\u09be \u2022 \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u0995\u09a8\u09cd\u099f\u09c7\u09a8\u09cd\u099f",
+      title:"\ud83c\udfe5 \u0985\u09cd\u09af\u09be\u09a1\u09ad\u09be\u09a8\u09cd\u09b8\u09a1 AI \u09b9\u09be\u09b8\u09aa\u09be\u09a4\u09be\u09b2 \u09ab\u09be\u0987\u09a8\u09cd\u09a1\u09be\u09b0",
+      intro:"\u0986\u09aa\u09a8\u09be\u09b0 \u09b8\u09ae\u09b8\u09cd\u09af\u09be \u0993 \u0985\u09ac\u09b8\u09cd\u09a5\u09be\u09a8 \u099c\u09be\u09a8\u09be\u09a8 \u2014 \u0986\u09ae\u09b0\u09be \u0995\u09be\u099b\u09be\u0995\u09be\u099b\u09bf \u09b8\u09a0\u09bf\u0995 \u09ac\u09bf\u09ad\u09be\u0997 \u0996\u09c1\u0981\u099c\u09c7 \u09a6\u09c7\u09ac\u0964",
+      problem:"\u0986\u09aa\u09a8\u09be\u09b0 \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09b8\u09ae\u09b8\u09cd\u09af\u09be \u09b2\u09bf\u0996\u09c1\u09a8",
+      location:"\u09b6\u09b9\u09b0 / \u098f\u09b2\u09be\u0995\u09be \u09b2\u09bf\u0996\u09c1\u09a8",
+      find:"\ud83d\udd0d \u09b9\u09be\u09b8\u09aa\u09be\u09a4\u09be\u09b2 \u0996\u09c1\u0981\u099c\u09c1\u09a8",
+      gps:"\ud83d\udccd \u0986\u09ae\u09be\u09b0 \u09ac\u09b0\u09cd\u09a4\u09ae\u09be\u09a8 \u0985\u09ac\u09b8\u09cd\u09a5\u09be\u09a8 \u09ac\u09cd\u09af\u09ac\u09b9\u09be\u09b0 \u0995\u09b0\u09c1\u09a8",
+      placeholder1:"\u09af\u09c7\u09ae\u09a8: \u099c\u09cd\u09ac\u09b0",
+      placeholder2:"\u09af\u09c7\u09ae\u09a8: \u0995\u09b2\u0995\u09be\u09a4\u09be",
+      alertNoProblem:"\u0985\u09a8\u09c1\u0997\u09cd\u09b0\u09b9 \u0995\u09b0\u09c7 \u0986\u09aa\u09a8\u09be\u09b0 \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09b8\u09ae\u09b8\u09cd\u09af\u09be \u09b2\u09bf\u0996\u09c1\u09a8\u0964",
+      alertNoLocation:"\u0985\u09a8\u09c1\u0997\u09cd\u09b0\u09b9 \u0995\u09b0\u09c7 \u0986\u09aa\u09a8\u09be\u09b0 \u09b6\u09b9\u09b0 \u09b2\u09bf\u0996\u09c1\u09a8 \u0985\u09a5\u09ac\u09be \u09ac\u09b0\u09cd\u09a4\u09ae\u09be\u09a8 \u0985\u09ac\u09b8\u09cd\u09a5\u09be\u09a8 \u09ac\u09cd\u09af\u09ac\u09b9\u09be\u09b0 \u0995\u09b0\u09c1\u09a8\u0964",
+      alertNoGeo:"\u098f\u0987 \u09a1\u09bf\u09ad\u09be\u0987\u09b8\u09c7 \u099c\u09bf\u0993\u09b2\u09cb\u0995\u09c7\u09b6\u09a8 \u09b8\u09ae\u09b0\u09cd\u09a5\u09bf\u09a4 \u09a8\u09af\u09bc\u0964",
+      alertLocationAdded:"\u09ac\u09b0\u09cd\u09a4\u09ae\u09be\u09a8 \u0985\u09ac\u09b8\u09cd\u09a5\u09be\u09a8 \u09b8\u09ab\u09b2\u09ad\u09be\u09ac\u09c7 \u09af\u09cb\u0997 \u0995\u09b0\u09be \u09b9\u09af\u09bc\u09c7\u099b\u09c7\u0964",
+      alertLocationDenied:"\u098f\u0996\u09be\u09a8\u09c7 \u09b2\u09cb\u0995\u09c7\u09b6\u09a8 \u0985\u09cd\u09af\u09be\u0995\u09cd\u09b8\u09c7\u09b8 \u09aa\u09be\u0993\u09af\u09bc\u09be \u09af\u09be\u09af\u09bc\u09a8\u09bf\u0964 \u09a6\u09af\u09bc\u09be \u0995\u09b0\u09c7 \u0986\u09aa\u09a8\u09be\u09b0 \u09b6\u09b9\u09b0 \u099f\u09be\u0987\u09aa \u0995\u09b0\u09c1\u09a8\u0964",
+      resultTitle:"\ud83c\udfe5 AI \u09b8\u09c1\u09aa\u09be\u09b0\u09bf\u09b6",
+      problemLabelResult:"\u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09b8\u09ae\u09b8\u09cd\u09af\u09be:",
+      deptLabelResult:"\u09aa\u09cd\u09b0\u09b8\u09cd\u09a4\u09be\u09ac\u09bf\u09a4 \u09ac\u09bf\u09ad\u09be\u0997:",
+      locationLabelResult:"\u0985\u09a8\u09c1\u09b8\u09a8\u09cd\u09a7\u09be\u09a8\u09c7\u09b0 \u0985\u09ac\u09b8\u09cd\u09a5\u09be\u09a8:",
+      mapNote:"\u098f\u0987 \u09ac\u09bf\u09ad\u09be\u0997\u09c7\u09b0 \u099c\u09a8\u09cd\u09af \u09a8\u09bf\u0995\u099f\u09b8\u09cd\u09a5 \u09b9\u09be\u09b8\u09aa\u09be\u09a4\u09be\u09b2\u0997\u09c1\u09b2\u09cb Google Maps-\u098f \u09a6\u09c7\u0996\u09be \u09af\u09be\u09ac\u09c7\u0964",
+      mapBtn:"\ud83d\udccd \u0995\u09be\u099b\u09be\u0995\u09be\u099b\u09bf \u09b9\u09be\u09b8\u09aa\u09be\u09a4\u09be\u09b2 \u0996\u09c1\u09b2\u09c1\u09a8",
+      disclaimer:"\u26a0 \u09b6\u09c1\u09a7\u09c1\u09ae\u09be\u09a4\u09cd\u09b0 \u09b6\u09bf\u0995\u09cd\u09b7\u09be\u09ae\u09c2\u09b2\u0995 \u0989\u09a6\u09cd\u09a6\u09c7\u09b6\u09cd\u09af\u09c7\u0964 <strong>\u099c\u09b0\u09c1\u09b0\u09bf \u0985\u09ac\u09b8\u09cd\u09a5\u09be\u09af\u09bc \u0996\u09cb\u0981\u099c\u09be\u09b0 \u0985\u09aa\u09c7\u0995\u09cd\u09b7\u09be \u09a8\u09be \u0995\u09b0\u09c7 \u0985\u09ac\u09bf\u09b2\u09ae\u09cd\u09ac\u09c7 \u099c\u09b0\u09c1\u09b0\u09bf \u09b8\u09c7\u09ac\u09be\u09af\u09bc \u0995\u09b2 \u0995\u09b0\u09c1\u09a8 \u0985\u09a5\u09ac\u09be \u09a8\u09bf\u0995\u099f\u09b8\u09cd\u09a5 \u099c\u09b0\u09c1\u09b0\u09bf \u09ac\u09bf\u09ad\u09be\u0997\u09c7 \u09af\u09be\u09a8\u0964</strong>",
+      deptCardiology:"\u09b9\u09c3\u09a6\u09b0\u09cb\u0997 \u09ac\u09bf\u09ad\u09be\u0997 (Cardiology)",
+      deptDermatology:"\u099a\u09b0\u09cd\u09ae\u09b0\u09cb\u0997 \u09ac\u09bf\u09ad\u09be\u0997 (Dermatology)",
+      deptOphthalmology:"\u099a\u0995\u09cd\u09b7\u09c1 \u09ac\u09bf\u09ad\u09be\u0997 (Ophthalmology)",
+      deptOrthopedics:"\u0985\u09b0\u09cd\u09a5\u09cb\u09aa\u09c7\u09a1\u09bf\u0995\u09cd\u09b8 \u09ac\u09bf\u09ad\u09be\u0997 (Orthopedics)",
+      deptPediatrics:"\u09b6\u09bf\u09b6\u09c1 \u09ac\u09bf\u09ad\u09be\u0997 (Pediatrics)",
+      deptGynecology:"\u09b8\u09cd\u09a4\u09cd\u09b0\u09c0\u09b0\u09cb\u0997 \u09ac\u09bf\u09ad\u09be\u0997 (Gynecology)",
+      deptDental:"\u09a6\u09a8\u09cd\u09a4 \u09ac\u09bf\u09ad\u09be\u0997 (Dental)",
+      deptENT:"\u09a8\u09be\u0995-\u0995\u09be\u09a8-\u0997\u09b2\u09be \u09ac\u09bf\u09ad\u09be\u0997 (ENT)",
+      deptPsychiatry:"\u09ae\u09a8\u09cb\u09b0\u09cb\u0997 \u09ac\u09bf\u09ad\u09be\u0997 (Psychiatry)",
+      deptGastro:"\u09aa\u09b0\u09bf\u09aa\u09be\u0995\u09a4\u09a8\u09cd\u09a4\u09cd\u09b0 \u09ac\u09bf\u09ad\u09be\u0997 (Gastroenterology)",
+      deptGeneral:"\u09b8\u09be\u09a7\u09be\u09b0\u09a3 \u09b9\u09be\u09b8\u09aa\u09be\u09a4\u09be\u09b2 (General Hospital)"
+    },
+    hi:{
+      siteTag:"\u0906\u092a\u0915\u093e \u0938\u094d\u092e\u093e\u0930\u094d\u091f AI \u0939\u0947\u0932\u094d\u0925 \u0938\u093e\u0925\u0940",
+      siteDesc:"AI \u0939\u0947\u0932\u094d\u0925 \u092e\u093e\u0930\u094d\u0917\u0926\u0930\u094d\u0936\u0928 \u2022 \u0939\u0947\u0932\u094d\u0925 \u091f\u0942\u0932\u094d\u0938 \u2022 \u0930\u093f\u092a\u094b\u0930\u094d\u091f \u0935\u093f\u0936\u094d\u0932\u0947\u0937\u0923 \u2022 \u0939\u0947\u0932\u094d\u0925 \u0936\u093f\u0915\u094d\u0937\u093e \u2022 \u0939\u0947\u0932\u094d\u0925 \u0915\u0902\u091f\u0947\u0902\u091f",
+      title:"\ud83c\udfe5 \u090f\u0921\u0935\u093e\u0902\u0938\u094d\u0921 AI \u0905\u0938\u094d\u092a\u0924\u093e\u0932 \u092b\u093e\u0907\u0902\u0921\u0930",
+      intro:"\u0905\u092a\u0928\u0940 \u0938\u092e\u0938\u094d\u092f\u093e \u0914\u0930 \u0938\u094d\u0925\u093e\u0928 \u092c\u0924\u093e\u090f\u0902 \u2014 \u0939\u092e \u0906\u092a\u0915\u0947 \u092a\u093e\u0938 \u0938\u0939\u0940 \u0935\u093f\u092d\u093e\u0917 \u0916\u094b\u091c \u0926\u0947\u0902\u0917\u0947\u0964",
+      problem:"\u0938\u094d\u0935\u093e\u0938\u094d\u0925\u094d\u092f \u0938\u092e\u0938\u094d\u092f\u093e \u0932\u093f\u0916\u0947\u0902",
+      location:"\u0936\u0939\u0930 / \u0915\u094d\u0937\u0947\u0924\u094d\u0930 \u0932\u093f\u0916\u0947\u0902",
+      find:"\ud83d\udd0d \u0905\u0938\u094d\u092a\u0924\u093e\u0932 \u0916\u094b\u091c\u0947\u0902",
+      gps:"\ud83d\udccd \u092e\u0947\u0930\u0940 \u0935\u0930\u094d\u0924\u092e\u093e\u0928 \u0932\u094b\u0915\u0947\u0936\u0928 \u0909\u092a\u092f\u094b\u0917 \u0915\u0930\u0947\u0902",
+      placeholder1:"\u091c\u0948\u0938\u0947: \u092c\u0941\u0916\u093e\u0930",
+      placeholder2:"\u091c\u0948\u0938\u0947: \u0915\u094b\u0932\u0915\u093e\u0924\u093e",
+      alertNoProblem:"\u0915\u0943\u092a\u092f\u093e \u0905\u092a\u0928\u0940 \u0938\u094d\u0935\u093e\u0938\u094d\u0925\u094d\u092f \u0938\u092e\u0938\u094d\u092f\u093e \u0932\u093f\u0916\u0947\u0902\u0964",
+      alertNoLocation:"\u0915\u0943\u092a\u092f\u093e \u0905\u092a\u0928\u093e \u0936\u0939\u0930 \u0932\u093f\u0916\u0947\u0902 \u092f\u093e \u0935\u0930\u094d\u0924\u092e\u093e\u0928 \u0932\u094b\u0915\u0947\u0936\u0928 \u0915\u093e \u0909\u092a\u092f\u094b\u0917 \u0915\u0930\u0947\u0902\u0964",
+      alertNoGeo:"\u0907\u0938 \u0921\u093f\u0935\u093e\u0907\u0938 \u092a\u0930 \u091c\u093f\u092f\u094b\u0932\u094b\u0915\u0947\u0936\u0928 \u0938\u092e\u0930\u094d\u0925\u093f\u0924 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964",
+      alertLocationAdded:"\u0935\u0930\u094d\u0924\u092e\u093e\u0928 \u0932\u094b\u0915\u0947\u0936\u0928 \u0938\u092b\u0932\u0924\u093e\u092a\u0942\u0930\u094d\u0935\u0915 \u091c\u094b\u0921\u093c\u0940 \u0917\u0908\u0964",
+      alertLocationDenied:"\u092f\u0939\u093e\u0902 \u0932\u094b\u0915\u0947\u0936\u0928 \u090f\u0915\u094d\u0938\u0947\u0938 \u0909\u092a\u0932\u092c\u094d\u0927 \u0928\u0939\u0940\u0902 \u0925\u093e\u0964 \u0915\u0943\u092a\u092f\u093e \u0905\u092a\u0928\u093e \u0936\u0939\u0930 \u091f\u093e\u0907\u092a \u0915\u0930\u0947\u0902\u0964",
+      resultTitle:"\ud83c\udfe5 AI \u0938\u0941\u091d\u093e\u0935",
+      problemLabelResult:"\u0938\u094d\u0935\u093e\u0938\u094d\u0925\u094d\u092f \u0938\u092e\u0938\u094d\u092f\u093e:",
+      deptLabelResult:"\u0938\u0941\u091d\u093e\u092f\u093e \u0917\u092f\u093e \u0935\u093f\u092d\u093e\u0917:",
+      locationLabelResult:"\u0916\u094b\u091c \u0938\u094d\u0925\u093e\u0928:",
+      mapNote:"\u0907\u0938 \u0935\u093f\u092d\u093e\u0917 \u0915\u0947 \u0932\u093f\u090f \u0928\u091c\u093c\u0926\u0940\u0915\u0940 \u0905\u0938\u094d\u092a\u0924\u093e\u0932 Google Maps \u092a\u0930 \u0926\u0947\u0916\u0947 \u091c\u093e \u0938\u0915\u0924\u0947 \u0939\u0948\u0902\u0964",
+      mapBtn:"\ud83d\udccd \u0928\u091c\u093c\u0926\u0940\u0915\u0940 \u0905\u0938\u094d\u092a\u0924\u093e\u0932 \u0916\u094b\u0932\u0947\u0902",
+      disclaimer:"\u26a0 \u0915\u0947\u0935\u0932 \u0936\u0948\u0915\u094d\u0937\u093f\u0915 \u0909\u0926\u094d\u0926\u0947\u0936\u094d\u092f \u0915\u0947 \u0932\u093f\u090f\u0964 <strong>\u091a\u093f\u0915\u093f\u0924\u094d\u0938\u093e \u0906\u092a\u093e\u0924\u0915\u093e\u0932 \u092e\u0947\u0902 \u0916\u094b\u091c\u0928\u0947 \u0915\u093e \u0907\u0902\u0924\u091c\u093c\u093e\u0930 \u0915\u093f\u090f \u092c\u093f\u0928\u093e \u0924\u0941\u0930\u0902\u0924 \u0906\u092a\u093e\u0924\u0915\u093e\u0932\u0940\u0928 \u0938\u0947\u0935\u093e \u0915\u094b \u0915\u0949\u0932 \u0915\u0930\u0947\u0902 \u092f\u093e \u0928\u091c\u093c\u0926\u0940\u0915\u0940 \u0907\u092e\u0930\u091c\u0947\u0902\u0938\u0940 \u0930\u0942\u092e \u091c\u093e\u090f\u0902\u0964</strong>",
+      deptCardiology:"\u0939\u0943\u0926\u092f \u0930\u094b\u0917 \u0935\u093f\u092d\u093e\u0917 (Cardiology)",
+      deptDermatology:"\u0924\u094d\u0935\u091a\u093e \u0930\u094b\u0917 \u0935\u093f\u092d\u093e\u0917 (Dermatology)",
+      deptOphthalmology:"\u0928\u0947\u0924\u094d\u0930 \u0935\u093f\u092d\u093e\u0917 (Ophthalmology)",
+      deptOrthopedics:"\u0939\u0921\u094d\u0921\u0940 \u0930\u094b\u0917 \u0935\u093f\u092d\u093e\u0917 (Orthopedics)",
+      deptPediatrics:"\u092c\u093e\u0932 \u0930\u094b\u0917 \u0935\u093f\u092d\u093e\u0917 (Pediatrics)",
+      deptGynecology:"\u0938\u094d\u0924\u094d\u0930\u0940 \u0930\u094b\u0917 \u0935\u093f\u092d\u093e\u0917 (Gynecology)",
+      deptDental:"\u0926\u0902\u0924 \u0935\u093f\u092d\u093e\u0917 (Dental)",
+      deptENT:"\u0928\u093e\u0915-\u0915\u093e\u0928-\u0917\u0932\u093e \u0935\u093f\u092d\u093e\u0917 (ENT)",
+      deptPsychiatry:"\u092e\u0928\u094b\u0930\u094b\u0917 \u0935\u093f\u092d\u093e\u0917 (Psychiatry)",
+      deptGastro:"\u092a\u093e\u091a\u0928 \u0924\u0902\u0924\u094d\u0930 \u0935\u093f\u092d\u093e\u0917 (Gastroenterology)",
+      deptGeneral:"\u0938\u093e\u092e\u093e\u0928\u094d\u092f \u0905\u0938\u094d\u092a\u0924\u093e\u0932 (General Hospital)"
+    }
+  };
+
+  var currentLang = 'en';
+
+  var DEPARTMENTS = [
+    {key:"deptCardiology", keywords:{en:["heart","chest"], bn:["\u09b9\u09c3\u09a6\u09af\u09bc","\u09ac\u09c1\u0995"], hi:["\u0926\u093f\u0932","\u0938\u0940\u0928\u0947","\u091b\u093e\u0924\u0940"]}},
+    {key:"deptDermatology", keywords:{en:["skin","rash"], bn:["\u099a\u09be\u09ae\u09a1\u09bc\u09be","\u09a4\u09cd\u09ac\u0995"], hi:["\u0924\u094d\u0935\u091a\u093e","\u091a\u0915\u0924\u094d\u0924\u0947"]}},
+    {key:"deptOphthalmology", keywords:{en:["eye"], bn:["\u099a\u09cb\u0996"], hi:["\u0906\u0902\u0916"]}},
+    {key:"deptOrthopedics", keywords:{en:["bone","joint","fracture"], bn:["\u09b9\u09be\u09a1\u09bc","\u0997\u09be\u0981\u099f\u09c7"], hi:["\u0939\u0921\u094d\u0921\u0940","\u091c\u094b\u0921\u093c\u094b\u0902"]}},
+    {key:"deptPediatrics", keywords:{en:["child","baby"], bn:["\u09b6\u09bf\u09b6\u09c1","\u09ac\u09be\u099a\u09cd\u099a\u09be"], hi:["\u092c\u091a\u094d\u091a\u093e","\u0936\u093f\u0936\u0941"]}},
+    {key:"deptGynecology", keywords:{en:["pregnant","pregnancy","period","menstrual"], bn:["\u0997\u09b0\u09cd\u09ad","\u098b\u09a4\u09c1\u09b8\u09cd\u09b0\u09be\u09ac"], hi:["\u0917\u0930\u094d\u092d","\u092e\u093e\u0938\u093f\u0915"]}},
+    {key:"deptDental", keywords:{en:["tooth","teeth","dental"], bn:["\u09a6\u09be\u0981\u09a4","\u09a6\u09a8\u09cd\u09a4"], hi:["\u0926\u093e\u0902\u0924"]}},
+    {key:"deptENT", keywords:{en:["ear","nose","throat"], bn:["\u0995\u09be\u09a8","\u09a8\u09be\u0995","\u0997\u09b2\u09be"], hi:["\u0915\u093e\u0928","\u0928\u093e\u0915","\u0917\u0932\u093e"]}},
+    {key:"deptPsychiatry", keywords:{en:["anxiety","depression","stress","mental"], bn:["\u09a6\u09c1\u09b6\u09cd\u099a\u09bf\u09a8\u09cd\u09a4\u09be","\u09ac\u09bf\u09b7\u09a3\u09cd\u09a8\u09a4\u09be","\u09ae\u09be\u09a8\u09b8\u09bf\u0995"], hi:["\u091a\u093f\u0902\u0924\u093e","\u0905\u0935\u0938\u093e\u0926","\u0924\u0928\u093e\u0935","\u092e\u093e\u0928\u0938\u093f\u0915"]}},
+    {key:"deptGastro", keywords:{en:["stomach","digestion","acidity","gas"], bn:["\u09aa\u09c7\u099f","\u09b9\u099c\u09ae","\u0997\u09cd\u09af\u09be\u09b8"], hi:["\u092a\u0947\u091f","\u092a\u093e\u091a\u0928","\u0917\u0948\u0938"]}}
+  ];
+
+  function escapeRegex(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+
+  // Fixed: previously matched English keywords ("ear", "period", etc.) as
+  // raw substrings, so "early morning" wrongly matched ENT ("ear") and
+  // "periodontal pain" wrongly matched Gynecology ("period"). English
+  // keywords now require whole-word matches. Bangla/Hindi keywords use
+  // Unicode-aware word tokenizing instead, since \b does not work on
+  // non-Latin scripts in JavaScript regex.
+  function detectDepartment(problemRaw){
+    var problem = problemRaw.toLowerCase();
+    var tokens = problem.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+
+    function matchesWholeWord(keyword){
+      var re = new RegExp('\\b' + escapeRegex(keyword) + '\\b', 'i');
+      return re.test(problem);
+    }
+    function matchesToken(keyword){
+      for (var k = 0; k < tokens.length; k++){
+        if (tokens[k] === keyword || tokens[k].indexOf(keyword) === 0) return true;
+      }
+      return false;
+    }
+
+    for (var i = 0; i < DEPARTMENTS.length; i++){
+      var d = DEPARTMENTS[i];
+      for (var j = 0; j < d.keywords.en.length; j++){
+        if (matchesWholeWord(d.keywords.en[j])) return d.key;
+      }
+      for (var j2 = 0; j2 < d.keywords.bn.length; j2++){
+        if (matchesToken(d.keywords.bn[j2])) return d.key;
+      }
+      for (var j3 = 0; j3 < d.keywords.hi.length; j3++){
+        if (matchesToken(d.keywords.hi[j3])) return d.key;
+      }
+    }
+    return "deptGeneral";
+  }
+
+  function showGpsStatus(text, isError){
+    var box = document.getElementById("gpsStatus");
+    box.textContent = text;
+    box.className = "gps-status show" + (isError ? " error" : "");
+  }
+
+  function getLocation(){
+    var t = I18N[currentLang];
+    if(!navigator.geolocation){
+      showGpsStatus(t.alertNoGeo, true);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      function(position){
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+        document.getElementById("location").value = lat + "," + lng;
+        showGpsStatus(t.alertLocationAdded, false);
+      },
+      function(){
+        // Note: inside a cross-origin embedded iframe (e.g. Blogger's
+        // amp-iframe), browsers may block the geolocation permission
+        // prompt entirely, not just when the user taps "deny".
+        showGpsStatus(t.alertLocationDenied, true);
+      }
+    );
+  }
+
+  function findHospital(){
+    var t = I18N[currentLang];
+    var problem = document.getElementById("problem").value.trim();
+    var location = document.getElementById("location").value.trim();
+    var resultEl = document.getElementById("result");
+
+    if(problem === "" || location === ""){
+      resultEl.classList.add('show', 'error');
+      resultEl.innerHTML = "<p>" + (problem === "" ? t.alertNoProblem : t.alertNoLocation) + "</p>";
+      return;
+    }
+
+    resultEl.classList.remove('error');
+
+    var deptKey = detectDepartment(problem);
+    var deptName = t[deptKey];
+    // Always search Google Maps using the English department name, even in
+    // Bangla/Hindi mode, since this gives more consistent Maps results
+    // than mixed-script or parenthesised search text.
+    var deptNameForSearch = I18N.en[deptKey];
+
+    var mapURL = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(deptNameForSearch + " Hospital " + location);
+
+    resultEl.classList.add('show');
+    resultEl.innerHTML =
+      "<h3>" + t.resultTitle + "</h3>" +
+      "<p><b>" + t.problemLabelResult + "</b><br>" + problem + "</p>" +
+      "<p><b>" + t.deptLabelResult + "</b><br>" + deptName + "</p>" +
+      "<p><b>" + t.locationLabelResult + "</b><br>" + location + "</p>" +
+      "<p style=\"margin-top:15px;\">" + t.mapNote + "</p>" +
+      "<a href=\"" + mapURL + "\" target=\"_blank\" rel=\"noopener\" class=\"map-btn\">" + t.mapBtn + "</a>";
+  }
+
+  function setLanguage(lang){
+    currentLang = lang;
+    var t = I18N[lang];
+    document.body.className = document.body.className.replace(/lang-\w+/, '').trim();
+    document.body.classList.add('lang-' + lang);
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      if(t[key] !== undefined) el.innerHTML = t[key];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+      var key = el.getAttribute('data-i18n-ph');
+      if(t[key] !== undefined) el.placeholder = t[key];
+    });
+    document.querySelectorAll('.lang-select button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    document.getElementById('result').classList.remove('show', 'error');
+    document.getElementById('gpsStatus').classList.remove('show', 'error');
+  }
+
+  document.querySelectorAll('.lang-select button').forEach(function(btn){
+    btn.addEventListener('click', function(){ setLanguage(btn.getAttribute('data-lang')); });
+  });
+
+  document.getElementById('gpsBtn').addEventListener('click', getLocation);
+  document.getElementById('findBtn').addEventListener('click', findHospital);
+
+  setLanguage('en');
+
+})();
+</script>
+</body>
+</html>
