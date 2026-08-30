@@ -142,6 +142,13 @@
     box.style.display = "none";
   }
 
+  function trackValue(input){
+    input.dataset.val = "";
+    input.addEventListener("input", function(e){
+      e.currentTarget.dataset.val = e.currentTarget.value;
+    });
+  }
+
   function makeRow(idx){
     var row = document.createElement("div");
     row.className = "mic-row";
@@ -149,6 +156,7 @@
     input.type = "text";
     input.className = "mic-med-input";
     input.placeholder = UI[currentLang].placeholder;
+    trackValue(input);
     row.appendChild(input);
     if(idx >= 2){
       var rm = document.createElement("button");
@@ -158,6 +166,10 @@
     }
     return row;
   }
+
+  // Bind value-tracking to the two static input rows already in the HTML.
+  var staticInputs = root.querySelectorAll(".mic-med-input");
+  for(var si=0; si<staticInputs.length; si++){ trackValue(staticInputs[si]); }
 
   function initRows(){
     inputsWrap.innerHTML = "";
@@ -210,7 +222,7 @@
     var inputEls = root.querySelectorAll(".mic-med-input");
     var raw = [];
     for(var i=0;i<inputEls.length;i++){
-      var v = inputEls[i].value.trim();
+      var v = (inputEls[i].dataset.val || "").trim();
       if(v.length > 0) raw.push(v);
     }
 
