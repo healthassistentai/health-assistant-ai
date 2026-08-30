@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Lipid Profile AI Analyzer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0d6efd;
+    --primary-dark:#0b5ed7;
+    --danger:#ff3b30;
+    --warn:#ff9800;
+    --good:#2e7d32;
+    --ink:#0f2438;
+    --muted:#5b7086;
+    --line:#e3ecf3;
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --shadow:0 5px 20px rgba(0,0,0,.1);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;
+  }
+  body.lang-bn, body.lang-bn input, body.lang-bn select, body.lang-bn button{ font-family:'Noto Sans Bengali','Inter',sans-serif; }
+  body.lang-hi, body.lang-hi input, body.lang-hi select, body.lang-hi button{ font-family:'Noto Sans Devanagari','Inter',sans-serif; }
+
+  .topbar{max-width:700px;margin:12px auto 0;padding:0 25px;display:flex;justify-content:flex-end;}
+  .lang-select{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:var(--shadow);}
+  .lang-select button{border:none;background:transparent;padding:7px 12px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;}
+  .lang-select button.active{background:var(--primary);color:#fff;}
+
+  .site-header{max-width:700px;margin:14px auto 0;padding:0 25px;text-align:center;}
+  .site-header h1{font-family:'Poppins',sans-serif;font-size:24px;margin:6px 0 2px;color:var(--ink);}
+  .site-header h3.tagline{margin:0 0 10px;font-weight:600;color:var(--primary-dark);font-size:15px;}
+  .site-header .desc{font-size:13.5px;color:var(--muted);margin:2px 0;}
+  .site-header .site-url a{color:var(--primary-dark);text-decoration:none;font-weight:600;}
+
+  .adv-lipid-ai{
+    max-width:700px;margin:20px auto;background:var(--card);padding:25px;
+    border-radius:12px;box-shadow:var(--shadow);
+  }
+  .adv-lipid-ai h2{text-align:center;color:var(--primary);font-family:'Poppins',sans-serif;margin-top:0;}
+  .intro{text-align:center;color:var(--muted);margin:0 0 10px;font-size:14px;}
+  .unit-note{text-align:center;color:var(--muted);margin:0 0 15px;font-size:12.5px;}
+
+  label{font-weight:700;font-size:14px;display:block;margin-top:15px;}
+  input,select{
+    width:100%;padding:12px;margin-top:5px;border-radius:6px;
+    border:1px solid #ccc;font-size:16px;font-family:inherit;box-sizing:border-box;
+  }
+
+  button.primary{
+    margin-top:20px;width:100%;padding:14px;background:var(--primary);
+    color:#fff;font-size:18px;font-weight:700;border:none;border-radius:8px;cursor:pointer;
+  }
+  button.primary:hover{background:var(--primary-dark);}
+
+  #result{
+    margin-top:20px;padding:20px;border-radius:10px;background:#eef6ff;display:none;line-height:1.8;
+  }
+  #result.show{display:block;}
+  #result.error{background:#fdecea;}
+  #result h3{margin-top:0;font-family:'Poppins',sans-serif;}
+
+  .good{color:var(--good);font-weight:700;}
+  .warning{color:var(--warn);font-weight:700;}
+  .danger{color:var(--danger);font-weight:700;}
+
+  .rec-list{list-style:none;margin:8px 0 0;padding:0;}
+  .rec-list li{padding:4px 0;font-size:14.5px;}
+
+  .disclaimer{
+    font-size:12.5px;color:var(--muted);text-align:center;margin:20px 0 0;line-height:1.6;
+  }
+  .disclaimer strong{color:var(--danger);}
+</style>
+</head>
+<body class="lang-en">
+
+<div class="topbar">
+  <div class="lang-select" role="group" aria-label="Language selector">
+    <button class="active" data-lang="en">English</button>
+    <button data-lang="bn">বাংলা</button>
+    <button data-lang="hi">हिन्दी</button>
+  </div>
+</div>
+
+<div class="site-header">
+  <h1>HEALTH ASSISTENT AI</h1>
+  <h3 class="tagline" data-i18n="siteTag">Your Smart AI Health Companion</h3>
+  <p class="desc" data-i18n="siteDesc">AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content</p>
+  <p class="desc site-url">Website: <a href="https://www.healthassistentai.com" target="_blank" rel="noopener">https://www.healthassistentai.com</a></p>
+</div>
+
+<div class="adv-lipid-ai">
+  <h2 data-i18n="title">🫀 Advanced Lipid Profile AI Analyzer</h2>
+  <p class="intro" data-i18n="intro">Enter your lipid profile report values below to get an instant AI-based analysis.</p>
+  <p class="unit-note" data-i18n="unitNote">📏 Enter values in mg/dL only (the standard unit on most Indian and Bangladeshi lab reports). If your report shows mmol/L, ask your lab to convert it first.</p>
+
+  <label id="tcLabel" data-i18n="tc">Total Cholesterol (mg/dL)</label>
+  <input id="tc" type="number" min="0" placeholder="e.g. 190">
+
+  <label id="hdlLabel" data-i18n="hdl">HDL (Good Cholesterol)</label>
+  <input id="hdl" type="number" min="0" placeholder="e.g. 55">
+
+  <label id="ldlLabel" data-i18n="ldl">LDL (Bad Cholesterol)</label>
+  <input id="ldl" type="number" min="0" placeholder="e.g. 110">
+
+  <label id="tgLabel" data-i18n="tg">Triglycerides (mg/dL)</label>
+  <input id="tg" type="number" min="0" placeholder="e.g. 130">
+
+  <button class="primary" id="analyzeBtn" data-i18n="btn">Analyze Report</button>
+
+  <div id="result"></div>
+
+  <p class="disclaimer" data-i18n="disclaimer">⚠ Educational purpose only. <strong>This is not a medical diagnosis.</strong> Always consult a qualified doctor to interpret your lipid profile.</p>
+</div>
+
+<script>
+(function(){
+
+  var I18N = {
+    en:{
+      siteTag:"Your Smart AI Health Companion",
+      siteDesc:"AI Health Guidance \u2022 Health Tools \u2022 Report Analysis \u2022 Health Education \u2022 Health Content",
+      title:"\ud83e\udec0 Advanced Lipid Profile AI Analyzer",
+      intro:"Enter your lipid profile report values below to get an instant AI-based analysis.",
+      unitNote:"\ud83d\udccf Enter values in mg/dL only (the standard unit on most Indian and Bangladeshi lab reports). If your report shows mmol/L, ask your lab to convert it first.",
+      tc:"Total Cholesterol (mg/dL)",
+      hdl:"HDL (Good Cholesterol)",
+      ldl:"LDL (Bad Cholesterol)",
+      tg:"Triglycerides (mg/dL)",
+      btn:"Analyze Report",
+      alertEmpty:"Please enter all values.",
+      alertInvalid:"Please enter valid, positive numbers for all fields (HDL must be greater than 0).",
+      resultTitle:"\ud83d\udcca AI Analysis",
+      tcResult:"Total Cholesterol:",
+      hdlResult:"HDL:",
+      ldlResult:"LDL:",
+      tgResult:"Triglycerides:",
+      statusNormal:"Normal",
+      statusBorderline:"Borderline",
+      statusHigh:"High",
+      hdlProtective:"Protective",
+      hdlAverage:"Average",
+      hdlLow:"Low",
+      ldlOptimal:"Optimal",
+      ldlBorderline:"Borderline",
+      ldlHigh:"High",
+      nonHdlLabel:"Non-HDL Cholesterol:",
+      ratioLabel:"TC / HDL Ratio:",
+      excellentMsg:"\u2705 Excellent cardiovascular profile.",
+      improveMsg:"\u26a0 Lifestyle improvement recommended.",
+      recFried:"\u2714 Reduce fried food",
+      recExercise:"\u2714 Exercise 30 minutes daily",
+      recVeg:"\u2714 Eat vegetables & fruits",
+      recSmoke:"\u2714 Stop smoking",
+      recRepeat:"\u2714 Repeat lipid profile after 3-6 months",
+      disclaimer:"\u26a0 Educational purpose only. <strong>This is not a medical diagnosis.</strong> Always consult a qualified doctor to interpret your lipid profile."
+    },
+    bn:{
+      siteTag:"\u0986\u09aa\u09a8\u09be\u09b0 \u09b8\u09cd\u09ae\u09be\u09b0\u09cd\u099f AI \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09b8\u09b9\u09be\u09af\u09bc\u0995",
+      siteDesc:"AI \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09aa\u09b0\u09be\u09ae\u09b0\u09cd\u09b6 \u2022 \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u099f\u09c1\u09b2\u09b8 \u2022 \u09b0\u09bf\u09aa\u09cb\u09b0\u09cd\u099f \u09ac\u09bf\u09b6\u09cd\u09b2\u09c7\u09b7\u09a3 \u2022 \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09b6\u09bf\u0995\u09cd\u09b7\u09be \u2022 \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u0995\u09a8\u09cd\u099f\u09c7\u09a8\u09cd\u099f",
+      title:"\ud83e\udec0 \u0985\u09cd\u09af\u09be\u09a1\u09ad\u09be\u09a8\u09cd\u09b8\u09a1 \u09b2\u09bf\u09aa\u09bf\u09a1 \u09aa\u09cd\u09b0\u09cb\u09ab\u09be\u0987\u09b2 AI \u09ac\u09bf\u09b6\u09cd\u09b2\u09c7\u09b7\u0995",
+      intro:"\u09a8\u09bf\u099a\u09c7 \u0986\u09aa\u09a8\u09be\u09b0 \u09b2\u09bf\u09aa\u09bf\u09a1 \u09aa\u09cd\u09b0\u09cb\u09ab\u09be\u0987\u09b2 \u09b0\u09bf\u09aa\u09cb\u09b0\u09cd\u099f\u09c7\u09b0 \u09ae\u09be\u09a8 \u09b2\u09bf\u0996\u09c7 \u09b8\u09be\u09a5\u09c7 \u09b8\u09be\u09a5\u09c7 AI \u09ac\u09bf\u09b6\u09cd\u09b2\u09c7\u09b7\u09a3 \u09aa\u09be\u09a8\u0964",
+      unitNote:"\ud83d\udccf \u09b6\u09c1\u09a7\u09c1\u09ae\u09be\u09a4\u09cd\u09b0 mg/dL \u098f \u09ae\u09be\u09a8 \u09b2\u09bf\u0996\u09c1\u09a8 (\u09ac\u09c7\u09b6\u09bf\u09b0\u09ad\u09be\u0997 \u09ad\u09be\u09b0\u09a4 \u0993 \u09ac\u09be\u0982\u09b2\u09be\u09a6\u09c7\u09b6\u09c7\u09b0 \u09b2\u09cd\u09af\u09be\u09ac \u09b0\u09bf\u09aa\u09cb\u09b0\u09cd\u099f\u09c7 \u098f\u0987 \u098f\u0995\u0995\u09c7\u0987 \u09ac\u09cd\u09af\u09ac\u09b9\u09c3\u09a4 \u09b9\u09af\u09bc)\u0964 \u09af\u09a6\u09bf \u0986\u09aa\u09a8\u09be\u09b0 \u09b0\u09bf\u09aa\u09cb\u09b0\u09cd\u099f\u09c7 mmol/L \u09a5\u09be\u0995\u09c7, \u09aa\u09cd\u09b0\u09a5\u09ae\u09c7 \u09b2\u09cd\u09af\u09be\u09ac-\u0995\u09c7 \u09ac\u09b2\u09c7 \u098f\u099f\u09be \u0995\u09a8\u09ad\u09be\u09b0\u09cd\u099f \u0995\u09b0\u09bf\u09af\u09bc\u09c7 \u09a8\u09bf\u09a8\u0964",
+      tc:"\u09ae\u09cb\u099f \u0995\u09cb\u09b2\u09c7\u09b8\u09cd\u099f\u09c7\u09b0\u09b2 (mg/dL)",
+      hdl:"HDL (\u09ad\u09be\u09b2\u09cb \u0995\u09cb\u09b2\u09c7\u09b8\u09cd\u099f\u09c7\u09b0\u09b2)",
+      ldl:"LDL (\u0996\u09be\u09b0\u09be\u09aa \u0995\u09cb\u09b2\u09c7\u09b8\u09cd\u099f\u09c7\u09b0\u09b2)",
+      tg:"\u099f\u09cd\u09b0\u09be\u0987\u0997\u09cd\u09b2\u09bf\u09b8\u09be\u09b0\u09be\u0987\u09a1 (mg/dL)",
+      btn:"\u09b0\u09bf\u09aa\u09cb\u09b0\u09cd\u099f \u09ac\u09bf\u09b6\u09cd\u09b2\u09c7\u09b7\u09a3 \u0995\u09b0\u09c1\u09a8",
+      alertEmpty:"\u0985\u09a8\u09c1\u0997\u09cd\u09b0\u09b9 \u0995\u09b0\u09c7 \u09b8\u09ac \u09ae\u09be\u09a8 \u09b2\u09bf\u0996\u09c1\u09a8\u0964",
+      alertInvalid:"\u0985\u09a8\u09c1\u0997\u09cd\u09b0\u09b9 \u0995\u09b0\u09c7 \u09b8\u09ac \u0998\u09b0\u09c7 \u09b8\u09a0\u09bf\u0995, \u09aa\u099c\u09bf\u099f\u09bf\u09ad \u09b8\u0982\u0996\u09cd\u09af\u09be \u09b2\u09bf\u0996\u09c1\u09a8 (HDL \u09b6\u09c2\u09a8\u09cd\u09af\u09c7\u09b0 \u099a\u09c7\u09af\u09bc\u09c7 \u09ac\u09c7\u09b6\u09bf \u09b9\u09a4\u09c7 \u09b9\u09ac\u09c7)\u0964",
+      resultTitle:"\ud83d\udcca AI \u09ac\u09bf\u09b6\u09cd\u09b2\u09c7\u09b7\u09a3",
+      tcResult:"\u09ae\u09cb\u099f \u0995\u09cb\u09b2\u09c7\u09b8\u09cd\u099f\u09c7\u09b0\u09b2:",
+      hdlResult:"HDL:",
+      ldlResult:"LDL:",
+      tgResult:"\u099f\u09cd\u09b0\u09be\u0987\u0997\u09cd\u09b2\u09bf\u09b8\u09be\u09b0\u09be\u0987\u09a1:",
+      statusNormal:"\u09b8\u09cd\u09ac\u09be\u09ad\u09be\u09ac\u09bf\u0995",
+      statusBorderline:"\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be \u09b8\u09c0\u09ae\u09be",
+      statusHigh:"\u0989\u099a\u09cd\u099a",
+      hdlProtective:"\u09b8\u09c1\u09b0\u0995\u09cd\u09b7\u09be\u09ae\u09c2\u09b2\u0995",
+      hdlAverage:"\u09ae\u09be\u099d\u09be\u09b0\u09bf",
+      hdlLow:"\u0995\u09ae",
+      ldlOptimal:"\u0989\u09a4\u09cd\u09a4\u09ae",
+      ldlBorderline:"\u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be \u09b8\u09c0\u09ae\u09be",
+      ldlHigh:"\u0989\u099a\u09cd\u099a",
+      nonHdlLabel:"\u09a8\u09a8-HDL \u0995\u09cb\u09b2\u09c7\u09b8\u09cd\u099f\u09c7\u09b0\u09b2:",
+      ratioLabel:"TC / HDL \u0985\u09a8\u09c1\u09aa\u09be\u09a4:",
+      excellentMsg:"\u2705 \u099a\u09ae\u09ce\u0995\u09be\u09b0 \u09b9\u09c3\u09a6\u09af\u09a8\u09cd\u09a4\u09cd\u09b0\u09c7\u09b0 \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09aa\u09cd\u09b0\u09cb\u09ab\u09be\u0987\u09b2\u0964",
+      improveMsg:"\u26a0 \u099c\u09c0\u09ac\u09a8\u09af\u09be\u09a4\u09cd\u09b0\u09be\u09af\u09bc \u09aa\u09b0\u09bf\u09ac\u09b0\u09cd\u09a4\u09a8 \u0986\u09a8\u09be\u09b0 \u09aa\u09b0\u09be\u09ae\u09b0\u09cd\u09b6 \u09a6\u09c7\u0993\u09af\u09bc\u09be \u09b9\u099a\u09cd\u099b\u09c7\u0964",
+      recFried:"\u2714 \u09ad\u09be\u099c\u09be\u09aa\u09cb\u09a1\u09bc\u09be \u0996\u09be\u09ac\u09be\u09b0 \u0995\u09ae\u09be\u09a8",
+      recExercise:"\u2714 \u09aa\u09cd\u09b0\u09a4\u09bf\u09a6\u09bf\u09a8 \u09e9\u09e6 \u09ae\u09bf\u09a8\u09bf\u099f \u09ac\u09cd\u09af\u09be\u09af\u09bc\u09be\u09ae \u0995\u09b0\u09c1\u09a8",
+      recVeg:"\u2714 \u09b6\u09be\u0995\u09b8\u09ac\u099c\u09bf \u0993 \u09ab\u09b2 \u0996\u09be\u09a8",
+      recSmoke:"\u2714 \u09a7\u09c2\u09ae\u09aa\u09be\u09a8 \u09ac\u09a8\u09cd\u09a7 \u0995\u09b0\u09c1\u09a8",
+      recRepeat:"\u2714 \u09e9-\u09ec \u09ae\u09be\u09b8 \u09aa\u09b0 \u0986\u09ac\u09be\u09b0 \u09b2\u09bf\u09aa\u09bf\u09a1 \u09aa\u09cd\u09b0\u09cb\u09ab\u09be\u0987\u09b2 \u0995\u09b0\u09be\u09a8",
+      disclaimer:"\u26a0 \u09b6\u09c1\u09a7\u09c1\u09ae\u09be\u09a4\u09cd\u09b0 \u09b6\u09bf\u0995\u09cd\u09b7\u09be\u09ae\u09c2\u09b2\u0995 \u0989\u09a6\u09cd\u09a6\u09c7\u09b6\u09cd\u09af\u09c7\u0964 <strong>\u098f\u099f\u09bf \u0995\u09cb\u09a8\u09cb \u099a\u09bf\u0995\u09bf\u09ce\u09b8\u09be \u09a8\u09bf\u09b0\u09cd\u09a3\u09af\u09bc \u09a8\u09af\u09bc\u0964</strong> \u0986\u09aa\u09a8\u09be\u09b0 \u09b2\u09bf\u09aa\u09bf\u09a1 \u09aa\u09cd\u09b0\u09cb\u09ab\u09be\u0987\u09b2 \u09ac\u09c1\u099d\u09a4\u09c7 \u09b8\u09ac\u09b8\u09ae\u09af\u09bc \u098f\u0995\u099c\u09a8 \u09af\u09cb\u0997\u09cd\u09af \u09a1\u09be\u0995\u09cd\u09a4\u09be\u09b0\u09c7\u09b0 \u09aa\u09b0\u09be\u09ae\u09b0\u09cd\u09b6 \u09a8\u09bf\u09a8\u0964"
+    },
+    hi:{
+      siteTag:"\u0906\u092a\u0915\u093e \u0938\u094d\u092e\u093e\u0930\u094d\u091f AI \u0939\u0947\u0932\u094d\u0925 \u0938\u093e\u0925\u0940",
+      siteDesc:"AI \u0939\u0947\u0932\u094d\u0925 \u092e\u093e\u0930\u094d\u0917\u0926\u0930\u094d\u0936\u0928 \u2022 \u0939\u0947\u0932\u094d\u0925 \u091f\u0942\u0932\u094d\u0938 \u2022 \u0930\u093f\u092a\u094b\u0930\u094d\u091f \u0935\u093f\u0936\u094d\u0932\u0947\u0937\u0923 \u2022 \u0939\u0947\u0932\u094d\u0925 \u0936\u093f\u0915\u094d\u0937\u093e \u2022 \u0939\u0947\u0932\u094d\u0925 \u0915\u0902\u091f\u0947\u0902\u091f",
+      title:"\ud83e\udec0 \u090f\u0921\u0935\u093e\u0902\u0938\u094d\u0921 \u0932\u093f\u092a\u093f\u0921 \u092a\u094d\u0930\u094b\u092b\u093e\u0907\u0932 AI \u0935\u093f\u0936\u094d\u0932\u0947\u0937\u0915",
+      intro:"\u0928\u0940\u091a\u0947 \u0905\u092a\u0928\u0940 \u0932\u093f\u092a\u093f\u0921 \u092a\u094d\u0930\u094b\u092b\u093e\u0907\u0932 \u0930\u093f\u092a\u094b\u0930\u094d\u091f \u0915\u0947 \u092e\u093e\u0928 \u0926\u0930\u094d\u091c \u0915\u0930\u0947\u0902 \u0914\u0930 \u0924\u0941\u0930\u0902\u0924 AI \u0935\u093f\u0936\u094d\u0932\u0947\u0937\u0923 \u092a\u093e\u090f\u0902\u0964",
+      unitNote:"\ud83d\udccf \u0915\u0947\u0935\u0932 mg/dL \u092e\u0947\u0902 \u092e\u093e\u0928 \u0926\u0930\u094d\u091c \u0915\u0930\u0947\u0902 (\u091c\u094d\u092f\u093e\u0926\u093e\u0924\u0930 \u092d\u093e\u0930\u0924\u0940\u092f \u0914\u0930 \u092c\u093e\u0902\u0917\u094d\u0932\u093e\u0926\u0947\u0936\u0940 \u0932\u0948\u092c \u0930\u093f\u092a\u094b\u0930\u094d\u091f \u092e\u0947\u0902 \u092f\u0939\u0940 \u0907\u0915\u093e\u0908 \u0907\u0938\u094d\u0924\u0947\u092e\u093e\u0932 \u0939\u094b\u0924\u0940 \u0939\u0948)\u0964 \u0905\u0917\u0930 \u0906\u092a\u0915\u0940 \u0930\u093f\u092a\u094b\u0930\u094d\u091f \u092e\u0947\u0902 mmol/L \u0939\u0948, \u0924\u094b \u092a\u0939\u0932\u0947 \u0932\u0948\u092c \u0938\u0947 \u0907\u0938\u0947 \u0915\u0928\u094d\u0935\u0930\u094d\u091f \u0915\u0930\u0935\u093e\u090f\u0902\u0964",
+      tc:"\u0915\u0941\u0932 \u0915\u094b\u0932\u0947\u0938\u094d\u091f\u094d\u0930\u0949\u0932 (mg/dL)",
+      hdl:"HDL (\u0905\u091a\u094d\u091b\u093e \u0915\u094b\u0932\u0947\u0938\u094d\u091f\u094d\u0930\u0949\u0932)",
+      ldl:"LDL (\u0916\u0930\u093e\u092c \u0915\u094b\u0932\u0947\u0938\u094d\u091f\u094d\u0930\u0949\u0932)",
+      tg:"\u091f\u094d\u0930\u093e\u0907\u0917\u094d\u0932\u093f\u0938\u0930\u093e\u0907\u0921 (mg/dL)",
+      btn:"\u0930\u093f\u092a\u094b\u0930\u094d\u091f \u091c\u093e\u0902\u091a\u0947\u0902",
+      alertEmpty:"\u0915\u0943\u092a\u092f\u093e \u0938\u092d\u0940 \u092e\u093e\u0928 \u0926\u0930\u094d\u091c \u0915\u0930\u0947\u0902\u0964",
+      alertInvalid:"\u0915\u0943\u092a\u092f\u093e \u0938\u092d\u0940 \u0916\u093e\u0928\u094b\u0902 \u092e\u0947\u0902 \u0938\u0939\u0940, \u0927\u0928\u093e\u0924\u094d\u092e\u0915 \u0938\u0902\u0916\u094d\u092f\u093e\u090f\u0902 \u0926\u0930\u094d\u091c \u0915\u0930\u0947\u0902 (HDL \u0936\u0942\u0928\u094d\u092f \u0938\u0947 \u0905\u0927\u093f\u0915 \u0939\u094b\u0928\u093e \u091a\u093e\u0939\u093f\u090f)\u0964",
+      resultTitle:"\ud83d\udcca AI \u0935\u093f\u0936\u094d\u0932\u0947\u0937\u0923",
+      tcResult:"\u0915\u0941\u0932 \u0915\u094b\u0932\u0947\u0938\u094d\u091f\u094d\u0930\u0949\u0932:",
+      hdlResult:"HDL:",
+      ldlResult:"LDL:",
+      tgResult:"\u091f\u094d\u0930\u093e\u0907\u0917\u094d\u0932\u093f\u0938\u0930\u093e\u0907\u0921:",
+      statusNormal:"\u0938\u093e\u092e\u093e\u0928\u094d\u092f",
+      statusBorderline:"\u0938\u0940\u092e\u093e\u0935\u0930\u094d\u0924\u0940",
+      statusHigh:"\u0909\u091a\u094d\u091a",
+      hdlProtective:"\u0938\u0941\u0930\u0915\u094d\u0937\u093e\u0924\u094d\u092e\u0915",
+      hdlAverage:"\u0914\u0938\u0924",
+      hdlLow:"\u0915\u092e",
+      ldlOptimal:"\u0906\u0926\u0930\u094d\u0936",
+      ldlBorderline:"\u0938\u0940\u092e\u093e\u0935\u0930\u094d\u0924\u0940",
+      ldlHigh:"\u0909\u091a\u094d\u091a",
+      nonHdlLabel:"\u0928\u0949\u0928-HDL \u0915\u094b\u0932\u0947\u0938\u094d\u091f\u094d\u0930\u0949\u0932:",
+      ratioLabel:"TC / HDL \u0905\u0928\u0941\u092a\u093e\u0924:",
+      excellentMsg:"\u2705 \u0909\u0924\u094d\u0915\u0943\u0937\u094d\u091f \u0939\u0943\u0926\u092f \u0938\u094d\u0935\u093e\u0938\u094d\u0925\u094d\u092f \u092a\u094d\u0930\u094b\u092b\u093e\u0907\u0932\u0964",
+      improveMsg:"\u26a0 \u091c\u0940\u0935\u0928\u0936\u0948\u0932\u0940 \u092e\u0947\u0902 \u0938\u0941\u0927\u093e\u0930 \u0915\u0940 \u0938\u0932\u093e\u0939 \u0926\u0940 \u091c\u093e\u0924\u0940 \u0939\u0948\u0964",
+      recFried:"\u2714 \u0924\u0932\u093e-\u092d\u0941\u0928\u093e \u0916\u093e\u0928\u093e \u0915\u092e \u0915\u0930\u0947\u0902",
+      recExercise:"\u2714 \u0930\u094b\u091c\u093c 30 \u092e\u093f\u0928\u091f \u0935\u094d\u092f\u093e\u092f\u093e\u092e \u0915\u0930\u0947\u0902",
+      recVeg:"\u2714 \u0938\u092c\u094d\u091c\u093c\u093f\u092f\u093e\u0902 \u0914\u0930 \u092b\u0932 \u0916\u093e\u090f\u0902",
+      recSmoke:"\u2714 \u0927\u0942\u092e\u094d\u0930\u092a\u093e\u0928 \u092c\u0902\u0926 \u0915\u0930\u0947\u0902",
+      recRepeat:"\u2714 3-6 \u092e\u0939\u0940\u0928\u0947 \u092c\u093e\u0926 \u0926\u094b\u092c\u093e\u0930\u093e \u0932\u093f\u092a\u093f\u0921 \u092a\u094d\u0930\u094b\u092b\u093e\u0907\u0932 \u0915\u0930\u093e\u090f\u0902",
+      disclaimer:"\u26a0 \u0915\u0947\u0935\u0932 \u0936\u0948\u0915\u094d\u0937\u093f\u0915 \u0909\u0926\u094d\u0926\u0947\u0936\u094d\u092f \u0915\u0947 \u0932\u093f\u090f\u0964 <strong>\u092f\u0939 \u0915\u094b\u0908 \u091a\u093f\u0915\u093f\u0924\u094d\u0938\u093e \u0928\u093f\u0926\u093e\u0928 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964</strong> \u0905\u092a\u0928\u0940 \u0932\u093f\u092a\u093f\u0921 \u092a\u094d\u0930\u094b\u092b\u093e\u0907\u0932 \u0938\u092e\u091d\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0939\u092e\u0947\u0936\u093e \u0915\u093f\u0938\u0940 \u092f\u094b\u0917\u094d\u092f \u0921\u0949\u0915\u094d\u091f\u0930 \u0938\u0947 \u0938\u0932\u093e\u0939 \u0932\u0947\u0902\u0964"
+    }
+  };
+
+  var currentLang = 'en';
+
+  function status(t, v, goodMax, borderMax){
+    if(v < goodMax) return "<span class='good'>" + t.statusNormal + "</span>";
+    if(v < borderMax) return "<span class='warning'>" + t.statusBorderline + "</span>";
+    return "<span class='danger'>" + t.statusHigh + "</span>";
+  }
+
+  function showError(message){
+    var resultEl = document.getElementById("result");
+    resultEl.classList.add('show', 'error');
+    resultEl.innerHTML = "<p>" + message + "</p>";
+  }
+
+  function analyze(){
+    var t = I18N[currentLang];
+    var tc = parseFloat(document.getElementById("tc").value);
+    var hdl = parseFloat(document.getElementById("hdl").value);
+    var ldl = parseFloat(document.getElementById("ldl").value);
+    var tg = parseFloat(document.getElementById("tg").value);
+
+    if(isNaN(tc) || isNaN(hdl) || isNaN(ldl) || isNaN(tg)){
+      showError(t.alertEmpty);
+      return;
+    }
+    // Reject negative/zero values: HDL of 0 would make the TC/HDL ratio
+    // divide by zero (showing "Infinity"), and negative lab values are
+    // never physically valid.
+    if(tc <= 0 || hdl <= 0 || ldl < 0 || tg < 0){
+      showError(t.alertInvalid);
+      return;
+    }
+
+    var result = "";
+    result += "<h3>" + t.resultTitle + "</h3>";
+
+    result += "<b>" + t.tcResult + "</b> " + tc + " mg/dL - " + status(t, tc, 200, 240) + "<br>";
+
+    result += "<b>" + t.hdlResult + "</b> " + hdl + " mg/dL - ";
+    if(hdl >= 60) result += "<span class='good'>" + t.hdlProtective + "</span>";
+    else if(hdl >= 40) result += "<span class='warning'>" + t.hdlAverage + "</span>";
+    else result += "<span class='danger'>" + t.hdlLow + "</span>";
+    result += "<br>";
+
+    result += "<b>" + t.ldlResult + "</b> " + ldl + " mg/dL - ";
+    if(ldl < 100) result += "<span class='good'>" + t.ldlOptimal + "</span>";
+    else if(ldl < 160) result += "<span class='warning'>" + t.ldlBorderline + "</span>";
+    else result += "<span class='danger'>" + t.ldlHigh + "</span>";
+    result += "<br>";
+
+    result += "<b>" + t.tgResult + "</b> " + tg + " mg/dL - " + status(t, tg, 150, 200) + "<br>";
+
+    var nonhdl = tc - hdl;
+    result += "<hr>";
+    result += "<b>" + t.nonHdlLabel + "</b> " + nonhdl.toFixed(1) + " mg/dL<br>";
+
+    var ratio = (tc / hdl).toFixed(2);
+    result += "<b>" + t.ratioLabel + "</b> " + ratio + "<br>";
+    result += "<hr>";
+
+    if(ldl < 100 && hdl >= 60 && tg < 150){
+      result += "<span class='good'>" + t.excellentMsg + "</span>";
+    } else {
+      // Uses "warning" (amber) rather than "danger" (red) styling here:
+      // this branch fires for any borderline value, not only clearly high
+      // ones, so red/danger styling would overstate the concern for
+      // someone who is only mildly outside the "excellent" cutoffs.
+      result += "<span class='warning'>" + t.improveMsg + "</span>";
+      result += "<ul class='rec-list'>" +
+        "<li>" + t.recFried + "</li>" +
+        "<li>" + t.recExercise + "</li>" +
+        "<li>" + t.recVeg + "</li>" +
+        "<li>" + t.recSmoke + "</li>" +
+        "<li>" + t.recRepeat + "</li>" +
+      "</ul>";
+    }
+
+    var resultEl = document.getElementById("result");
+    resultEl.classList.remove('error');
+    resultEl.classList.add('show');
+    resultEl.innerHTML = result;
+  }
+
+  function setLanguage(lang){
+    currentLang = lang;
+    var t = I18N[lang];
+    document.body.className = document.body.className.replace(/lang-\w+/, '').trim();
+    document.body.classList.add('lang-' + lang);
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      if(t[key] !== undefined) el.innerHTML = t[key];
+    });
+    document.querySelectorAll('.lang-select button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    document.getElementById('result').classList.remove('show', 'error');
+  }
+
+  document.querySelectorAll('.lang-select button').forEach(function(btn){
+    btn.addEventListener('click', function(){ setLanguage(btn.getAttribute('data-lang')); });
+  });
+
+  document.getElementById('analyzeBtn').addEventListener('click', analyze);
+
+  setLanguage('en');
+
+})();
+</script>
+</body>
+</html>
