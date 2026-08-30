@@ -13,6 +13,7 @@
       unrecognizedDetail:"We could not match this to our reference list. Please check the spelling or ask your pharmacist directly.",
       footer:"Reference data covers common, well-documented drug-class interactions only and is not exhaustive. Individual risk depends on dose, health conditions, and other medicines. For emergencies, contact a doctor or emergency services immediately.",
       minInput:"Please enter at least 2 medicine names.",
+      duplicateClass:"These medicines belong to the same drug class. Taking similar medicines together may increase the risk of side effects or unintentional double-dosing. Confirm with a pharmacist or doctor.",
       severity:{major:"Major", moderate:"Moderate", minor:"Minor", none:"No data"}
     },
     bn:{
@@ -28,6 +29,7 @@
       unrecognizedDetail:"এই নামটি আমাদের তালিকার সাথে মেলানো যায়নি। বানান পরীক্ষা করুন অথবা সরাসরি ফার্মাসিস্টকে জিজ্ঞাসা করুন।",
       footer:"রেফারেন্স ডেটাতে শুধুমাত্র সাধারণ ও সুপ্রতিষ্ঠিত ওষুধ-শ্রেণির ইন্টারঅ্যাকশন রয়েছে, এটি সম্পূর্ণ নয়। ব্যক্তিভেদে ঝুঁকি মাত্রা, শারীরিক অবস্থা ও অন্যান্য ওষুধের উপর নির্ভর করে। জরুরি অবস্থায় দ্রুত ডাক্তার বা জরুরি সেবায় যোগাযোগ করুন।",
       minInput:"অনুগ্রহ করে অন্তত ২টি ওষুধের নাম লিখুন।",
+      duplicateClass:"এই ওষুধগুলো একই শ্রেণির। একই শ্রেণির ওষুধ একসাথে খেলে পার্শ্বপ্রতিক্রিয়া বা অনিচ্ছাকৃত দ্বিগুণ ডোজের ঝুঁকি বাড়তে পারে। ফার্মাসিস্ট বা ডাক্তারের সাথে নিশ্চিত করুন।",
       severity:{major:"গুরুতর", moderate:"মাঝারি", minor:"সামান্য", none:"তথ্য নেই"}
     },
     hi:{
@@ -43,6 +45,7 @@
       unrecognizedDetail:"यह नाम हमारी सूची से मेल नहीं खाया। कृपया स्पेलिंग जांचें या सीधे फार्मासिस्ट से पूछें।",
       footer:"संदर्भ डेटा में केवल सामान्य, सुस्थापित दवा-वर्ग इंटरैक्शन शामिल हैं, यह पूर्ण नहीं है। व्यक्तिगत जोखिम खुराक, स्वास्थ्य स्थिति और अन्य दवाओं पर निर्भर करता है। आपातकाल में तुरंत डॉक्टर या इमरजेंसी सेवा से संपर्क करें।",
       minInput:"कृपया कम से कम 2 दवाओं के नाम दर्ज करें।",
+      duplicateClass:"ये दवाएं एक ही श्रेणी की हैं। एक जैसी दवाएं साथ लेने से साइड इफेक्ट या अनजाने में डबल-डोज़ का खतरा बढ़ सकता है। कृपया फार्मासिस्ट या डॉक्टर से पुष्टि करें।",
       severity:{major:"गंभीर", moderate:"मध्यम", minor:"मामूली", none:"डेटा नहीं"}
     }
   };
@@ -172,15 +175,8 @@
   var staticInputs = root.querySelectorAll(".mic-med-input");
   for(var si=0; si<staticInputs.length; si++){ trackValue(staticInputs[si]); }
 
-  function initRows(){
-    inputsWrap.innerHTML = "";
-    inputsWrap.appendChild(makeRow(0));
-    inputsWrap.appendChild(makeRow(1));
-  }
-  // Note: initial two rows are now static HTML (see markup) since JS-created
-  // elements added during the very first synchronous script pass don't
-  // reliably render inside amp-script. initRows() is kept only for reference
-  // and is not called on load.
+  // Note: the initial two input rows are static HTML in the page markup
+  // (JS-created rows are only added when the user clicks "Add another medicine").
 
   document.getElementById("mic-add").addEventListener("click", function(){
     var count = inputsWrap.querySelectorAll(".mic-row").length;
@@ -251,9 +247,22 @@
     for(var a=0; a<known.length; a++){
       for(var b=a+1; b<known.length; b++){
         var A = known[a], B = known[b];
+        var card = document.createElement("div");
+
+        if(A.cls === B.cls){
+          // Same drug class (e.g. two NSAIDs, two statins) - flag as duplicate therapy
+          // instead of silently skipping the pair.
+          card.className = "mic-pair-card moderate";
+          card.innerHTML =
+            '<div class="mic-pair-head"><div class="mic-pair-names">'+escapeHtml(A.name)+' + '+escapeHtml(B.name)+'</div>' +
+            '<span class="mic-badge mic-badge-moderate">'+t.severity.moderate+'</span></div>' +
+            '<div class="mic-pair-text">'+t.duplicateClass+'</div>';
+          resultList.appendChild(card);
+          continue;
+        }
+
         var key = pairKey(A.cls, B.cls);
         var match = PAIR_MAP[key];
-        var card = document.createElement("div");
         if(match){
           card.className = "mic-pair-card " + match.severity;
           var effText = match.effects.map(function(k){ return EFF[k][currentLang]; }).join(" ");
@@ -262,7 +271,6 @@
             '<span class="mic-badge mic-badge-'+match.severity+'">'+t.severity[match.severity]+'</span></div>' +
             '<div class="mic-pair-text">'+effText+'</div>';
         } else {
-          if(A.cls === B.cls) continue;
           card.className = "mic-pair-card none";
           card.innerHTML =
             '<div class="mic-pair-head"><div class="mic-pair-names">'+escapeHtml(A.name)+' + '+escapeHtml(B.name)+'</div>' +
