@@ -142,10 +142,11 @@
     box.style.display = "none";
   }
 
+  var valueMap = new Map();
   function trackValue(input){
-    input.dataset.val = "";
+    valueMap.set(input, "");
     input.addEventListener("input", function(e){
-      e.currentTarget.dataset.val = e.currentTarget.value;
+      valueMap.set(e.currentTarget, e.currentTarget.value);
     });
   }
 
@@ -222,7 +223,7 @@
     var inputEls = root.querySelectorAll(".mic-med-input");
     var raw = [];
     for(var i=0;i<inputEls.length;i++){
-      var v = (inputEls[i].dataset.val || "").trim();
+      var v = (valueMap.get(inputEls[i]) || "").trim();
       if(v.length > 0) raw.push(v);
     }
 
