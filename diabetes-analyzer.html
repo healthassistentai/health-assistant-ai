@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Advanced Diabetes AI Analyzer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:#fffafa; }
+  #dia-root, #dia-root * { box-sizing: border-box; }
+  #dia-root {
+    --dia-red-900:#5c1414;
+    --dia-red-700:#b71c1c;
+    --dia-red-500:#d32f2f;
+    --dia-blush-100:#fdecec;
+    --dia-bg:#fffafa;
+    --dia-card:#ffffff;
+    --dia-ink:#3a1a1a;
+    --dia-muted:#8a6060;
+    --dia-amber:#b8611b;
+    --dia-amber-bg:#fdf1e4;
+    --dia-green:#1f8f42;
+    --dia-green-bg:#e9f8ee;
+    --dia-red:#c0392b;
+    font-family: "Noto Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    max-width: 640px;
+    margin: 12px auto;
+  }
+  #dia-root.lang-bn { font-family: "Noto Sans Bengali", "Noto Sans", sans-serif; }
+  #dia-root.lang-hi { font-family: "Noto Sans Devanagari", "Noto Sans", sans-serif; }
+  #dia-root .dia-card, #dia-root label, #dia-root button,
+  #dia-root .dia-result, #dia-root .dia-disclaimer, #dia-root .dia-brand {
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+  #dia-root.lang-bn *, #dia-root.lang-hi * { line-height: 1.7; }
+
+  .dia-card {
+    background: var(--dia-card);
+    border: 1px solid #f6d9d9;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(211,47,47,0.10);
+    overflow: hidden;
+  }
+  .dia-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, var(--dia-red-500), var(--dia-red-900));
+    color: #fff;
+  }
+  .dia-header-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .dia-avatar {
+    width: 42px; height: 42px; flex: 0 0 42px; font-size: 20px;
+    background: rgba(255,255,255,0.18); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dia-title { font-size: 17px; font-weight: 700; }
+  .dia-subtitle { font-size: 12px; opacity: .9; margin-top: 2px; }
+  .dia-lang-switch { display: flex; gap: 4px; flex: 0 0 auto; }
+  .dia-lang-btn {
+    font-size: 11px; font-weight: 600; padding: 6px 9px;
+    border-radius: 999px; border: 1px solid rgba(255,255,255,.4);
+    background: transparent; color: #fff0f0; cursor: pointer;
+  }
+  .dia-lang-btn.is-active { background: #fff; color: var(--dia-red-900); }
+
+  .dia-disclaimer {
+    font-size: 12px; line-height: 1.5;
+    background: var(--dia-amber-bg); color: var(--dia-amber);
+    padding: 10px 20px; border-bottom: 1px solid #f3ddc2;
+  }
+
+  .dia-optional-note {
+    font-size: 11.5px; line-height: 1.5; color: var(--dia-muted);
+    padding: 10px 20px 0; background: var(--dia-bg);
+  }
+
+  .dia-form { padding: 20px; background: var(--dia-bg); }
+  .dia-field { margin-bottom: 14px; }
+  .dia-field label { display: block; font-size: 13px; font-weight: 600; color: var(--dia-red-900); margin-bottom: 6px; }
+  .dia-field input {
+    width: 100%; padding: 11px 12px; font-size: 14px;
+    border: 1px solid #f3d9d9; border-radius: 10px; outline: none;
+    background: #fff; color: var(--dia-ink);
+  }
+  .dia-field input:focus {
+    border-color: var(--dia-red-500); box-shadow: 0 0 0 3px rgba(211,47,47,.15);
+  }
+  .dia-analyze-btn {
+    width: 100%; padding: 13px; font-size: 14.5px; font-weight: 700;
+    background: var(--dia-red-500); color: #fff; border: none; border-radius: 10px; cursor: pointer;
+    transition: background .2s ease;
+  }
+  .dia-analyze-btn:hover { background: var(--dia-red-700); }
+
+  .dia-result { margin: 0 20px 20px; padding: 18px; border-radius: 12px; font-size: 13.5px; line-height: 1.6; }
+  .dia-result.normal { background: var(--dia-green-bg); color: var(--dia-green); border: 1px solid #c9ecd6; }
+  .dia-result.pre { background: var(--dia-amber-bg); color: var(--dia-amber); border: 1px solid #f3ddc2; }
+  .dia-result.high { background: var(--dia-blush-100); color: var(--dia-red); border: 1px solid #f4cac5; }
+  .dia-result h3 { margin: 0 0 12px; font-size: 15.5px; }
+  .dia-result-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
+  .dia-result-table td { padding: 6px 4px; font-size: 13px; border-bottom: 1px solid rgba(0,0,0,.06); }
+  .dia-result-table td:first-child { font-weight: 700; width: 40%; }
+  .dia-result-table td:last-child { text-align: right; font-weight: 600; }
+  .dia-result hr { border: none; border-top: 1px solid rgba(0,0,0,.08); margin: 10px 0; }
+  .dia-result .dia-advice-title { font-weight: 700; margin-bottom: 4px; }
+  .dia-result .dia-overall-note { margin-top: 10px; font-size: 12px; opacity: .85; }
+
+  .dia-brand {
+    text-align: center; padding: 18px 20px 22px;
+    border-top: 1px solid #f6d9d9; background: #fff;
+  }
+  .dia-brand-name { font-size: 13px; font-weight: 800; letter-spacing: .06em; color: var(--dia-red-900); }
+  .dia-brand-tag { font-size: 12px; color: var(--dia-red-700); font-weight: 600; margin-top: 2px; }
+  .dia-brand-services { font-size: 11px; color: var(--dia-muted); margin-top: 6px; }
+  .dia-brand-site { font-size: 11.5px; margin-top: 8px; }
+  .dia-brand-site a { color: var(--dia-red-700); text-decoration: none; font-weight: 600; }
+  .dia-brand-site a:hover { text-decoration: underline; }
+
+  @media (max-width: 500px) {
+    #dia-root { margin: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="dia-root">
+  <div class="dia-card">
+
+    <!-- Header -->
+    <div class="dia-header">
+      <div class="dia-header-left">
+        <div class="dia-avatar">🩸</div>
+        <div>
+          <div class="dia-title" data-i18n="title">Advanced Diabetes AI Analyzer</div>
+          <div class="dia-subtitle" data-i18n="subtitle">Check your FBS, 2-hr post-meal sugar and HbA1c against standard ranges</div>
+        </div>
+      </div>
+      <div class="dia-lang-switch">
+        <button class="dia-lang-btn is-active" data-lang="en">EN</button>
+        <button class="dia-lang-btn" data-lang="bn">বাংলা</button>
+        <button class="dia-lang-btn" data-lang="hi">हिंदी</button>
+      </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="dia-disclaimer" data-i18n="disclaimer">⚠ This tool compares your numbers to common lab reference ranges for general awareness only. It is NOT a diagnosis. Only a doctor can confirm diabetes or prediabetes using proper testing and your full medical history.</div>
+    <div class="dia-optional-note" data-i18n="optionalNote">You can fill in one, two, or all three fields below — leave any test blank if you don't have that result.</div>
+
+    <!-- Form -->
+    <div class="dia-form">
+      <div class="dia-field">
+        <label data-i18n="fbsLabel">Fasting Blood Sugar (mg/dL)</label>
+        <input id="dia-fbs" type="number" min="0" data-i18n-ph="fbsPh" placeholder="Example: 95" />
+      </div>
+      <div class="dia-field">
+        <label data-i18n="rbsLabel">2-Hour Post-Meal Blood Sugar (mg/dL)</label>
+        <input id="dia-rbs" type="number" min="0" data-i18n-ph="rbsPh" placeholder="Example: 140" />
+      </div>
+      <div class="dia-field">
+        <label data-i18n="hba1cLabel">HbA1c (%)</label>
+        <input id="dia-hba1c" type="number" step="0.1" min="0" data-i18n-ph="hba1cPh" placeholder="Example: 5.6" />
+      </div>
+      <button id="dia-analyze" class="dia-analyze-btn" data-i18n="btn">Analyze Report</button>
+    </div>
+
+    <!-- Result -->
+    <div id="dia-result" class="dia-result" style="display:none;"></div>
+
+    <!-- Footer / brand -->
+    <div class="dia-brand">
+      <div class="dia-brand-name">HEALTH ASSISTENT AI</div>
+      <div class="dia-brand-tag" data-i18n="brandTag">Your Smart AI Health Companion</div>
+      <div class="dia-brand-services" data-i18n="brandServices">AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content</div>
+      <div class="dia-brand-site">Website: <a href="https://www.healthassistentai.com" target="_blank" rel="noopener">healthassistentai.com</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var STRINGS = {
+    en: {
+      title: "Advanced Diabetes AI Analyzer",
+      subtitle: "Check your FBS, 2-hr post-meal sugar and HbA1c against standard ranges",
+      disclaimer: "⚠ This tool compares your numbers to common lab reference ranges for general awareness only. It is NOT a diagnosis. Only a doctor can confirm diabetes or prediabetes using proper testing and your full medical history.",
+      optionalNote: "You can fill in one, two, or all three fields below — leave any test blank if you don't have that result.",
+      fbsLabel: "Fasting Blood Sugar (mg/dL)", fbsPh: "Example: 95",
+      rbsLabel: "2-Hour Post-Meal Blood Sugar (mg/dL)", rbsPh: "Example: 140",
+      hba1cLabel: "HbA1c (%)", hba1cPh: "Example: 5.6",
+      btn: "Analyze Report",
+      invalid: "Please enter valid numbers — check any values you've typed.",
+      invalidAtLeastOne: "Please enter at least one value to analyze.",
+      invalidPositive: "Blood sugar and HbA1c values must be greater than 0. Please check what you entered.",
+      normal: "✅ Normal range",
+      prediabetes: "🟡 Prediabetes range",
+      diabetes: "🔴 Diabetes range",
+      rowNormal: "Normal",
+      rowPre: "Prediabetes range",
+      rowHigh: "Diabetes range",
+      adviceNormal: "Keep up a healthy lifestyle — balanced diet, regular activity, and routine check-ups.",
+      advicePre: "Focus on diet control and daily exercise, and repeat testing as advised by a doctor.",
+      adviceDia: "Please consult your doctor soon. Medication and lifestyle changes may be needed.",
+      fbsRow: "FBS", rbsRow: "2-Hr Post-Meal", hba1cRow: "HbA1c",
+      recommendation: "Recommendation:",
+      overallNote: "This overall result reflects the highest-range value among the tests you entered.",
+      brandTag: "Your Smart AI Health Companion",
+      brandServices: "AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content"
+    },
+    bn: {
+      title: "অ্যাডভান্সড ডায়াবেটিস এআই অ্যানালাইজার",
+      subtitle: "আপনার FBS, ২-ঘণ্টা খাওয়ার পরের সুগার ও HbA1c স্ট্যান্ডার্ড রেঞ্জের সাথে মিলিয়ে দেখুন",
+      disclaimer: "⚠ এই টুলটি আপনার মান সাধারণ ল্যাব রেফারেন্স রেঞ্জের সাথে তুলনা করে শুধু সচেতনতার জন্য। এটি রোগ নির্ণয় নয়। শুধুমাত্র একজন ডাক্তার সঠিক পরীক্ষা ও আপনার সম্পূর্ণ মেডিকেল ইতিহাস দেখে ডায়াবেটিস বা প্রি-ডায়াবেটিস নিশ্চিত করতে পারেন।",
+      optionalNote: "নিচের তিনটি ঘরের যেকোনো একটি, দুটি, বা তিনটিতেই মান দিতে পারেন — যে পরীক্ষাটি করা নেই, সেটি ফাঁকা রাখুন।",
+      fbsLabel: "খালি পেটে সুগার (mg/dL)", fbsPh: "উদাহরণ: ৯৫",
+      rbsLabel: "খাওয়ার ২ ঘণ্টা পরে সুগার (mg/dL)", rbsPh: "উদাহরণ: ১৪০",
+      hba1cLabel: "HbA1c (%)", hba1cPh: "উদাহরণ: ৫.৬",
+      btn: "রিপোর্ট বিশ্লেষণ করুন",
+      invalid: "দয়া করে সঠিক সংখ্যা লিখুন — যা লিখেছেন তা যাচাই করুন।",
+      invalidAtLeastOne: "বিশ্লেষণের জন্য অন্তত একটি মান লিখুন।",
+      invalidPositive: "সুগার ও HbA1c-র মান অবশ্যই ০-এর বেশি হতে হবে। দয়া করে যাচাই করুন।",
+      normal: "✅ স্বাভাবিক পরিসর",
+      prediabetes: "🟡 প্রি-ডায়াবেটিস পরিসর",
+      diabetes: "🔴 ডায়াবেটিস পরিসর",
+      rowNormal: "স্বাভাবিক",
+      rowPre: "প্রি-ডায়াবেটিস পরিসর",
+      rowHigh: "ডায়াবেটিস পরিসর",
+      adviceNormal: "স্বাস্থ্যকর জীবনযাপন বজায় রাখুন — সুষম খাদ্য, নিয়মিত কার্যকলাপ এবং রুটিন চেক-আপ।",
+      advicePre: "খাদ্য নিয়ন্ত্রণ ও প্রতিদিন ব্যায়ামে মনোযোগ দিন, এবং ডাক্তারের পরামর্শ অনুযায়ী পুনরায় পরীক্ষা করুন।",
+      adviceDia: "দ্রুত আপনার ডাক্তারের পরামর্শ নিন। ওষুধ ও জীবনযাত্রার পরিবর্তন প্রয়োজন হতে পারে।",
+      fbsRow: "FBS", rbsRow: "২-ঘণ্টা খাওয়ার পরে", hba1cRow: "HbA1c",
+      recommendation: "পরামর্শ:",
+      overallNote: "এই সার্বিক ফলাফল আপনার দেওয়া মানগুলোর মধ্যে সবচেয়ে বেশি ঝুঁকিপূর্ণ মানটিকে প্রতিফলিত করে।",
+      brandTag: "আপনার স্মার্ট এআই স্বাস্থ্য সহায়ক",
+      brandServices: "এআই স্বাস্থ্য নির্দেশনা • স্বাস্থ্য টুলস • রিপোর্ট বিশ্লেষণ • স্বাস্থ্য শিক্ষা • স্বাস্থ্য কনটেন্ট"
+    },
+    hi: {
+      title: "एडवांस्ड डायबिटीज़ एआई एनालाइज़र",
+      subtitle: "अपने FBS, 2-घंटे भोजन के बाद शुगर और HbA1c को मानक रेंज से मिलाकर देखें",
+      disclaimer: "⚠ यह टूल आपके मानों की तुलना सामान्य लैब रेफरेंस रेंज से करता है, केवल जागरूकता के लिए। यह निदान नहीं है। केवल एक डॉक्टर ही उचित जांच और आपके पूरे मेडिकल इतिहास के आधार पर डायबिटीज़ या प्रीडायबिटीज़ की पुष्टि कर सकता है।",
+      optionalNote: "नीचे दिए गए तीन में से किसी एक, दो, या तीनों फ़ील्ड में मान भर सकते हैं — जो जांच नहीं कराई, उसे खाली छोड़ दें।",
+      fbsLabel: "फास्टिंग ब्लड शुगर (mg/dL)", fbsPh: "उदाहरण: 95",
+      rbsLabel: "2-घंटे भोजन के बाद शुगर (mg/dL)", rbsPh: "उदाहरण: 140",
+      hba1cLabel: "HbA1c (%)", hba1cPh: "उदाहरण: 5.6",
+      btn: "रिपोर्ट जांचें",
+      invalid: "कृपया सही संख्याएं दर्ज करें — जो दर्ज किया है उसे जांच लें।",
+      invalidAtLeastOne: "विश्लेषण के लिए कम से कम एक मान दर्ज करें।",
+      invalidPositive: "शुगर और HbA1c के मान 0 से अधिक होने चाहिए। कृपया जांच लें।",
+      normal: "✅ सामान्य सीमा",
+      prediabetes: "🟡 प्रीडायबिटीज़ सीमा",
+      diabetes: "🔴 डायबिटीज़ सीमा",
+      rowNormal: "सामान्य",
+      rowPre: "प्रीडायबिटीज़ सीमा",
+      rowHigh: "डायबिटीज़ सीमा",
+      adviceNormal: "स्वस्थ जीवनशैली बनाए रखें — संतुलित आहार, नियमित गतिविधि और नियमित जांच।",
+      advicePre: "आहार पर नियंत्रण रखें, रोज़ व्यायाम करें, और डॉक्टर की सलाह अनुसार दोबारा जांच कराएं।",
+      adviceDia: "जल्द ही अपने डॉक्टर से सलाह लें। दवा और जीवनशैली में बदलाव की ज़रूरत हो सकती है।",
+      fbsRow: "FBS", rbsRow: "2-घंटे भोजन के बाद", hba1cRow: "HbA1c",
+      recommendation: "सुझाव:",
+      overallNote: "यह समग्र परिणाम आपके द्वारा दर्ज मानों में सबसे अधिक जोखिम वाले मान को दर्शाता है।",
+      brandTag: "आपका स्मार्ट एआई हेल्थ साथी",
+      brandServices: "एआई स्वास्थ्य मार्गदर्शन • हेल्थ टूल्स • रिपोर्ट विश्लेषण • स्वास्थ्य शिक्षा • स्वास्थ्य कंटेंट"
+    }
+  };
+
+  // Guard against Blogger/CMS re-encoding non-Latin text into HTML numeric
+  // entities (&#2377;) when the page is saved.
+  function decodeEntities(str) {
+    if (typeof str !== "string") return str;
+    if (str.indexOf("&#") === -1 && str.indexOf("&amp;") === -1) return str;
+    var el = document.createElement("textarea");
+    el.innerHTML = str;
+    return el.value;
+  }
+  function deepDecode(obj) {
+    if (typeof obj === "string") return decodeEntities(obj);
+    if (Array.isArray(obj)) return obj.map(deepDecode);
+    if (obj && typeof obj === "object") {
+      var out = {};
+      for (var k in obj) out[k] = deepDecode(obj[k]);
+      return out;
+    }
+    return obj;
+  }
+  STRINGS = deepDecode(STRINGS);
+
+  var currentLang = "en";
+  var rootEl = document.getElementById("dia-root");
+
+  function t(key) { return STRINGS[currentLang][key]; }
+
+  function applyStaticStrings() {
+    document.querySelectorAll("#dia-root [data-i18n]").forEach(function (el) {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.getElementById("dia-fbs").setAttribute("placeholder", t("fbsPh"));
+    document.getElementById("dia-rbs").setAttribute("placeholder", t("rbsPh"));
+    document.getElementById("dia-hba1c").setAttribute("placeholder", t("hba1cPh"));
+  }
+
+  // Classifies a single value against its own normal/prediabetes/diabetes
+  // cutoffs. Returns null when no value was provided, so optional fields
+  // can be skipped cleanly.
+  function paramStatus(value, preMin, diaMin) {
+    if (value === null) return null;
+    if (value >= diaMin) return "high";
+    if (value >= preMin) return "pre";
+    return "normal";
+  }
+
+  function statusLabel(s) {
+    if (s === "high") return t("rowHigh");
+    if (s === "pre") return t("rowPre");
+    return t("rowNormal");
+  }
+
+  function analyze() {
+    var fbsRaw = document.getElementById("dia-fbs").value.trim();
+    var rbsRaw = document.getElementById("dia-rbs").value.trim();
+    var hba1cRaw = document.getElementById("dia-hba1c").value.trim();
+
+    var fbs = fbsRaw === "" ? null : parseFloat(fbsRaw);
+    var rbs = rbsRaw === "" ? null : parseFloat(rbsRaw);
+    var hba1c = hba1cRaw === "" ? null : parseFloat(hba1cRaw);
+
+    var box = document.getElementById("dia-result");
+    box.style.display = "block";
+
+    // A field that was typed into but isn't a valid number (rare, since
+    // type="number" already restricts this) is treated as an error.
+    if ((fbsRaw !== "" && isNaN(fbs)) || (rbsRaw !== "" && isNaN(rbs)) || (hba1cRaw !== "" && isNaN(hba1c))) {
+      box.className = "dia-result high";
+      box.innerHTML = "<h3>" + t("invalid") + "</h3>";
+      return;
+    }
+    // Previously all three fields were mandatory, but many people only
+    // have some of these tests done together. Now at least one is enough.
+    if (fbs === null && rbs === null && hba1c === null) {
+      box.className = "dia-result high";
+      box.innerHTML = "<h3>" + t("invalidAtLeastOne") + "</h3>";
+      return;
+    }
+    // Blood sugar and HbA1c can never be 0 or negative in real lab data.
+    if ((fbs !== null && fbs <= 0) || (rbs !== null && rbs <= 0) || (hba1c !== null && hba1c <= 0)) {
+      box.className = "dia-result high";
+      box.innerHTML = "<h3>" + t("invalidPositive") + "</h3>";
+      return;
+    }
+
+    var fbsStatus = paramStatus(fbs, 100, 126);
+    var rbsStatus = paramStatus(rbs, 140, 200);
+    var hba1cStatus = paramStatus(hba1c, 5.7, 6.5);
+
+    var providedStatuses = [fbsStatus, rbsStatus, hba1cStatus].filter(function (s) { return s !== null; });
+
+    var overall = "normal";
+    if (providedStatuses.indexOf("high") !== -1) overall = "high";
+    else if (providedStatuses.indexOf("pre") !== -1) overall = "pre";
+
+    var headline = overall === "high" ? t("diabetes") : overall === "pre" ? t("prediabetes") : t("normal");
+    var advice = overall === "high" ? t("adviceDia") : overall === "pre" ? t("advicePre") : t("adviceNormal");
+
+    var rows = "";
+    // Each provided value now shows its OWN status next to it, instead of
+    // only a single combined headline — so if, say, HbA1c is normal but
+    // the post-meal reading is elevated, that is visible per-row rather
+    // than hidden behind one ambiguous overall label.
+    if (fbs !== null) rows += "<tr><td>" + t("fbsRow") + "</td><td>" + fbs + " mg/dL</td><td>" + statusLabel(fbsStatus) + "</td></tr>";
+    if (rbs !== null) rows += "<tr><td>" + t("rbsRow") + "</td><td>" + rbs + " mg/dL</td><td>" + statusLabel(rbsStatus) + "</td></tr>";
+    if (hba1c !== null) rows += "<tr><td>" + t("hba1cRow") + "</td><td>" + hba1c + "%</td><td>" + statusLabel(hba1cStatus) + "</td></tr>";
+
+    box.className = "dia-result " + overall;
+    box.innerHTML =
+      "<h3>" + headline + "</h3>" +
+      "<table class='dia-result-table'>" + rows + "</table>" +
+      "<hr>" +
+      "<div class='dia-advice-title'>" + t("recommendation") + "</div>" +
+      "<div>" + advice + "</div>" +
+      (providedStatuses.length > 1 ? "<div class='dia-overall-note'>" + t("overallNote") + "</div>" : "");
+  }
+
+  document.querySelectorAll(".dia-lang-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".dia-lang-btn").forEach(function (b) { b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      currentLang = btn.getAttribute("data-lang");
+      rootEl.classList.remove("lang-bn", "lang-hi");
+      if (currentLang === "bn") rootEl.classList.add("lang-bn");
+      if (currentLang === "hi") rootEl.classList.add("lang-hi");
+      applyStaticStrings();
+      document.getElementById("dia-result").style.display = "none";
+    });
+  });
+
+  document.getElementById("dia-analyze").addEventListener("click", analyze);
+
+  applyStaticStrings();
+})();
+</script>
+
+</body>
+</html>
