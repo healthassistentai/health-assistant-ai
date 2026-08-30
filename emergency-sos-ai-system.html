@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Advanced Emergency AI SOS System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:#fffafa; }
+  #sos-root, #sos-root * { box-sizing: border-box; }
+  #sos-root {
+    --sos-red-900:#5c1414;
+    --sos-red-700:#b52a37;
+    --sos-red-500:#dc3545;
+    --sos-blush-100:#fdecec;
+    --sos-bg:#fffafa;
+    --sos-card:#ffffff;
+    --sos-ink:#3a1a1a;
+    --sos-muted:#8a6060;
+    --sos-amber:#8a2b0a;
+    --sos-amber-bg:#fdecec;
+    --sos-green:#146c43;
+    font-family: "Noto Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    max-width: 620px;
+    margin: 12px auto;
+  }
+  #sos-root.lang-bn { font-family: "Noto Sans Bengali", "Noto Sans", sans-serif; }
+  #sos-root.lang-hi { font-family: "Noto Sans Devanagari", "Noto Sans", sans-serif; }
+  #sos-root .sos-card, #sos-root label, #sos-root button,
+  #sos-root .sos-result, #sos-root .sos-disclaimer, #sos-root .sos-brand {
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+  #sos-root.lang-bn *, #sos-root.lang-hi * { line-height: 1.7; }
+
+  .sos-card {
+    background: var(--sos-card);
+    border: 2px solid #f3c6c6;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(220,53,69,0.12);
+    overflow: hidden;
+  }
+  .sos-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, var(--sos-red-500), var(--sos-red-900));
+    color: #fff;
+  }
+  .sos-header-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .sos-avatar {
+    width: 42px; height: 42px; flex: 0 0 42px; font-size: 20px;
+    background: rgba(255,255,255,0.18); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sos-title { font-size: 16.5px; font-weight: 700; }
+  .sos-subtitle { font-size: 12px; opacity: .9; margin-top: 2px; }
+  .sos-lang-switch { display: flex; gap: 4px; flex: 0 0 auto; }
+  .sos-lang-btn {
+    font-size: 11px; font-weight: 600; padding: 6px 9px;
+    border-radius: 999px; border: 1px solid rgba(255,255,255,.4);
+    background: transparent; color: #fff0f0; cursor: pointer;
+  }
+  .sos-lang-btn.is-active { background: #fff; color: var(--sos-red-900); }
+
+  .sos-disclaimer {
+    font-size: 12.5px; font-weight: 600; line-height: 1.55;
+    background: var(--sos-amber-bg); color: var(--sos-amber);
+    padding: 12px 20px; border-bottom: 2px solid #f3c6c6;
+  }
+
+  .sos-call-row { display: flex; gap: 10px; padding: 14px 20px 0; flex-wrap: wrap; background: var(--sos-bg); }
+  .sos-call-chip {
+    flex: 1; min-width: 180px; text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 12px; font-size: 12.5px; font-weight: 700;
+    background: #fff; border: 1.5px solid var(--sos-red-500); color: var(--sos-red-700);
+    border-radius: 10px; text-decoration: none;
+  }
+  .sos-call-chip:hover { background: var(--sos-blush-100); }
+
+  .sos-form { padding: 20px; background: var(--sos-bg); }
+  .sos-field { margin-bottom: 14px; }
+  .sos-field label { display: block; font-size: 13px; font-weight: 600; color: var(--sos-red-900); margin-bottom: 6px; }
+  .sos-field input {
+    width: 100%; padding: 11px 12px; font-size: 14px;
+    border: 1px solid #f3d9d9; border-radius: 10px; outline: none;
+    background: #fff; color: var(--sos-ink);
+  }
+  .sos-field input:focus {
+    border-color: var(--sos-red-500); box-shadow: 0 0 0 3px rgba(220,53,69,.15);
+  }
+  .sos-send-btn {
+    width: 100%; padding: 14px; font-size: 15px; font-weight: 800;
+    background: var(--sos-red-500); color: #fff; border: none; border-radius: 10px; cursor: pointer;
+    transition: background .2s ease;
+  }
+  .sos-send-btn:hover { background: var(--sos-red-700); }
+
+  .sos-result { margin: 0 20px 20px; padding: 16px; border-radius: 12px; background: var(--sos-blush-100); color: var(--sos-ink); font-size: 13.5px; line-height: 1.8; }
+  .sos-result.error { color: var(--sos-red-700); font-weight: 600; }
+  .sos-result b { color: var(--sos-red-900); }
+
+  .sos-brand {
+    text-align: center; padding: 18px 20px 22px;
+    border-top: 1px solid #f3c6c6; background: #fff;
+  }
+  .sos-brand-name { font-size: 13px; font-weight: 800; letter-spacing: .06em; color: var(--sos-red-900); }
+  .sos-brand-tag { font-size: 12px; color: var(--sos-red-700); font-weight: 600; margin-top: 2px; }
+  .sos-brand-services { font-size: 11px; color: var(--sos-muted); margin-top: 6px; }
+  .sos-brand-site { font-size: 11.5px; margin-top: 8px; }
+  .sos-brand-site a { color: var(--sos-red-700); text-decoration: none; font-weight: 600; }
+  .sos-brand-site a:hover { text-decoration: underline; }
+
+  @media (max-width: 500px) {
+    #sos-root { margin: 8px; }
+    .sos-call-chip { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div id="sos-root">
+  <div class="sos-card">
+
+    <!--Header-->
+    <div class="sos-header">
+      <div class="sos-header-left">
+        <div class="sos-avatar">🚨</div>
+        <div>
+          <div class="sos-title" data-i18n="title">Advanced Emergency AI SOS System</div>
+          <div class="sos-subtitle" data-i18n="subtitle">Send a ready-made SOS message on WhatsApp</div>
+        </div>
+      </div>
+      <div class="sos-lang-switch">
+        <button class="sos-lang-btn is-active" data-lang="en">EN</button>
+        <button class="sos-lang-btn" data-lang="bn">বাংলা</button>
+        <button class="sos-lang-btn" data-lang="hi">हिंदी</button>
+      </div>
+    </div>
+
+    <!--Critical disclaimer-->
+    <div class="sos-disclaimer" data-i18n="disclaimer">🚑 In a life-threatening emergency, call your local emergency number immediately — do not rely only on this tool. This form just prepares a WhatsApp message; it does not contact hospitals, police, or ambulance services directly.</div>
+
+    <!--Emergency call shortcuts-->
+    <div class="sos-call-row">
+      <a class="sos-call-chip" href="tel:112"><span>📞</span> <span data-i18n="callAmbulance">Call 112 (India Emergency)</span></a>
+      <a class="sos-call-chip" href="tel:999"><span>📞</span> <span data-i18n="callBd">Call 999 (Bangladesh Emergency)</span></a>
+    </div>
+
+    <!--Form-->
+    <div class="sos-form">
+      <div class="sos-field">
+        <label data-i18n="nameLabel">Your Name</label>
+        <input data-i18n-ph="namePh" id="sos-name" placeholder="Example: Rahim Uddin" type="text" />
+      </div>
+      <div class="sos-field">
+        <label data-i18n="msgLabel">Emergency Message</label>
+        <input data-i18n-ph="msgPh" id="sos-msg" placeholder="Accident / Sick / Help" type="text" />
+      </div>
+      <div class="sos-field">
+        <label data-i18n="phoneLabel">Emergency Contact Number</label>
+        <input data-i18n-ph="phonePh" id="sos-phone" placeholder="+91XXXXXXXXXX" type="text" />
+      </div>
+      <button class="sos-send-btn" data-i18n="sendBtn" id="sos-send">🚨 Send SOS on WhatsApp</button>
+    </div>
+
+    <!--Result-->
+    <div class="sos-result" id="sos-result" style="display: none;"></div>
+
+    <!--Footer / brand-->
+    <div class="sos-brand">
+      <div class="sos-brand-name">HEALTH ASSISTENT AI</div>
+      <div class="sos-brand-tag" data-i18n="brandTag">Your Smart AI Health Companion</div>
+      <div class="sos-brand-services" data-i18n="brandServices">AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content</div>
+      <div class="sos-brand-site">Website: <a href="https://www.healthassistentai.com" rel="noopener" target="_blank">healthassistentai.com</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var STRINGS = {
+    en: {
+      title: "Advanced Emergency AI SOS System",
+      subtitle: "Send a ready-made SOS message on WhatsApp",
+      disclaimer: "🚑 In a life-threatening emergency, call your local emergency number immediately — do not rely only on this tool. This form just prepares a WhatsApp message; it does not contact hospitals, police, or ambulance services directly.",
+      callAmbulance: "Call 112 (India Emergency)",
+      callBd: "Call 999 (Bangladesh Emergency)",
+      nameLabel: "Your Name", namePh: "Example: Rahim Uddin",
+      msgLabel: "Emergency Message", msgPh: "Accident / Sick / Help",
+      phoneLabel: "Emergency Contact Number", phonePh: "+91XXXXXXXXXX",
+      sendBtn: "🚨 Send SOS on WhatsApp",
+      validationMsg: "Please fill in your name, message, and contact number.",
+      invalidPhoneMsg: "Please enter the contact number with country code (e.g. +91XXXXXXXXXX) so WhatsApp can find it.",
+      generatedTitle: "Generated SOS Message:",
+      sosHeader: "🚨 EMERGENCY SOS 🚨",
+      nameRow: "Name", msgRow: "Message", contactRow: "Contact", timeRow: "Time",
+      brandTag: "Your Smart AI Health Companion",
+      brandServices: "AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content"
+    },
+    bn: {
+      title: "অ্যাডভান্সড ইমার্জেন্সি এআই এসওএস সিস্টেম",
+      subtitle: "হোয়াটসঅ্যাপে তৈরি করা এসওএস বার্তা পাঠান",
+      disclaimer: "🚑 জীবন সংকটাপন্ন জরুরি অবস্থায় সাথে সাথে আপনার স্থানীয় জরুরি নম্বরে কল করুন — শুধু এই টুলের উপর নির্ভর করবেন না। এই ফর্মটি শুধু একটি হোয়াটসঅ্যাপ বার্তা তৈরি করে; এটি সরাসরি হাসপাতাল, পুলিশ বা অ্যাম্বুলেন্স সেবায় যোগাযোগ করে না।",
+      callAmbulance: "১১২ কল করুন (ভারত জরুরি সেবা)",
+      callBd: "৯৯৯ কল করুন (বাংলাদেশ জরুরি সেবা)",
+      nameLabel: "আপনার নাম", namePh: "উদাহরণ: রহিম উদ্দিন",
+      msgLabel: "জরুরি বার্তা", msgPh: "দুর্ঘটনা / অসুস্থ / সাহায্য",
+      phoneLabel: "জরুরি ফোন নম্বর", phonePh: "+৯১XXXXXXXXXX",
+      sendBtn: "🚨 হোয়াটসঅ্যাপে এসওএস পাঠান",
+      validationMsg: "দয়া করে আপনার নাম, বার্তা এবং ফোন নম্বর দিন।",
+      invalidPhoneMsg: "দয়া করে কান্ট্রি কোডসহ নম্বর দিন (যেমন +৯১XXXXXXXXXX), যাতে হোয়াটসঅ্যাপ নম্বরটি খুঁজে পায়।",
+      generatedTitle: "তৈরি করা এসওএস বার্তা:",
+      sosHeader: "🚨 জরুরি এসওএস 🚨",
+      nameRow: "নাম", msgRow: "বার্তা", contactRow: "যোগাযোগ", timeRow: "সময়",
+      brandTag: "আপনার স্মার্ট এআই স্বাস্থ্য সহায়ক",
+      brandServices: "এআই স্বাস্থ্য নির্দেশনা • স্বাস্থ্য টুলস • রিপোর্ট বিশ্লেষণ • স্বাস্থ্য শিক্ষা • স্বাস্থ্য কনটেন্ট"
+    },
+    hi: {
+      title: "एडवांस्ड इमरजेंसी एआई एसओएस सिस्टम",
+      subtitle: "व्हाट्सएप पर तैयार एसओएस संदेश भेजें",
+      disclaimer: "🚑 जानलेवा आपातकाल में तुरंत अपने स्थानीय आपातकालीन नंबर पर कॉल करें — केवल इस टूल पर निर्भर न रहें। यह फॉर्म केवल एक व्हाट्सएप संदेश तैयार करता है; यह सीधे अस्पताल, पुलिस या एम्बुलेंस सेवा से संपर्क नहीं करता।",
+      callAmbulance: "112 पर कॉल करें (भारत आपातकाल)",
+      callBd: "999 पर कॉल करें (बांग्लादेश आपातकाल)",
+      nameLabel: "आपका नाम", namePh: "उदाहरण: रहीम उद्दीन",
+      msgLabel: "आपातकालीन संदेश", msgPh: "दुर्घटना / बीमार / मदद",
+      phoneLabel: "आपातकालीन संपर्क नंबर", phonePh: "+91XXXXXXXXXX",
+      sendBtn: "🚨 व्हाट्सएप पर एसओएस भेजें",
+      validationMsg: "कृपया अपना नाम, संदेश और संपर्क नंबर भरें।",
+      invalidPhoneMsg: "कृपया देश कोड सहित नंबर डालें (जैसे +91XXXXXXXXXX) ताकि व्हाट्सएप नंबर ढूंढ सके।",
+      generatedTitle: "तैयार किया गया एसओएस संदेश:",
+      sosHeader: "🚨 आपातकालीन एसओएस 🚨",
+      nameRow: "नाम", msgRow: "संदेश", contactRow: "संपर्क", timeRow: "समय",
+      brandTag: "आपका स्मार्ट एआई हेल्थ साथी",
+      brandServices: "एआई स्वास्थ्य मार्गदर्शन • हेल्थ टूल्स • रिपोर्ट विश्लेषण • स्वास्थ्य शिक्षा • स्वास्थ्य कंटेंट"
+    }
+  };
+
+  // Guard against Blogger/CMS re-encoding non-Latin text into HTML numeric
+  // entities (&#2377;) when the page is saved.
+  function decodeEntities(str) {
+    if (typeof str !== "string") return str;
+    if (str.indexOf("&#") === -1 && str.indexOf("&amp;") === -1) return str;
+    var el = document.createElement("textarea");
+    el.innerHTML = str;
+    return el.value;
+  }
+  function deepDecode(obj) {
+    if (typeof obj === "string") return decodeEntities(obj);
+    if (Array.isArray(obj)) return obj.map(deepDecode);
+    if (obj && typeof obj === "object") {
+      var out = {};
+      for (var k in obj) out[k] = deepDecode(obj[k]);
+      return out;
+    }
+    return obj;
+  }
+  STRINGS = deepDecode(STRINGS);
+
+  var currentLang = "en";
+  var rootEl = document.getElementById("sos-root");
+
+  function t(key) { return STRINGS[currentLang][key]; }
+
+  function applyStaticStrings() {
+    document.querySelectorAll("#sos-root [data-i18n]").forEach(function (el) {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.getElementById("sos-name").setAttribute("placeholder", t("namePh"));
+    document.getElementById("sos-msg").setAttribute("placeholder", t("msgPh"));
+    document.getElementById("sos-phone").setAttribute("placeholder", t("phonePh"));
+  }
+
+  function sendSOS() {
+    var name = document.getElementById("sos-name").value.trim();
+    var msg = document.getElementById("sos-msg").value.trim();
+    var phone = document.getElementById("sos-phone").value.trim();
+    var box = document.getElementById("sos-result");
+    box.style.display = "block";
+
+    if (!name || !msg || !phone) {
+      box.className = "sos-result error";
+      box.textContent = t("validationMsg");
+      return;
+    }
+
+    var digitsOnly = phone.replace(/\D/g, "");
+    if (digitsOnly.length < 8) {
+      box.className = "sos-result error";
+      box.textContent = t("invalidPhoneMsg");
+      return;
+    }
+
+    var sosMessage =
+      t("sosHeader") + "\n" +
+      t("nameRow") + ": " + name + "\n" +
+      t("msgRow") + ": " + msg + "\n" +
+      t("contactRow") + ": " + phone + "\n" +
+      t("timeRow") + ": " + new Date().toLocaleString();
+
+    box.className = "sos-result";
+    box.innerHTML = "<b>" + t("generatedTitle") + "</b><br><br>" + sosMessage.replace(/\n/g, "<br>");
+
+    var whatsappUrl = "https://wa.me/" + digitsOnly + "?text=" + encodeURIComponent(sosMessage);
+    window.open(whatsappUrl, "_blank", "noopener");
+  }
+
+  document.querySelectorAll(".sos-lang-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".sos-lang-btn").forEach(function (b) { b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      currentLang = btn.getAttribute("data-lang");
+      rootEl.classList.remove("lang-bn", "lang-hi");
+      if (currentLang === "bn") rootEl.classList.add("lang-bn");
+      if (currentLang === "hi") rootEl.classList.add("lang-hi");
+      applyStaticStrings();
+      document.getElementById("sos-result").style.display = "none";
+    });
+  });
+
+  document.getElementById("sos-send").addEventListener("click", sendSOS);
+
+  applyStaticStrings();
+})();
+</script>
+
+</body>
+</html>
