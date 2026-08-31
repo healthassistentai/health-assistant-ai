@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Doctor Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; }
+  #adc-root, #adc-root * { box-sizing: border-box; }
+  #adc-root {
+    --adc-teal-900:#0b3d3a;
+    --adc-teal-700:#0f6b63;
+    --adc-teal-500:#1f8f83;
+    --adc-mint-100:#eaf6f2;
+    --adc-bg:#f6faf9;
+    --adc-card:#ffffff;
+    --adc-ink:#173430;
+    --adc-muted:#5c7570;
+    --adc-amber:#b8611b;
+    --adc-amber-bg:#fdf1e4;
+    --adc-radius:16px;
+    font-family: "Noto Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    max-width: 480px;
+    margin: 16px auto;
+  }
+  #adc-root.lang-bn { font-family: "Noto Sans Bengali", "Noto Sans", sans-serif; }
+  #adc-root.lang-hi { font-family: "Noto Sans Devanagari", "Noto Sans", sans-serif; }
+  #adc-root .adc-msg,
+  #adc-root .adc-disclaimer,
+  #adc-root .adc-title,
+  #adc-root .adc-subtitle,
+  #adc-root .adc-chip,
+  #adc-root .adc-footnote,
+  #adc-root #adc-input {
+    word-break: normal;
+    overflow-wrap: normal;
+    word-wrap: normal;
+    hyphens: none;
+  }
+  #adc-root .adc-disclaimer,
+  #adc-root .adc-title,
+  #adc-root .adc-subtitle,
+  #adc-root .adc-chip,
+  #adc-root .adc-footnote {
+    white-space: normal;
+  }
+  #adc-root.lang-bn .adc-msg,
+  #adc-root.lang-hi .adc-msg,
+  #adc-root.lang-bn .adc-disclaimer,
+  #adc-root.lang-hi .adc-disclaimer {
+    line-height: 1.8;
+  }
+  .adc-widget {
+    background: var(--adc-card);
+    border: 1px solid #dceee9;
+    border-radius: var(--adc-radius);
+    box-shadow: 0 10px 30px rgba(15,107,99,0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .adc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 16px 18px;
+    background: linear-gradient(135deg, var(--adc-teal-700), var(--adc-teal-900));
+    color: #fff;
+  }
+  .adc-header-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .adc-avatar {
+    width: 38px; height: 38px; flex: 0 0 38px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+  }
+  .adc-title { font-size: 16px; font-weight: 700; line-height: 1.2; }
+  .adc-subtitle { font-size: 11.5px; opacity: 0.85; margin-top: 2px; }
+  .adc-lang-switch { display: flex; gap: 4px; flex: 0 0 auto; }
+  .adc-lang-btn {
+    font-size: 11px; font-weight: 600; padding: 6px 8px;
+    border-radius: 999px; border: 1px solid rgba(255,255,255,0.35);
+    background: transparent; color: #eafff9; cursor: pointer;
+    transition: background .15s ease;
+  }
+  .adc-lang-btn.is-active { background: #fff; color: var(--adc-teal-900); }
+
+  .adc-disclaimer {
+    font-size: 12px; line-height: 1.5;
+    background: var(--adc-amber-bg); color: var(--adc-amber);
+    padding: 10px 16px; border-bottom: 1px solid #f3ddc2;
+  }
+
+  .adc-messages {
+    padding: 16px;
+    height: 340px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--adc-bg);
+  }
+  .adc-msg { max-width: 82%; padding: 10px 13px; border-radius: 14px; font-size: 13.5px; line-height: 1.5; white-space: pre-line; }
+  .adc-msg.bot {
+    background: #fff; color: var(--adc-ink);
+    border: 1px solid #dceee9; border-bottom-left-radius: 4px;
+    align-self: flex-start;
+  }
+  .adc-msg.user {
+    background: var(--adc-teal-700); color: #fff;
+    border-bottom-right-radius: 4px;
+    align-self: flex-end;
+  }
+  .adc-msg.typing { display: flex; gap: 4px; align-items: center; padding: 12px 14px; }
+  .adc-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--adc-teal-500); animation: adc-bounce 1.2s infinite ease-in-out; }
+  .adc-dot:nth-child(2){ animation-delay: .15s; }
+  .adc-dot:nth-child(3){ animation-delay: .3s; }
+  @keyframes adc-bounce { 0%,60%,100%{ transform: translateY(0); opacity:.5;} 30%{ transform: translateY(-4px); opacity:1;} }
+
+  .adc-quick {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 0 16px 12px; background: var(--adc-bg);
+  }
+  .adc-chip {
+    font-size: 12px; padding: 6px 11px; border-radius: 999px;
+    background: var(--adc-mint-100); color: var(--adc-teal-900);
+    border: 1px solid #cfe9e2; cursor: pointer;
+  }
+  .adc-chip:hover { background: #dcf1ec; }
+
+  .adc-inputbar {
+    display: flex; gap: 8px; padding: 12px 16px;
+    border-top: 1px solid #e4efec; background: #fff;
+  }
+  #adc-input {
+    flex: 1; padding: 10px 12px; font-size: 13.5px;
+    border: 1px solid #cfe1dd; border-radius: 10px; outline: none;
+    color: var(--adc-ink);
+  }
+  #adc-input:focus { border-color: var(--adc-teal-500); box-shadow: 0 0 0 3px rgba(31,143,131,0.15); }
+  .adc-send-btn {
+    padding: 10px 16px; font-size: 13.5px; font-weight: 600;
+    background: var(--adc-teal-700); color: #fff; border: none; border-radius: 10px; cursor: pointer;
+  }
+  .adc-send-btn:hover { background: var(--adc-teal-900); }
+  .adc-footnote { text-align: center; font-size: 10.5px; color: var(--adc-muted); padding: 8px 12px 14px; background:#fff; }
+
+  .adc-brand { text-align: center; padding: 16px 18px 20px; border-top: 1px solid #dceee9; background: #fff; }
+  .adc-brand-name { font-size: 13px; font-weight: 800; letter-spacing: .06em; color: var(--adc-teal-900); }
+  .adc-brand-tag { font-size: 12px; color: var(--adc-teal-700); font-weight: 600; margin-top: 2px; }
+  .adc-brand-services { font-size: 11px; color: var(--adc-muted); margin-top: 6px; }
+  .adc-brand-site { font-size: 11.5px; margin-top: 8px; }
+  .adc-brand-site a { color: var(--adc-teal-700); text-decoration: none; font-weight: 600; }
+  .adc-brand-site a:hover { text-decoration: underline; }
+
+  @media (max-width: 500px) {
+    #adc-root { margin: 12px; }
+    .adc-messages { height: 300px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="adc-root">
+  <div class="adc-widget">
+    <div class="adc-header">
+      <div class="adc-header-left">
+        <div class="adc-avatar">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a4 4 0 0 0-4 4v2a4 4 0 0 0 8 0V6a4 4 0 0 0-4-4Z"/>
+            <path d="M6 9v1a6 6 0 0 0 12 0V9"/>
+            <path d="M12 16v4"/>
+            <path d="M9 21h6"/>
+          </svg>
+        </div>
+        <div>
+          <div class="adc-title" data-i18n="title">AI Doctor Chat</div>
+          <div class="adc-subtitle" data-i18n="subtitle">Not a replacement for a real doctor</div>
+        </div>
+      </div>
+      <div class="adc-lang-switch" role="group" aria-label="Language">
+        <button class="adc-lang-btn is-active" data-lang="en">EN</button>
+        <button class="adc-lang-btn" data-lang="bn">বাংলা</button>
+        <button class="adc-lang-btn" data-lang="hi">हिंदी</button>
+      </div>
+    </div>
+
+    <div class="adc-disclaimer" data-i18n="disclaimer">
+      ⚠ This chat gives general health information only. It cannot diagnose or treat you. In a medical emergency, contact your local emergency number or nearest hospital immediately.
+    </div>
+
+    <div class="adc-messages" id="adc-messages"></div>
+
+    <div class="adc-quick" id="adc-quick"></div>
+
+    <div class="adc-inputbar">
+      <input id="adc-input" type="text" data-i18n-ph="placeholder" placeholder="Type your health question…" autocomplete="off" />
+      <button id="adc-send" class="adc-send-btn" data-i18n="send">Send</button>
+    </div>
+    <div class="adc-footnote" data-i18n="footnote">Powered by a simple rule-based assistant · Always verify with a licensed doctor</div>
+
+    <div class="adc-brand">
+      <div class="adc-brand-name">HEALTH ASSISTENT AI</div>
+      <div class="adc-brand-tag">Your Smart AI Health Companion</div>
+      <div class="adc-brand-services">AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content</div>
+      <div class="adc-brand-site">Website: <a href="https://www.healthassistentai.com" target="_blank" rel="noopener">healthassistentai.com</a></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var STRINGS = {
+    en: {
+      title: "AI Doctor Chat",
+      subtitle: "Not a replacement for a real doctor",
+      disclaimer: "⚠ This chat gives general health information only. It cannot diagnose or treat you. In a medical emergency, contact your local emergency number or nearest hospital immediately.",
+      placeholder: "Type your health question…",
+      send: "Send",
+      footnote: "Powered by a simple rule-based assistant · Always verify with a licensed doctor",
+      greeting: "Hello! I can share general information on common health topics like fever, headache, cold, cough, stomach ache, sleep, and diet. What would you like to ask? (This is general info only, not a diagnosis.)",
+      fallback: "I don't have specific information on that yet. For anything beyond general wellness — especially new, severe, or ongoing symptoms — please consult a licensed doctor or visit a clinic.",
+      quick: ["Fever", "Headache", "Cold & Cough", "Stomach ache", "Sleep tips", "Healthy diet"],
+      disclaimerTail: "\n\nThis is general information, not a diagnosis. Please see a doctor if symptoms are severe, worsening, or last more than a few days."
+    },
+    bn: {
+      title: "এআই ডাক্তার চ্যাট",
+      subtitle: "প্রকৃত ডাক্তারের বিকল্প নয়",
+      disclaimer: "⚠ এই চ্যাট শুধু সাধারণ স্বাস্থ্য তথ্য দেয়। এটি রোগ নির্ণয় বা চিকিৎসা করতে পারে না। জরুরি অবস্থায় দ্রুত নিকটস্থ হাসপাতাল বা জরুরি সেবায় যোগাযোগ করুন।",
+      placeholder: "আপনার স্বাস্থ্য সংক্রান্ত প্রশ্ন লিখুন…",
+      send: "পাঠান",
+      footnote: "একটি সাধারণ রুল-বেসড সহায়ক দ্বারা পরিচালিত · সবসময় একজন নিবন্ধিত ডাক্তারের পরামর্শ নিন",
+      greeting: "নমস্কার! জ্বর, মাথাব্যথা, সর্দি-কাশি, পেটব্যথা, ঘুম ও খাদ্যাভ্যাস নিয়ে আমি সাধারণ তথ্য দিতে পারি। কী জানতে চান? (এটি শুধু সাধারণ তথ্য, রোগ নির্ণয় নয়।)",
+      fallback: "এই বিষয়ে আমার কাছে নির্দিষ্ট তথ্য নেই। সাধারণ সুস্থতার বাইরে বিশেষ করে নতুন, তীব্র বা দীর্ঘস্থায়ী উপসর্গের ক্ষেত্রে দয়া করে একজন নিবন্ধিত ডাক্তার বা ক্লিনিকে যোগাযোগ করুন।",
+      quick: ["জ্বর", "মাথাব্যথা", "সর্দি-কাশি", "পেটব্যথা", "ঘুমের টিপস", "স্বাস্থ্যকর খাদ্য"],
+      disclaimerTail: "\n\nএটি শুধু সাধারণ তথ্য, রোগ নির্ণয় নয়। উপসর্গ তীব্র হলে, বাড়তে থাকলে বা কয়েকদিনের বেশি স্থায়ী হলে দয়া করে ডাক্তার দেখান।"
+    },
+    hi: {
+      title: "एआई डॉक्टर चैट",
+      subtitle: "असली डॉक्टर का विकल्प नहीं",
+      disclaimer: "⚠ यह चैट केवल सामान्य स्वास्थ्य जानकारी देती है। यह रोग की पहचान या इलाज नहीं कर सकती। किसी भी मेडिकल इमरजेंसी में तुरंत नज़दीकी अस्पताल या आपातकालीन सेवा से संपर्क करें।",
+      placeholder: "अपना स्वास्थ्य सवाल लिखें…",
+      send: "भेजें",
+      footnote: "एक साधारण रूल-आधारित सहायक द्वारा संचालित · हमेशा किसी पंजीकृत डॉक्टर से पुष्टि करें",
+      greeting: "नमस्ते! मैं बुखार, सरदर्द, ज़ुकाम-खांसी, पेट दर्द, नींद और आहार जैसे सामान्य विषयों पर जानकारी दे सकता/सकती हूं। आप क्या जानना चाहेंगे? (यह केवल सामान्य जानकारी है, निदान नहीं।)",
+      fallback: "इस विषय पर मेरे पास विशेष जानकारी नहीं है। सामान्य सेहत सलाह से बाहर की बात हो — खासकर नए, गंभीर या लंबे समय से चल रहे लक्षण — तो कृपया किसी पंजीकृत डॉक्टर या क्लिनिक से मिलें।",
+      quick: ["बुखार", "सरदर्द", "ज़ुकाम-खांसी", "पेट दर्द", "नींद के उपाय", "सेहतमंद आहार"],
+      disclaimerTail: "\n\nयह केवल सामान्य जानकारी है, निदान नहीं। लक्षण गंभीर हों, बढ़ रहे हों या कई दिनों से बने हों तो कृपया डॉक्टर से मिलें।"
+    }
+  };
+
+  var KEYWORDS = {
+    en: {
+      fever: ["fever", "temperature", "high temp"],
+      headache: ["headache", "migraine", "head pain"],
+      cold: ["cold", "cough", "sore throat", "flu", "runny nose"],
+      stomach: ["stomach", "stomach ache", "abdominal", "indigestion", "diarrhea", "diarrhoea"],
+      sleep: ["sleep", "insomnia", "can't sleep", "cannot sleep"],
+      diet: ["diet", "nutrition", "healthy food", "weight loss", "eat healthy"]
+    },
+    bn: {
+      fever: ["জ্বর", "গা গরম", "তাপমাত্রা"],
+      headache: ["মাথাব্যথা", "মাইগ্রেন", "মাথা ব্যথা"],
+      cold: ["সর্দি", "কাশি", "গলাব্যথা", "ফ্লু"],
+      stomach: ["পেটব্যথা", "পেট ব্যথা", "বদহজম", "ডায়রিয়া", "পাতলা পায়খানা"],
+      sleep: ["ঘুম", "অনিদ্রা", "ঘুম হয় না"],
+      diet: ["ডায়েট", "খাদ্যাভ্যাস", "পুষ্টি", "ওজন কমানো", "স্বাস্থ্যকর খাবার"]
+    },
+    hi: {
+      fever: ["बुखार", "ताप", "तापमान"],
+      headache: ["सरदर्द", "सर दर्द", "माइग्रेन"],
+      cold: ["जुकाम", "ज़ुकाम", "खांसी", "गले में खराश", "फ्लू"],
+      stomach: ["पेट दर्द", "पेट में दर्द", "अपच", "दस्त"],
+      sleep: ["नींद", "अनिद्रा", "नींद नहीं आती"],
+      diet: ["आहार", "डाइट", "पोषण", "वजन कम", "सेहतमंद खाना"]
+    }
+  };
+
+  var TOPICS = {
+    en: {
+      fever: "General self-care for mild fever:\n• Rest and stay well hydrated (water, ORS, clear soups)\n• Wear light clothing and keep the room comfortably cool\n• A doctor-recommended fever reducer (e.g. paracetamol) can help if advised for your age/condition\n• Seek medical care urgently if fever is above 103°F (39.4°C), lasts more than 2–3 days, or comes with severe headache, rash, breathing trouble, or confusion.",
+      headache: "General tips for occasional headaches:\n• Rest in a quiet, dim room and stay hydrated\n• Check for eye strain, poor posture, or long screen time\n• Gentle neck/shoulder stretching may help tension headaches\n• See a doctor if it's the 'worst headache of your life', comes with fever/stiff neck, vision changes, or follows a head injury.",
+      cold: "General care for cold, cough, or sore throat:\n• Rest, fluids, and warm salt-water gargles\n• Steam inhalation may ease nasal congestion\n• Honey (for adults and children over 1 year) may soothe a cough\n• See a doctor if symptoms last over 10 days, you have high fever, chest pain, or breathing difficulty.",
+      stomach: "General care for mild stomach upset:\n• Small sips of water or ORS to prevent dehydration\n• Bland foods (rice, banana, toast) as tolerated\n• Avoid oily, spicy, or dairy-heavy food until it settles\n• See a doctor if there's severe pain, blood in stool/vomit, high fever, or symptoms lasting more than 2 days.",
+      sleep: "General tips for better sleep:\n• Keep a consistent sleep and wake time\n• Avoid caffeine and screens close to bedtime\n• Keep the bedroom cool, dark, and quiet\n• If sleep problems continue for weeks and affect daily life, a doctor can check for underlying causes.",
+      diet: "General healthy-eating basics:\n• Include vegetables, fruits, whole grains, and protein at most meals\n• Limit added sugar, deep-fried food, and excess salt\n• Stay hydrated through the day\n• For personal diet plans (weight loss, medical conditions), consult a registered dietitian or doctor."
+    },
+    bn: {
+      fever: "সাধারণ জ্বরের জন্য প্রাথমিক যত্ন:\n• বিশ্রাম নিন এবং পর্যাপ্ত পানি/ওআরএস/হালকা স্যুপ পান করুন\n• হালকা কাপড় পরুন এবং ঘর আরামদায়ক ঠান্ডা রাখুন\n• বয়স ও অবস্থা অনুযায়ী ডাক্তারের পরামর্শে জ্বর কমানোর ওষুধ (যেমন প্যারাসিটামল) নেওয়া যেতে পারে\n• জ্বর ১০৩°F (৩৯.৪°C)-এর বেশি হলে, ২-৩ দিনের বেশি থাকলে, বা তীব্র মাথাব্যথা, র‍্যাশ, শ্বাসকষ্ট বা বিভ্রান্তি থাকলে দ্রুত ডাক্তার দেখান।",
+      headache: "মাঝেমধ্যে মাথাব্যথার জন্য সাধারণ পরামর্শ:\n• শান্ত, কম আলোর জায়গায় বিশ্রাম নিন এবং পানি পান করুন\n• চোখের ক্লান্তি, ভুল ভঙ্গি বা বেশি স্ক্রিন টাইম আছে কিনা দেখুন\n• হালকা ঘাড়/কাঁধ স্ট্রেচিং সাহায্য করতে পারে\n• যদি এটি 'জীবনের সবচেয়ে খারাপ মাথাব্যথা' হয়, জ্বর/ঘাড় শক্ত হওয়া, দৃষ্টি সমস্যা বা মাথায় আঘাতের পর হয়, তবে ডাক্তার দেখান।",
+      cold: "সর্দি, কাশি বা গলাব্যথার জন্য সাধারণ যত্ন:\n• বিশ্রাম, পর্যাপ্ত তরল এবং গরম লবণ পানিতে গার্গল\n• ভাপ নেওয়া নাক বন্ধ ভাব কমাতে সাহায্য করতে পারে\n• মধু (১ বছরের বেশি বয়সীদের জন্য) কাশি প্রশমিত করতে পারে\n• উপসর্গ ১০ দিনের বেশি থাকলে, তীব্র জ্বর, বুকে ব্যথা বা শ্বাসকষ্ট হলে ডাক্তার দেখান।",
+      stomach: "হালকা পেট খারাপের জন্য সাধারণ যত্ন:\n• অল্প অল্প করে পানি বা ওআরএস পান করুন\n• সহজপাচ্য খাবার (ভাত, কলা, টোস্ট) খেতে পারেন\n• তেল-মশলাদার বা দুগ্ধজাত খাবার এড়িয়ে চলুন\n• তীব্র ব্যথা, পায়খানা/বমিতে রক্ত, উচ্চ জ্বর বা ২ দিনের বেশি উপসর্গ থাকলে ডাক্তার দেখান।",
+      sleep: "ভালো ঘুমের জন্য সাধারণ পরামর্শ:\n• প্রতিদিন একই সময়ে ঘুমান ও ঘুম থেকে উঠুন\n• ঘুমানোর আগে ক্যাফেইন ও স্ক্রিন এড়িয়ে চলুন\n• ঘর ঠান্ডা, অন্ধকার ও শান্ত রাখুন\n• সমস্যা কয়েক সপ্তাহ ধরে চললে ও দৈনন্দিন জীবনে প্রভাব ফেললে ডাক্তার দেখান।",
+      diet: "স্বাস্থ্যকর খাদ্যাভ্যাসের সাধারণ নিয়ম:\n• বেশিরভাগ খাবারে সবজি, ফল, শস্য ও প্রোটিন রাখুন\n• অতিরিক্ত চিনি, ভাজাপোড়া ও লবণ কমান\n• সারাদিন পর্যাপ্ত পানি পান করুন\n• ব্যক্তিগত ডায়েট পরিকল্পনার জন্য একজন নিবন্ধিত ডায়েটিশিয়ান বা ডাক্তারের পরামর্শ নিন।"
+    },
+    hi: {
+      fever: "हल्के बुखार के लिए सामान्य देखभाल:\n• आराम करें और पानी/ओआरएस/हल्का सूप पर्याप्त लें\n• हल्के कपड़े पहनें और कमरे को ठंडा-आरामदायक रखें\n• उम्र और स्थिति के अनुसार डॉक्टर की सलाह से बुखार कम करने की दवा (जैसे पैरासिटामोल) ली जा सकती है\n• बुखार 103°F (39.4°C) से ज्यादा हो, 2-3 दिन से ज्यादा रहे, या तेज़ सरदर्द, रैश, सांस लेने में तकलीफ या भ्रम हो तो तुरंत डॉक्टर से मिलें।",
+      headache: "कभी-कभार होने वाले सरदर्द के लिए सामान्य सुझाव:\n• शांत, कम रोशनी वाली जगह पर आराम करें और पानी पिएं\n• आंखों की थकान, गलत मुद्रा या ज्यादा स्क्रीन टाइम देखें\n• हल्की गर्दन/कंधे की स्ट्रेचिंग मदद कर सकती है\n• अगर यह 'जीवन का सबसे तेज़ सरदर्द' है, बुखार/गर्दन अकड़न, नज़र में बदलाव या सिर की चोट के बाद हुआ है, तो डॉक्टर से मिलें।",
+      cold: "जुकाम, खांसी या गले की खराश के लिए सामान्य देखभाल:\n• आराम, पर्याप्त तरल पदार्थ और गुनगुने नमक पानी से गरारे\n• भाप लेने से नाक बंद होने में राहत मिल सकती है\n• शहद (1 वर्ष से बड़े बच्चों और वयस्कों के लिए) खांसी में आराम दे सकता है\n• लक्षण 10 दिन से ज्यादा रहें, तेज़ बुखार, सीने में दर्द या सांस लेने में तकलीफ हो तो डॉक्टर से मिलें।",
+      stomach: "हल्के पेट खराब होने पर सामान्य देखभाल:\n• थोड़ा-थोड़ा पानी या ओआरएस पिएं\n• सुपाच्य भोजन (चावल, केला, टोस्ट) लें\n• तैलीय, मसालेदार या डेयरी उत्पाद अभी न लें\n• तेज़ दर्द, मल/उल्टी में खून, तेज़ बुखार या 2 दिन से ज्यादा लक्षण हों तो डॉक्टर से मिलें।",
+      sleep: "बेहतर नींद के लिए सामान्य सुझाव:\n• सोने और जागने का समय एक जैसा रखें\n• सोने से पहले कैफीन और स्क्रीन से बचें\n• कमरे को ठंडा, अंधेरा और शांत रखें\n• समस्या हफ्तों तक बनी रहे और रोज़मर्रा की जिंदगी पर असर डाले, तो डॉक्टर से जांच कराएं।",
+      diet: "सेहतमंद खान-पान के सामान्य नियम:\n• ज़्यादातर भोजन में सब्ज़ी, फल, साबुत अनाज और प्रोटीन शामिल करें\n• अतिरिक्त चीनी, तली-भुनी चीज़ें और नमक कम करें\n• दिनभर पर्याप्त पानी पिएं\n• व्यक्तिगत डाइट प्लान (वज़न घटाना, बीमारी से जुड़ा) के लिए पंजीकृत आहार विशेषज्ञ या डॉक्टर से सलाह लें।"
+    }
+  };
+
+  var currentLang = "en";
+  var rootEl = document.getElementById("adc-root");
+  var messagesEl = document.getElementById("adc-messages");
+  var quickEl = document.getElementById("adc-quick");
+  var inputEl = document.getElementById("adc-input");
+
+  function t(key) { return STRINGS[currentLang][key]; }
+
+  function applyStaticStrings() {
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    inputEl.setAttribute("placeholder", t("placeholder"));
+  }
+
+  function addMessage(text, who) {
+    var div = document.createElement("div");
+    div.className = "adc-msg " + who;
+    div.textContent = text;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function showTyping() {
+    var div = document.createElement("div");
+    div.className = "adc-msg bot typing";
+    div.id = "adc-typing";
+    div.innerHTML = '<span class="adc-dot"></span><span class="adc-dot"></span><span class="adc-dot"></span>';
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+  function hideTyping() {
+    var el = document.getElementById("adc-typing");
+    if (el) el.remove();
+  }
+
+  function findTopic(text) {
+    var lowered = text.toLowerCase();
+    var map = KEYWORDS[currentLang];
+    for (var topic in map) {
+      var words = map[topic];
+      for (var i = 0; i < words.length; i++) {
+        if (lowered.indexOf(words[i].toLowerCase()) !== -1) return topic;
+      }
+    }
+    return null;
+  }
+
+  function respond(userText) {
+    showTyping();
+    setTimeout(function () {
+      hideTyping();
+      var topic = findTopic(userText);
+      var reply = topic ? TOPICS[currentLang][topic] + t("disclaimerTail") : t("fallback");
+      addMessage(reply, "bot");
+    }, 500);
+  }
+
+  function handleSend() {
+    var val = inputEl.value.trim();
+    if (!val) return;
+    addMessage(val, "user");
+    inputEl.value = "";
+    respond(val);
+  }
+
+  function renderQuickChips() {
+    quickEl.innerHTML = "";
+    var topics = Object.keys(TOPICS[currentLang]);
+    var labels = t("quick");
+    topics.forEach(function (topic, i) {
+      var chip = document.createElement("button");
+      chip.className = "adc-chip";
+      chip.textContent = labels[i];
+      chip.addEventListener("click", function () {
+        addMessage(labels[i], "user");
+        respond(labels[i].toLowerCase() === labels[i] ? topic : "");
+        setTimeout(function () {
+          var last = messagesEl.lastElementChild;
+          if (last && last.classList.contains("bot")) {
+            last.textContent = TOPICS[currentLang][topic] + t("disclaimerTail");
+          }
+        }, 520);
+      });
+      quickEl.appendChild(chip);
+    });
+  }
+
+  function resetChat() {
+    messagesEl.innerHTML = "";
+    addMessage(t("greeting"), "bot");
+    renderQuickChips();
+  }
+
+  document.querySelectorAll(".adc-lang-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".adc-lang-btn").forEach(function (b) { b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      currentLang = btn.getAttribute("data-lang");
+      rootEl.classList.remove("lang-bn", "lang-hi");
+      if (currentLang === "bn") rootEl.classList.add("lang-bn");
+      if (currentLang === "hi") rootEl.classList.add("lang-hi");
+      applyStaticStrings();
+      resetChat();
+    });
+  });
+
+  document.getElementById("adc-send").addEventListener("click", handleSend);
+  inputEl.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") handleSend();
+  });
+
+  applyStaticStrings();
+  resetChat();
+})();
+</script>
+</body>
+</html>
