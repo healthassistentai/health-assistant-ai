@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Thyroid AI Analyzer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: transparent; }
+  #thy-root, #thy-root * { box-sizing: border-box; }
+  #thy-root {
+    --thy-purple-900:#3a1f6b;
+    --thy-purple-700:#5a32a3;
+    --thy-purple-500:#6f42c1;
+    --thy-lavender-100:#f2ecfb;
+    --thy-bg:#faf8ff;
+    --thy-card:#ffffff;
+    --thy-ink:#2b1f3d;
+    --thy-muted:#71698a;
+    --thy-amber:#b8611b;
+    --thy-amber-bg:#fdf1e4;
+    --thy-green:#1f8f42;
+    --thy-green-bg:#e9f8ee;
+    --thy-red:#c0392b;
+    --thy-red-bg:#fdecea;
+    font-family: "Noto Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    max-width: 640px;
+    margin: 12px auto;
+  }
+  #thy-root.lang-bn { font-family: "Noto Sans Bengali", "Noto Sans", sans-serif; }
+  #thy-root.lang-hi { font-family: "Noto Sans Devanagari", "Noto Sans", sans-serif; }
+  #thy-root .thy-card, #thy-root label, #thy-root button,
+  #thy-root .thy-result, #thy-root .thy-disclaimer, #thy-root .thy-brand {
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+  #thy-root.lang-bn *, #thy-root.lang-hi * { line-height: 1.7; }
+
+  .thy-card {
+    background: var(--thy-card);
+    border: 1px solid #e4d9f7;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(111,66,193,0.10);
+    overflow: hidden;
+  }
+  .thy-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, var(--thy-purple-500), var(--thy-purple-900));
+    color: #fff;
+  }
+  .thy-header-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .thy-avatar {
+    width: 42px; height: 42px; flex: 0 0 42px; font-size: 20px;
+    background: rgba(255,255,255,0.18); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .thy-title { font-size: 17px; font-weight: 700; }
+  .thy-subtitle { font-size: 12px; opacity: .9; margin-top: 2px; }
+  .thy-lang-switch { display: flex; gap: 4px; flex: 0 0 auto; }
+  .thy-lang-btn {
+    font-size: 11px; font-weight: 600; padding: 6px 9px;
+    border-radius: 999px; border: 1px solid rgba(255,255,255,.4);
+    background: transparent; color: #f4edff; cursor: pointer;
+  }
+  .thy-lang-btn.is-active { background: #fff; color: var(--thy-purple-900); }
+
+  .thy-disclaimer {
+    font-size: 12px; line-height: 1.5;
+    background: var(--thy-amber-bg); color: var(--thy-amber);
+    padding: 10px 20px; border-bottom: 1px solid #f3ddc2;
+  }
+
+  .thy-form { padding: 20px; background: var(--thy-bg); }
+  .thy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .thy-field { margin-bottom: 14px; }
+  .thy-field label { display: block; font-size: 13px; font-weight: 600; color: var(--thy-purple-900); margin-bottom: 6px; }
+  .thy-field input {
+    width: 100%; padding: 11px 12px; font-size: 14px;
+    border: 1px solid #e0d3f5; border-radius: 10px; outline: none;
+    background: #fff; color: var(--thy-ink);
+  }
+  .thy-field input:focus {
+    border-color: var(--thy-purple-500); box-shadow: 0 0 0 3px rgba(111,66,193,.15);
+  }
+  .thy-analyze-btn {
+    width: 100%; padding: 13px; font-size: 14.5px; font-weight: 700;
+    background: var(--thy-purple-500); color: #fff; border: none; border-radius: 10px; cursor: pointer;
+    transition: background .2s ease;
+  }
+  .thy-analyze-btn:hover { background: var(--thy-purple-700); }
+
+  .thy-result { margin: 0 20px 20px; padding: 18px; border-radius: 12px; font-size: 13.5px; line-height: 1.6; }
+  .thy-result.good { background: var(--thy-green-bg); color: var(--thy-green); border: 1px solid #c9ecd6; }
+  .thy-result.bad { background: var(--thy-red-bg); color: var(--thy-red); border: 1px solid #f4cac5; }
+  .thy-result.warn { background: var(--thy-amber-bg); color: var(--thy-amber); border: 1px solid #f3ddc2; }
+  .thy-result h3 { margin: 0 0 12px; font-size: 15.5px; }
+  .thy-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .thy-result-block { background: rgba(255,255,255,0.6); border-radius: 10px; padding: 10px 12px; }
+  .thy-result-block .thy-block-title { font-size: 11.5px; font-weight: 700; margin-bottom: 6px; opacity: .85; }
+  .thy-result-block div.thy-row { display: flex; justify-content: space-between; font-size: 12.5px; padding: 2px 0; }
+
+  .thy-brand {
+    text-align: center; padding: 18px 20px 22px;
+    border-top: 1px solid #e4d9f7; background: #fff;
+  }
+  .thy-brand-name { font-size: 13px; font-weight: 800; letter-spacing: .06em; color: var(--thy-purple-900); }
+  .thy-brand-tag { font-size: 12px; color: var(--thy-purple-700); font-weight: 600; margin-top: 2px; }
+  .thy-brand-services { font-size: 11px; color: var(--thy-muted); margin-top: 6px; }
+  .thy-brand-site { font-size: 11.5px; margin-top: 8px; }
+  .thy-brand-site a { color: var(--thy-purple-700); text-decoration: none; font-weight: 600; }
+  .thy-brand-site a:hover { text-decoration: underline; }
+
+  @media (max-width: 500px) {
+    #thy-root { margin: 8px; }
+    .thy-grid, .thy-result-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="thy-root">
+  <div class="thy-card">
+
+    <div class="thy-header">
+      <div class="thy-header-left">
+        <div class="thy-avatar">🦋</div>
+        <div>
+          <div class="thy-title" data-i18n="title">Advanced Thyroid AI Analyzer</div>
+          <div class="thy-subtitle" data-i18n="subtitle">Check your TSH, T3 and T4 against standard ranges</div>
+        </div>
+      </div>
+      <div class="thy-lang-switch">
+        <button class="thy-lang-btn is-active" data-lang="en">EN</button>
+        <button class="thy-lang-btn" data-lang="bn">বাংলা</button>
+        <button class="thy-lang-btn" data-lang="hi">हिंदी</button>
+      </div>
+    </div>
+
+    <div class="thy-disclaimer" data-i18n="disclaimer">⚠ This tool compares your numbers to common lab reference ranges for general awareness only. It is NOT a diagnosis. Reference ranges vary by lab and by individual (age, pregnancy, medication). Always discuss your thyroid report with a doctor.</div>
+
+    <div class="thy-form">
+      <div class="thy-field">
+        <label data-i18n="tshLabel">TSH (mIU/L)</label>
+        <input id="thy-tsh" type="number" step="0.01" data-i18n-ph="tshPh" placeholder="Example: 2.5" />
+      </div>
+      <div class="thy-grid">
+        <div class="thy-field">
+          <label data-i18n="t3Label">T3 (ng/dL)</label>
+          <input id="thy-t3" type="number" step="0.1" data-i18n-ph="t3Ph" placeholder="Example: 120" />
+        </div>
+        <div class="thy-field">
+          <label data-i18n="t4Label">T4 (µg/dL)</label>
+          <input id="thy-t4" type="number" step="0.1" data-i18n-ph="t4Ph" placeholder="Example: 8" />
+        </div>
+      </div>
+      <button id="thy-analyze" class="thy-analyze-btn" data-i18n="btn">Analyze Report</button>
+    </div>
+
+    <div id="thy-result" class="thy-result" style="display:none;"></div>
+
+    <div class="thy-brand">
+      <div class="thy-brand-name">HEALTH ASSISTENT AI</div>
+      <div class="thy-brand-tag" data-i18n="brandTag">Your Smart AI Health Companion</div>
+      <div class="thy-brand-services" data-i18n="brandServices">AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content</div>
+      <div class="thy-brand-site">Website: <a href="https://www.healthassistentai.com" target="_blank" rel="noopener">healthassistentai.com</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var STRINGS = {
+    en: {
+      title: "Advanced Thyroid AI Analyzer",
+      subtitle: "Check your TSH, T3 and T4 against standard ranges",
+      disclaimer: "⚠ This tool compares your numbers to common lab reference ranges for general awareness only. It is NOT a diagnosis. Reference ranges vary by lab and by individual (age, pregnancy, medication). Always discuss your thyroid report with a doctor.",
+      tshLabel: "TSH (mIU/L)", tshPh: "Example: 2.5",
+      t3Label: "T3 (ng/dL)", t3Ph: "Example: 120",
+      t4Label: "T4 (µg/dL)", t4Ph: "Example: 8",
+      btn: "Analyze Report",
+      invalid: "Please enter valid TSH, T3, and T4 values.",
+      normal: "✅ Your values are within the typical NORMAL range.",
+      hypo: "⚠️ Your values are in a range sometimes associated with Hypothyroidism (underactive thyroid).",
+      hyper: "⚠️ Your values are in a range sometimes associated with Hyperthyroidism (overactive thyroid).",
+      refTitle: "Reference Range",
+      yourTitle: "Your Values",
+      followUp: "This is not a diagnosis — please share this report with a doctor for proper interpretation and next steps.",
+      brandTag: "Your Smart AI Health Companion",
+      brandServices: "AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content"
+    },
+    bn: {
+      title: "অ্যাডভান্সড থাইরয়েড এআই অ্যানালাইজার",
+      subtitle: "আপনার TSH, T3 ও T4 স্ট্যান্ডার্ড রেঞ্জের সাথে মিলিয়ে দেখুন",
+      disclaimer: "⚠ এই টুলটি আপনার মান সাধারণ ল্যাব রেফারেন্স রেঞ্জের সাথে তুলনা করে শুধু সচেতনতার জন্য। এটি রোগ নির্ণয় নয়। রেফারেন্স রেঞ্জ ল্যাব ও ব্যক্তি (বয়স, গর্ভাবস্থা, ওষুধ) ভেদে ভিন্ন হতে পারে। আপনার থাইরয়েড রিপোর্ট নিয়ে সবসময় ডাক্তারের সাথে আলোচনা করুন।",
+      tshLabel: "TSH (mIU/L)", tshPh: "উদাহরণ: ২.৫",
+      t3Label: "T3 (ng/dL)", t3Ph: "উদাহরণ: ১২০",
+      t4Label: "T4 (µg/dL)", t4Ph: "উদাহরণ: ৮",
+      btn: "রিপোর্ট বিশ্লেষণ করুন",
+      invalid: "দয়া করে সঠিক TSH, T3 এবং T4 মান লিখুন।",
+      normal: "✅ আপনার মান সাধারণ স্বাভাবিক পরিসরে আছে।",
+      hypo: "⚠️ আপনার মান এমন পরিসরে আছে যা কখনো কখনো হাইপোথাইরয়েডিজম (কম সক্রিয় থাইরয়েড)-এর সাথে যুক্ত।",
+      hyper: "⚠️ আপনার মান এমন পরিসরে আছে যা কখনো কখনো হাইপারথাইরয়েডিজম (অতি সক্রিয় থাইরয়েড)-এর সাথে যুক্ত।",
+      refTitle: "রেফারেন্স রেঞ্জ",
+      yourTitle: "আপনার মান",
+      followUp: "এটি রোগ নির্ণয় নয় — সঠিক ব্যাখ্যা ও পরবর্তী পদক্ষেপের জন্য এই রিপোর্টটি একজন ডাক্তারের সাথে শেয়ার করুন।",
+      brandTag: "আপনার স্মার্ট এআই স্বাস্থ্য সহায়ক",
+      brandServices: "এআই স্বাস্থ্য নির্দেশনা • স্বাস্থ্য টুলস • রিপোর্ট বিশ্লেষণ • স্বাস্থ্য শিক্ষা • স্বাস্থ্য কনটেন্ট"
+    },
+    hi: {
+      title: "एडवांस्ड थायरॉइड एआई एनालाइज़र",
+      subtitle: "अपने TSH, T3 और T4 को मानक रेंज से मिलाकर देखें",
+      disclaimer: "⚠ यह टूल आपके मानों की तुलना सामान्य लैब रेफरेंस रेंज से करता है, केवल जागरूकता के लिए। यह निदान नहीं है। रेफरेंस रेंज लैब और व्यक्ति (उम्र, गर्भावस्था, दवा) के अनुसार अलग हो सकती है। अपनी थायरॉइड रिपोर्ट पर हमेशा डॉक्टर से चर्चा करें।",
+      tshLabel: "TSH (mIU/L)", tshPh: "उदाहरण: 2.5",
+      t3Label: "T3 (ng/dL)", t3Ph: "उदाहरण: 120",
+      t4Label: "T4 (µg/dL)", t4Ph: "उदाहरण: 8",
+      btn: "रिपोर्ट जांचें",
+      invalid: "कृपया सही TSH, T3 और T4 मान दर्ज करें।",
+      normal: "✅ आपके मान सामान्य सीमा में हैं।",
+      hypo: "⚠️ आपके मान उस सीमा में हैं जो कभी-कभी हाइपोथायरॉइड (कम सक्रिय थायरॉइड) से जुड़ी होती है।",
+      hyper: "⚠️ आपके मान उस सीमा में हैं जो कभी-कभी हाइपरथायरॉइड (अधिक सक्रिय थायरॉइड) से जुड़ी होती है।",
+      refTitle: "रेफरेंस रेंज",
+      yourTitle: "आपके मान",
+      followUp: "यह निदान नहीं है — सही व्याख्या और अगले कदम के लिए यह रिपोर्ट किसी डॉक्टर के साथ साझा करें।",
+      brandTag: "आपका स्मार्ट एआई हेल्थ साथी",
+      brandServices: "एआई स्वास्थ्य मार्गदर्शन • हेल्थ टूल्स • रिपोर्ट विश्लेषण • स्वास्थ्य शिक्षा • स्वास्थ्य कंटेंट"
+    }
+  };
+
+  var currentLang = "en";
+  var rootEl = document.getElementById("thy-root");
+
+  function t(key) { return STRINGS[currentLang][key]; }
+
+  function applyStaticStrings() {
+    document.querySelectorAll("#thy-root [data-i18n]").forEach(function (el) {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.getElementById("thy-tsh").setAttribute("placeholder", t("tshPh"));
+    document.getElementById("thy-t3").setAttribute("placeholder", t("t3Ph"));
+    document.getElementById("thy-t4").setAttribute("placeholder", t("t4Ph"));
+  }
+
+  function analyze() {
+    var tsh = parseFloat(document.getElementById("thy-tsh").value);
+    var t3 = parseFloat(document.getElementById("thy-t3").value);
+    var t4 = parseFloat(document.getElementById("thy-t4").value);
+    var box = document.getElementById("thy-result");
+    box.style.display = "block";
+
+    if (isNaN(tsh) || isNaN(t3) || isNaN(t4)) {
+      box.className = "thy-result bad";
+      box.innerHTML = "<h3>" + t("invalid") + "</h3>";
+      return;
+    }
+
+    var msg, cls;
+    if (tsh > 4.5 && (t4 < 4.5 || t3 < 80)) {
+      msg = t("hypo"); cls = "bad";
+    } else if (tsh < 0.4 && (t4 > 12 || t3 > 200)) {
+      msg = t("hyper"); cls = "warn";
+    } else {
+      msg = t("normal"); cls = "good";
+    }
+
+    box.className = "thy-result " + cls;
+    box.innerHTML =
+      "<h3>" + msg + "</h3>" +
+      "<div class='thy-result-grid'>" +
+        "<div class='thy-result-block'>" +
+          "<div class='thy-block-title'>" + t("refTitle") + "</div>" +
+          "<div class='thy-row'><span>TSH</span><span>0.4 – 4.5</span></div>" +
+          "<div class='thy-row'><span>T3</span><span>80 – 200</span></div>" +
+          "<div class='thy-row'><span>T4</span><span>4.5 – 12</span></div>" +
+        "</div>" +
+        "<div class='thy-result-block'>" +
+          "<div class='thy-block-title'>" + t("yourTitle") + "</div>" +
+          "<div class='thy-row'><span>TSH</span><span>" + tsh + "</span></div>" +
+          "<div class='thy-row'><span>T3</span><span>" + t3 + "</span></div>" +
+          "<div class='thy-row'><span>T4</span><span>" + t4 + "</span></div>" +
+        "</div>" +
+      "</div>" +
+      "<div style='margin-top:12px;font-size:12px;'>" + t("followUp") + "</div>";
+  }
+
+  document.querySelectorAll(".thy-lang-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".thy-lang-btn").forEach(function (b) { b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      currentLang = btn.getAttribute("data-lang");
+      rootEl.classList.remove("lang-bn", "lang-hi");
+      if (currentLang === "bn") rootEl.classList.add("lang-bn");
+      if (currentLang === "hi") rootEl.classList.add("lang-hi");
+      applyStaticStrings();
+      document.getElementById("thy-result").style.display = "none";
+    });
+  });
+
+  document.getElementById("thy-analyze").addEventListener("click", analyze);
+
+  applyStaticStrings();
+})();
+</script>
+
+</body>
+</html>
