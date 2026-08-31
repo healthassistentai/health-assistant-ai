@@ -1,0 +1,487 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>CBC Report AI Analyzer</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0077ff; --primary-dark:#0058c2; --secondary:#00b894; --danger:#ff3b30;
+    --warn:#f5a623;
+    --bg:#f4f8fb; --card:#ffffff; --ink:#0f2438; --muted:#5b7086; --line:#e3ecf3;
+    --shadow:0 10px 30px rgba(15,36,56,0.08); --radius:16px;
+  }
+  body.dark{
+    --bg:#0b1220; --card:#111b2c; --ink:#eaf2fb; --muted:#93a6bd; --line:#1e2c3f;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;transition:.3s;-webkit-font-smoothing:antialiased;}
+  body.lang-bn, body.lang-bn input, body.lang-bn select, body.lang-bn button{font-family:'Noto Sans Bengali','Inter',sans-serif;}
+  body.lang-hi, body.lang-hi input, body.lang-hi select, body.lang-hi button{font-family:'Noto Sans Devanagari','Inter',sans-serif;}
+
+  .wrap{max-width:800px;margin:0 auto;padding:28px 18px 60px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:20px;}
+  .breadcrumb{font-size:12.5px;color:var(--muted);font-weight:600;}
+  .lang-select{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:var(--shadow);}
+  .lang-select button{border:none;background:transparent;padding:7px 12px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:.2s;}
+  .lang-select button.active{background:var(--primary);color:#fff;}
+  .icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);font-size:17px;}
+
+  .hero{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);border-radius:22px;padding:28px 24px 22px;color:#fff;position:relative;overflow:hidden;box-shadow:0 16px 40px rgba(0,119,255,.28);}
+  .hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;}
+  .hero h1{font-family:'Poppins',sans-serif;font-size:24px;margin:0 0 4px;font-weight:800;letter-spacing:-.2px;display:flex;align-items:center;gap:10px;}
+  .hero p.tag{margin:0;opacity:.92;font-size:14px;font-weight:500;}
+  .drop-icon{width:54px;height:54px;flex:0 0 54px;}
+  .drop-icon svg{width:100%;height:100%;animation:bob 3s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+  .chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:600;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin-top:18px;box-shadow:var(--shadow);}
+  .card h2{font-family:'Poppins',sans-serif;font-size:16.5px;margin:0 0 6px;font-weight:700;display:flex;align-items:center;gap:8px;}
+  .card .subhead{font-size:13px;color:var(--muted);margin:0 0 16px;}
+
+  .gender-row{display:flex;gap:10px;margin-bottom:18px;}
+  .gender-opt{flex:1;text-align:center;padding:11px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-weight:600;font-size:14px;transition:.2s;background:var(--bg);}
+  .gender-opt.active{border-color:var(--primary);color:var(--primary);background:rgba(0,119,255,.08);}
+
+  .param-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;}
+  .param-field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:6px;}
+  .param-field .unit-hint{font-size:11.5px;color:var(--muted);font-weight:400;margin-left:4px;}
+  .param-field input{
+    width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14.5px;
+    font-family:inherit;color:var(--ink);background:var(--bg);outline:none;transition:.2s;
+  }
+  .param-field input:focus{border-color:var(--primary);}
+
+  .analyze-btn{
+    margin-top:18px;width:100%;padding:14px;border:none;border-radius:12px;background:var(--secondary);color:#fff;
+    font-size:15.5px;font-weight:700;cursor:pointer;box-shadow:0 10px 22px rgba(0,184,148,.32);font-family:'Poppins',sans-serif;
+  }
+  .analyze-btn:active{transform:scale(.98);}
+
+  #resultsSection{display:none;}
+  .summary-banner{border-radius:14px;padding:16px 18px;margin-top:0;font-size:14px;font-weight:600;display:flex;gap:10px;align-items:center;}
+  .summary-ok{background:rgba(0,184,148,.12);color:var(--secondary);}
+  .summary-warn{background:rgba(245,166,35,.14);color:#a9700a;}
+  .summary-danger{background:rgba(255,59,48,.13);color:var(--danger);}
+
+  .gauge-row{padding:14px 0;border-bottom:1px solid var(--line);}
+  .gauge-row:last-child{border-bottom:none;}
+  .gauge-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+  .gauge-top .pname{font-weight:700;font-size:14.5px;}
+  .gauge-top .pval{font-size:13.5px;color:var(--muted);}
+  .status-badge{font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;}
+  .status-low{background:rgba(245,166,35,.15);color:#a9700a;}
+  .status-high{background:rgba(255,59,48,.15);color:var(--danger);}
+  .status-normal{background:rgba(0,184,148,.15);color:var(--secondary);}
+
+  .gauge-track{position:relative;height:10px;border-radius:999px;background:linear-gradient(90deg, var(--warn) 0 20%, var(--secondary) 20% 80%, var(--danger) 80% 100%);opacity:.8;}
+  .gauge-marker{
+    position:absolute;top:-4px;width:18px;height:18px;border-radius:50%;background:var(--ink);border:3px solid var(--card);
+    transform:translateX(-50%);box-shadow:0 2px 6px rgba(0,0,0,.3);transition:left .7s cubic-bezier(.2,.9,.25,1);
+  }
+  .gauge-range-text{font-size:11.5px;color:var(--muted);margin-top:6px;}
+  .gauge-explain{font-size:13px;color:var(--ink);margin-top:8px;line-height:1.5;background:var(--bg);border-radius:8px;padding:9px 11px;}
+
+  .accordion{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+  .accordion:last-child{margin-bottom:0;}
+  .accordion-head{padding:13px 15px;cursor:pointer;font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center;background:var(--bg);}
+  .accordion-body{padding:0 15px;max-height:0;overflow:hidden;transition:max-height .3s ease, padding .3s ease;font-size:13.5px;color:var(--muted);line-height:1.6;}
+  .accordion.open .accordion-body{padding:12px 15px;max-height:300px;}
+  .accordion.open .chevron{transform:rotate(180deg);}
+  .chevron{transition:.2s;}
+
+  .disclaimer{font-size:12.5px;color:var(--muted);text-align:center;margin-top:26px;line-height:1.6;padding:0 8px;}
+  .disclaimer strong{color:var(--danger);}
+
+  .brand-footer{text-align:center;margin-top:24px;padding:18px 12px 4px;border-top:1px solid var(--line);}
+  .brand-footer h3{font-family:'Poppins',sans-serif;font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--primary-dark);margin:0;}
+  .brand-footer p{font-size:12px;color:var(--muted);margin:4px 0;}
+  .brand-footer a{color:var(--primary);text-decoration:none;font-weight:600;}
+</style>
+</head>
+<body class="lang-en">
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="breadcrumb" data-i18n="breadcrumb">Health Assistant AI · CBC Analyzer</div>
+    <div style="align-items: center; display: flex; gap: 10px;">
+      <div class="lang-select">
+        <button class="active" data-lang="en">English</button>
+        <button data-lang="bn">বাংলা</button>
+        <button data-lang="hi">हिन्दी</button>
+      </div>
+      <button class="icon-btn" id="darkToggle" title="Toggle dark mode">🌙</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-top">
+      <div>
+        <h1 data-i18n="title">🩸 CBC Report AI Analyzer</h1>
+        <p class="tag" data-i18n="subtitle">Understand your Complete Blood Count report in plain language</p>
+      </div>
+      <div class="drop-icon">
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 4 C32 4 12 30 12 44 C12 55 21 62 32 62 C43 62 52 55 52 44 C52 30 32 4 32 4 Z" fill="#ffffff" opacity="0.95"/>
+          <circle cx="26" cy="42" fill="#0077ff" opacity="0.35" r="5"/>
+        </svg>
+      </div>
+    </div>
+    <div class="chips">
+      <span class="chip" data-i18n="chip1">🔬 Auto Range Check</span>
+      <span class="chip" data-i18n="chip2">🌍 3 Languages</span>
+      <span class="chip" data-i18n="chip3">💬 Plain Explanation</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="formHeading">🧾 Enter your CBC values</h2>
+    <p class="subhead" data-i18n="formSub">Fill only the fields printed on your report — the rest can stay empty.</p>
+
+    <div class="gender-row" id="genderRow">
+      <div class="gender-opt active" data-gender="female"><span data-i18n="genderFemale">Female</span></div>
+      <div class="gender-opt" data-gender="male"><span data-i18n="genderMale">Male</span></div>
+    </div>
+
+    <div class="param-grid" id="paramGrid"></div>
+
+    <button class="analyze-btn" data-i18n="analyzeBtn" id="analyzeBtn">Analyze Report</button>
+  </div>
+
+  <div id="resultsSection">
+    <div class="card">
+      <div class="summary-banner" id="summaryBanner"></div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="resultsHeading">📊 Parameter-by-parameter breakdown</h2>
+      <div id="gaugeList"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="infoHeading">📘 What does each test mean?</h2>
+    <div id="accordionList"></div>
+  </div>
+
+  <p class="disclaimer" data-i18n="disclaimer">⚠ Educational purpose only. <strong>This is not a medical diagnosis.</strong> Please review your CBC report with a qualified doctor — reference ranges vary slightly between labs.</p>
+
+  <div class="brand-footer">
+    <h3>HEALTH ASSISTENT AI</h3>
+    <p>Your Smart AI Health Companion</p>
+    <p>AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content</p>
+    <p>Website: <a href="https://www.healthassistentai.com" target="_blank" rel="noopener">healthassistentai.com</a></p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+
+  const I18N = {
+    en:{
+      breadcrumb:"Health Assistant AI · CBC Analyzer",
+      title:"🩸 CBC Report AI Analyzer",
+      subtitle:"Understand your Complete Blood Count report in plain language",
+      chip1:"🔬 Auto Range Check", chip2:"🌍 3 Languages", chip3:"💬 Plain Explanation",
+      formHeading:"🧾 Enter your CBC values",
+      formSub:"Fill only the fields printed on your report — the rest can stay empty.",
+      genderFemale:"Female", genderMale:"Male",
+      analyzeBtn:"Analyze Report",
+      emptyWarning:"Please enter at least one value from your report.",
+      resultsHeading:"📊 Parameter-by-parameter breakdown",
+      infoHeading:"📘 What does each test mean?",
+      disclaimer:"⚠ Educational purpose only. <strong>This is not a medical diagnosis.</strong> Please review your CBC report with a qualified doctor — reference ranges vary slightly between labs.",
+      statusLow:"Low", statusHigh:"High", statusNormal:"Normal",
+      summaryOk:"All the values you entered fall within the typical range.",
+      summaryWarn:(n)=>`${n} value(s) are outside the typical range. This is common and not automatically serious — but worth discussing with your doctor.`,
+      summaryDanger:"One or more values are far outside the typical range. Please consult a doctor soon to understand what this report means for you.",
+      rangeLabel:"Typical range"
+    },
+    bn:{
+      breadcrumb:"হেলথ অ্যাসিস্ট্যান্ট AI · CBC অ্যানালাইজার",
+      title:"🩸 CBC রিপোর্ট AI অ্যানালাইজার",
+      subtitle:"আপনার Complete Blood Count রিপোর্ট সহজ ভাষায় বুঝে নিন",
+      chip1:"🔬 স্বয়ংক্রিয় রেঞ্জ চেক", chip2:"🌍 ৩ ভাষা", chip3:"💬 সহজ ব্যাখ্যা",
+      formHeading:"🧾 আপনার CBC মান লিখুন",
+      formSub:"শুধু রিপোর্টে যা যা আছে তা পূরণ করুন — বাকিগুলো খালি রাখতে পারেন।",
+      genderFemale:"মহিলা", genderMale:"পুরুষ",
+      analyzeBtn:"রিপোর্ট বিশ্লেষণ করুন",
+      emptyWarning:"অনুগ্রহ করে আপনার রিপোর্ট থেকে অন্তত একটি মান লিখুন।",
+      resultsHeading:"📊 প্যারামিটার অনুযায়ী বিশ্লেষণ",
+      infoHeading:"📘 প্রতিটি টেস্টের অর্থ কী?",
+      disclaimer:"⚠ শুধুমাত্র শিক্ষামূলক উদ্দেশ্যে। <strong>এটি কোনো চিকিৎসা নির্ণয় নয়।</strong> অনুগ্রহ করে আপনার CBC রিপোর্ট একজন যোগ্য ডাক্তারের সঙ্গে পর্যালোচনা করুন — ল্যাব ভেদে রেফারেন্স রেঞ্জ কিছুটা ভিন্ন হতে পারে।",
+      statusLow:"কম", statusHigh:"বেশি", statusNormal:"স্বাভাবিক",
+      summaryOk:"আপনার দেওয়া সব মান স্বাভাবিক রেঞ্জের মধ্যে আছে।",
+      summaryWarn:(n)=>`${n}টি মান স্বাভাবিক রেঞ্জের বাইরে। এটি সাধারণ ব্যাপার এবং সবসময় গুরুতর নয় — তবে ডাক্তারের সঙ্গে আলোচনা করা ভালো।`,
+      summaryDanger:"একটি বা একাধিক মান স্বাভাবিক রেঞ্জ থেকে অনেক দূরে। এই রিপোর্টের অর্থ বুঝতে দ্রুত একজন ডাক্তারের পরামর্শ নিন।",
+      rangeLabel:"স্বাভাবিক রেঞ্জ"
+    },
+    hi:{
+      breadcrumb:"हेल्थ असिस्टेंट AI · CBC एनालाइज़र",
+      title:"🩸 CBC रिपोर्ट AI एनालाइज़र",
+      subtitle:"अपनी Complete Blood Count रिपोर्ट को आसान भाषा में समझें",
+      chip1:"🔬 ऑटो रेंज जांच", chip2:"🌍 3 भाषाएं", chip3:"💬 सरल व्याख्या",
+      formHeading:"🧾 अपने CBC मान दर्ज करें",
+      formSub:"केवल वही फील्ड भरें जो आपकी रिपोर्ट में हैं — बाकी खाली रह सकते हैं।",
+      genderFemale:"महिला", genderMale:"पुरुष",
+      analyzeBtn:"रिपोर्ट जांचें",
+      emptyWarning:"कृपया अपनी रिपोर्ट से कम से कम एक मान दर्ज करें।",
+      resultsHeading:"📊 पैरामीटर के अनुसार विश्लेषण",
+      infoHeading:"📘 हर टेस्ट का क्या मतलब है?",
+      disclaimer:"⚠ केवल शैक्षिक उद्देश्य के लिए। <strong>यह कोई चिकित्सा निदान नहीं है।</strong> कृपया अपनी CBC रिपोर्ट किसी योग्य डॉक्टर से जांच करवाएं — लैब के अनुसार सामान्य सीमा थोड़ी अलग हो सकती है।",
+      statusLow:"कम", statusHigh:"अधिक", statusNormal:"सामान्य",
+      summaryOk:"आपके दर्ज किए सभी मान सामान्य सीमा में हैं।",
+      summaryWarn:(n)=>`${n} मान सामान्य सीमा से बाहर हैं। यह आम बात है और हमेशा गंभीर नहीं होता — लेकिन डॉक्टर से चर्चा करना बेहतर रहेगा।`,
+      summaryDanger:"एक या अधिक मान सामान्य सीमा से बहुत दूर हैं। कृपया इस रिपोर्ट का मतलब समझने के लिए जल्द ही डॉक्टर से सलाह लें।",
+      rangeLabel:"सामान्य सीमा"
+    }
+  };
+
+  let currentLang = 'en';
+  let currentGender = 'female';
+
+  const PARAMS = [
+    {key:'hb', unit:'g/dL',
+      label:{en:"Hemoglobin (Hb)", bn:"হিমোগ্লোবিন (Hb)", hi:"हीमोग्लोबिन (Hb)"},
+      range:{male:[13.5,17.5], female:[12.0,15.5]}, critical:[7,20],
+      info:{en:"Carries oxygen from the lungs to the rest of the body.", bn:"ফুসফুস থেকে শরীরের বাকি অংশে অক্সিজেন বহন করে।", hi:"फेफड़ों से शरीर के बाकी हिस्सों तक ऑक्सीजन पहुंचाता है।"},
+      lowNote:{en:"Low hemoglobin is often linked with anemia, which can have many causes such as iron deficiency, blood loss, or chronic illness.", bn:"কম হিমোগ্লোবিন প্রায়ই অ্যানিমিয়ার সঙ্গে যুক্ত থাকে, যার কারণ আয়রনের ঘাটতি, রক্তক্ষরণ বা দীর্ঘমেয়াদি অসুস্থতা হতে পারে।", hi:"कम हीमोग्लोबिन अक्सर एनीमिया से जुड़ा होता है, जिसके कई कारण हो सकते हैं जैसे आयरन की कमी, रक्तस्राव या दीर्घकालिक बीमारी।"},
+      highNote:{en:"High hemoglobin can relate to dehydration, smoking, or living at high altitude, among other causes.", bn:"বেশি হিমোগ্লোবিন ডিহাইড্রেশন, ধূমপান বা উচ্চ উচ্চতায় বসবাসের সঙ্গে সম্পর্কিত হতে পারে।", hi:"अधिक हीमोग्लोबिन डिहाइड्रेशन, धूम्रपान या ऊंचाई वाले क्षेत्र में रहने से जुड़ा हो सकता है।"}},
+
+    {key:'rbc', unit:'million/µL',
+      label:{en:"RBC Count", bn:"RBC কাউন্ট", hi:"RBC काउंट"},
+      range:{male:[4.5,5.9], female:[4.0,5.2]},
+      info:{en:"Red blood cells carry oxygen throughout the body.", bn:"লোহিত রক্তকণিকা সারা শরীরে অক্সিজেন বহন করে।", hi:"लाल रक्त कोशिकाएं शरीर में ऑक्सीजन पहुंचाती हैं।"},
+      lowNote:{en:"A low count can relate to anemia or nutritional deficiency.", bn:"কম মাত্রা অ্যানিমিয়া বা পুষ্টির ঘাটতির সঙ্গে সম্পর্কিত হতে পারে।", hi:"कम मात्रा एनीमिया या पोषण की कमी से जुड़ी हो सकती है।"},
+      highNote:{en:"A high count can relate to dehydration or certain lung or heart conditions.", bn:"বেশি মাত্রা ডিহাইড্রেশন বা কিছু ফুসফুস/হৃদরোগের সঙ্গে সম্পর্কিত হতে পারে।", hi:"अधिक मात्रा डिहाइड्रेशन या कुछ फेफड़े/हृदय संबंधी स्थितियों से जुड़ी हो सकती है।"}},
+
+    {key:'hct', unit:'%',
+      label:{en:"Hematocrit (Hct)", bn:"হেমাটোক্রিট (Hct)", hi:"हेमेटोक्रिट (Hct)"},
+      range:{male:[41,53], female:[36,46]},
+      info:{en:"The percentage of blood volume made up of red blood cells.", bn:"রক্তের মোট আয়তনের কত শতাংশ লোহিত রক্তকণিকা দিয়ে তৈরি তা বোঝায়।", hi:"रक्त की कुल मात्रा में लाल रक्त कोशिकाओं का प्रतिशत।"},
+      lowNote:{en:"Often moves together with low hemoglobin/RBC — commonly linked with anemia.", bn:"সাধারণত কম হিমোগ্লোবিন/RBC-র সঙ্গে একসঙ্গে চলে — অ্যানিমিয়ার সঙ্গে সম্পর্কিত।", hi:"अक्सर कम हीमोग्लोबिन/RBC के साथ जुड़ा होता है — एनीमिया से संबंधित।"},
+      highNote:{en:"Can relate to dehydration or excess red cell production.", bn:"ডিহাইড্রেশন বা লোহিত কণিকার অতিরিক্ত উৎপাদনের সঙ্গে সম্পর্কিত হতে পারে।", hi:"डिहाइड्रेशन या अत्यधिक लाल कोशिका उत्पादन से जुड़ा हो सकता है।"}},
+
+    {key:'wbc', unit:'thousand/µL',
+      label:{en:"WBC Count", bn:"WBC কাউন্ট", hi:"WBC काउंट"},
+      range:{general:[4.0,11.0]}, critical:[2,30],
+      info:{en:"White blood cells are the body's infection-fighting cells.", bn:"শ্বেত রক্তকণিকা শরীরের সংক্রমণ প্রতিরোধী কোষ।", hi:"श्वेत रक्त कोशिकाएं शरीर की संक्रमण-रोधी कोशिकाएं हैं।"},
+      lowNote:{en:"A low count can relate to viral infection, certain medicines, or bone marrow conditions.", bn:"কম মাত্রা ভাইরাল সংক্রমণ, নির্দিষ্ট ওষুধ বা বোন ম্যারো সংক্রান্ত অবস্থার সঙ্গে সম্পর্কিত হতে পারে।", hi:"कम मात्रा वायरल संक्रमण, कुछ दवाओं या बोन मैरो संबंधी स्थितियों से जुड़ी हो सकती है।"},
+      highNote:{en:"A high count often points to infection, inflammation, or stress on the body.", bn:"বেশি মাত্রা প্রায়ই সংক্রমণ, প্রদাহ বা শরীরের ওপর চাপের ইঙ্গিত দেয়।", hi:"अधिक मात्रा अक्सर संक्रमण, सूजन या शरीर पर तनाव का संकेत देती है।"}},
+
+    {key:'plt', unit:'thousand/µL',
+      label:{en:"Platelet Count", bn:"প্লেটলেট কাউন্ট", hi:"प्लेटलेट काउंट"},
+      range:{general:[150,450]}, critical:[20,1000],
+      info:{en:"Platelets help your blood clot to stop bleeding.", bn:"প্লেটলেট রক্ত জমাট বাঁধতে ও রক্তক্ষরণ বন্ধ করতে সাহায্য করে।", hi:"प्लेटलेट्स रक्त का थक्का जमाकर रक्तस्राव रोकने में मदद करते हैं।"},
+      lowNote:{en:"Low platelets (common in dengue and some infections) can raise bleeding risk — worth prompt medical attention if very low.", bn:"কম প্লেটলেট (ডেঙ্গু ও কিছু সংক্রমণে দেখা যায়) রক্তক্ষরণের ঝুঁকি বাড়াতে পারে — অত্যন্ত কম হলে দ্রুত চিকিৎসকের পরামর্শ প্রয়োজন।", hi:"कम प्लेटलेट्स (डेंगू और कुछ संक्रमणों में आम) रक्तस्राव का खतरा बढ़ा सकते हैं — बहुत कम होने पर तुरंत डॉक्टर से मिलें।"},
+      highNote:{en:"High platelets can relate to inflammation, iron deficiency, or other conditions.", bn:"বেশি প্লেটলেট প্রদাহ, আয়রনের ঘাটতি বা অন্যান্য অবস্থার সঙ্গে সম্পর্কিত হতে পারে।", hi:"अधिक प्लेटलेट्स सूजन, आयरन की कमी या अन्य स्थितियों से जुड़ी हो सकती हैं।"}},
+
+    {key:'mcv', unit:'fL',
+      label:{en:"MCV", bn:"MCV", hi:"MCV"},
+      range:{general:[80,100]},
+      info:{en:"The average size of a single red blood cell.", bn:"একটি লোহিত রক্তকণিকার গড় আকার।", hi:"एक लाल रक्त कोशिका का औसत आकार।"},
+      lowNote:{en:"Small red cells often relate to iron-deficiency anemia.", bn:"ছোট লোহিত কণিকা প্রায়ই আয়রন-ঘাটতিজনিত অ্যানিমিয়ার সঙ্গে সম্পর্কিত।", hi:"छोटी लाल कोशिकाएं अक्सर आयरन-कमी वाले एनीमिया से जुड़ी होती हैं।"},
+      highNote:{en:"Larger red cells can relate to vitamin B12 or folate deficiency.", bn:"বড় লোহিত কণিকা ভিটামিন B12 বা ফোলেটের ঘাটতির সঙ্গে সম্পর্কিত হতে পারে।", hi:"बड़ी लाल कोशिकाएं विटामिन B12 या फोलेट की कमी से जुड़ी हो सकती हैं।"}},
+
+    {key:'mch', unit:'pg',
+      label:{en:"MCH", bn:"MCH", hi:"MCH"},
+      range:{general:[27,33]},
+      info:{en:"The average amount of hemoglobin inside each red blood cell.", bn:"প্রতিটি লোহিত কণিকার ভেতরে গড় হিমোগ্লোবিনের পরিমাণ।", hi:"प्रत्येक लाल रक्त कोशिका में औसत हीमोग्लोबिन की मात्रा।"},
+      lowNote:{en:"Often moves with low MCV — commonly seen with iron-deficiency anemia.", bn:"প্রায়ই কম MCV-র সঙ্গে দেখা যায় — আয়রন-ঘাটতিজনিত অ্যানিমিয়ায় সাধারণ।", hi:"अक्सर कम MCV के साथ देखा जाता है — आयरन-कमी वाले एनीमिया में आम।"},
+      highNote:{en:"Can relate to larger red cells, as seen with vitamin B12/folate deficiency.", bn:"বড় লোহিত কণিকার সঙ্গে সম্পর্কিত হতে পারে, যা ভিটামিন B12/ফোলেট ঘাটতিতে দেখা যায়।", hi:"बड़ी लाल कोशिकाओं से जुड़ा हो सकता है, जैसा विटामिन B12/फोलेट की कमी में देखा जाता है।"}},
+
+    {key:'mchc', unit:'g/dL',
+      label:{en:"MCHC", bn:"MCHC", hi:"MCHC"},
+      range:{general:[32,36]},
+      info:{en:"The concentration of hemoglobin packed inside red blood cells.", bn:"লোহিত কণিকার ভেতরে হিমোগ্লোবিনের ঘনত্ব।", hi:"लाल रक्त कोशिकाओं में हीमोग्लोबिन का घनत्व।"},
+      lowNote:{en:"Low values are commonly seen with iron-deficiency anemia.", bn:"কম মান সাধারণত আয়রন-ঘাটতিজনিত অ্যানিমিয়ায় দেখা যায়।", hi:"कम मान आमतौर पर आयरन-कमी वाले एनीमिया में देखे जाते हैं।"},
+      highNote:{en:"High values can relate to certain inherited blood cell conditions.", bn:"বেশি মান কিছু বংশগত রক্তকণিকা সংক্রান্ত অবস্থার সঙ্গে সম্পর্কিত হতে পারে।", hi:"अधिक मान कुछ वंशानुगत रक्त कोशिका स्थितियों से जुड़े हो सकते हैं।"}},
+
+    {key:'neut', unit:'%',
+      label:{en:"Neutrophils", bn:"নিউট্রোফিল", hi:"न्यूट्रोफिल"},
+      range:{general:[40,75]},
+      info:{en:"The most common white cell — first responders against bacterial infection.", bn:"সবচেয়ে সাধারণ শ্বেত কণিকা — ব্যাকটেরিয়াল সংক্রমণের বিরুদ্ধে প্রথম প্রতিরোধ।", hi:"सबसे आम श्वेत कोशिका — बैक्टीरियल संक्रमण के खिलाफ पहली प्रतिक्रिया।"},
+      lowNote:{en:"Low levels can relate to viral infection or certain medicines.", bn:"কম মাত্রা ভাইরাল সংক্রমণ বা নির্দিষ্ট ওষুধের সঙ্গে সম্পর্কিত হতে পারে।", hi:"कम स्तर वायरल संक्रमण या कुछ दवाओं से जुड़ा हो सकता है।"},
+      highNote:{en:"High levels often relate to bacterial infection or inflammation.", bn:"বেশি মাত্রা প্রায়ই ব্যাকটেরিয়াল সংক্রমণ বা প্রদাহের সঙ্গে সম্পর্কিত।", hi:"अधिक स्तर अक्सर बैक्टीरियल संक्रमण या सूजन से जुड़ा होता है।"}},
+
+    {key:'lymph', unit:'%',
+      label:{en:"Lymphocytes", bn:"লিম্ফোসাইট", hi:"लिम्फोसाइट"},
+      range:{general:[20,45]},
+      info:{en:"White cells central to fighting viral infections and long-term immunity.", bn:"ভাইরাল সংক্রমণ প্রতিরোধ ও দীর্ঘমেয়াদি রোগ প্রতিরোধ ক্ষমতার জন্য গুরুত্বপূর্ণ শ্বেত কণিকা।", hi:"वायरल संक्रमण से लड़ने और दीर्घकालिक प्रतिरक्षा के लिए महत्वपूर्ण श्वेत कोशिका।"},
+      lowNote:{en:"Low levels can relate to certain infections or a weakened immune response.", bn:"কম মাত্রা নির্দিষ্ট সংক্রমণ বা দুর্বল রোগ প্রতিরোধ ক্ষমতার সঙ্গে সম্পর্কিত হতে পারে।", hi:"कम स्तर कुछ संक्रमणों या कमजोर प्रतिरक्षा प्रतिक्रिया से जुड़ा हो सकता है।"},
+      highNote:{en:"High levels commonly relate to viral infections.", bn:"বেশি মাত্রা সাধারণত ভাইরাল সংক্রমণের সঙ্গে সম্পর্কিত।", hi:"अधिक स्तर आमतौर पर वायरल संक्रमण से जुड़ा होता है।"}},
+
+    {key:'eos', unit:'%',
+      label:{en:"Eosinophils", bn:"ইওসিনোফিল", hi:"ईोसिनोफिल"},
+      range:{general:[1,6]},
+      info:{en:"White cells involved in allergic reactions and fighting parasites.", bn:"অ্যালার্জি প্রতিক্রিয়া ও পরজীবী প্রতিরোধে জড়িত শ্বেত কণিকা।", hi:"एलर्जी प्रतिक्रिया और परजीवियों से लड़ने में शामिल श्वेत कोशिका।"},
+      lowNote:{en:"Low levels are usually not a concern on their own.", bn:"কম মাত্রা সাধারণত একা কোনো সমস্যার ইঙ্গিত দেয় না।", hi:"कम स्तर आमतौर पर अपने आप में चिंता का विषय नहीं है।"},
+      highNote:{en:"High levels often relate to allergies, asthma, or parasitic infection.", bn:"বেশি মাত্রা প্রায়ই অ্যালার্জি, হাঁপানি বা পরজীবী সংক্রমণের সঙ্গে সম্পর্কিত।", hi:"अधिक स्तर अक्सर एलर्जी, अस्थमा या परजीवी संक्रमण से जुड़ा होता है।"}},
+
+    {key:'mono', unit:'%',
+      label:{en:"Monocytes", bn:"মনোসাইট", hi:"मोनोसाइट"},
+      range:{general:[2,10]},
+      info:{en:"White cells that clean up dead cells and help fight chronic infection.", bn:"মৃত কোষ পরিষ্কার করে ও দীর্ঘমেয়াদি সংক্রমণ প্রতিরোধে সাহায্য করে এমন শ্বেত কণিকা।", hi:"मृत कोशिकाओं को साफ करने और दीर्घकालिक संक्रमण से लड़ने में मदद करने वाली श्वेत कोशिका।"},
+      lowNote:{en:"Low levels are usually not a concern on their own.", bn:"কম মাত্রা সাধারণত একা কোনো সমস্যার ইঙ্গিত দেয় না।", hi:"कम स्तर आमतौर पर अपने आप में चिंता का विषय नहीं है।"},
+      highNote:{en:"High levels can relate to chronic infection or inflammation.", bn:"বেশি মাত্রা দীর্ঘমেয়াদি সংক্রমণ বা প্রদাহের সঙ্গে সম্পর্কিত হতে পারে।", hi:"अधिक स्तर दीर्घकालिक संक्रमण या सूजन से जुड़ा हो सकता है।"}},
+
+    {key:'baso', unit:'%',
+      label:{en:"Basophils", bn:"বাসোফিল", hi:"बेसोफिल"},
+      range:{general:[0,1]},
+      info:{en:"The rarest white cell, involved in allergic and inflammatory responses.", bn:"সবচেয়ে বিরল শ্বেত কণিকা, অ্যালার্জি ও প্রদাহজনিত প্রতিক্রিয়ায় জড়িত।", hi:"सबसे दुर्लभ श्वेत कोशिका, एलर्जी और सूजन प्रतिक्रियाओं में शामिल।"},
+      lowNote:{en:"Low levels are usually not a concern on their own.", bn:"কম মাত্রা সাধারণত একা কোনো সমস্যার ইঙ্গিত দেয় না।", hi:"कम स्तर आमतौर पर अपने आप में चिंता का विषय नहीं है।"},
+      highNote:{en:"High levels can relate to allergic reactions or certain chronic conditions.", bn:"বেশি মাত্রা অ্যালার্জি প্রতিক্রিয়া বা কিছু দীর্ঘমেয়াদি অবস্থার সঙ্গে সম্পর্কিত হতে পারে।", hi:"अधिक स्तर एलर्जी प्रतिक्रियाओं या कुछ दीर्घकालिक स्थितियों से जुड़ा हो सकता है।"}}
+  ];
+
+  const grid = document.getElementById('paramGrid');
+  PARAMS.forEach(p=>{
+    const field = document.createElement('div');
+    field.className = 'param-field';
+    field.innerHTML = `
+      <label data-param-label="${p.key}">${p.label[currentLang]} <span class="unit-hint">(${p.unit})</span></label>
+      <input type="number" step="0.01" inputmode="decimal" id="in_${p.key}" placeholder="">
+    `;
+    grid.appendChild(field);
+  });
+
+  function getRange(p){
+    if(p.range.general) return p.range.general;
+    return p.range[currentGender];
+  }
+
+  document.querySelectorAll('.gender-opt').forEach(el=>{
+    el.addEventListener('click', function(){
+      document.querySelectorAll('.gender-opt').forEach(o=>o.classList.remove('active'));
+      this.classList.add('active');
+      currentGender = this.getAttribute('data-gender');
+      if(document.getElementById('resultsSection').style.display==='block') analyze();
+    });
+  });
+
+  function analyze(){
+    const t = I18N[currentLang];
+    let filled = [];
+    PARAMS.forEach(p=>{
+      const val = document.getElementById('in_'+p.key).value;
+      if(val !== ''){ filled.push({p, val: parseFloat(val)}); }
+    });
+    if(filled.length===0){ alert(t.emptyWarning); return; }
+
+    let abnormalCount = 0;
+    let criticalHit = false;
+    const gaugeList = document.getElementById('gaugeList');
+    gaugeList.innerHTML = '';
+
+    filled.forEach(({p,val})=>{
+      const [lo,hi] = getRange(p);
+      let status = 'normal';
+      if(val < lo) status = 'low';
+      else if(val > hi) status = 'high';
+      if(status !== 'normal') abnormalCount++;
+      if(p.critical){
+        if(val < p.critical[0] || val > p.critical[1]) criticalHit = true;
+      }
+
+      const span = hi - lo;
+      const extLo = lo - span*0.6;
+      const extHi = hi + span*0.6;
+      let pos = ((val - extLo) / (extHi - extLo)) * 100;
+      pos = Math.max(2, Math.min(98, pos));
+
+      const row = document.createElement('div');
+      row.className = 'gauge-row';
+      row.innerHTML = `
+        <div class="gauge-top">
+          <span class="pname">${p.label[currentLang]}</span>
+          <span class="pval">${val} ${p.unit}</span>
+          <span class="status-badge status-${status}">${t['status'+status.charAt(0).toUpperCase()+status.slice(1)]}</span>
+        </div>
+        <div class="gauge-track"><div class="gauge-marker" style="left:0%"></div></div>
+        <div class="gauge-range-text">${t.rangeLabel}: ${lo}–${hi} ${p.unit}</div>
+        ${status !== 'normal' ? `<div class="gauge-explain">${status==='low' ? p.lowNote[currentLang] : p.highNote[currentLang]}</div>` : ''}
+      `;
+      gaugeList.appendChild(row);
+      requestAnimationFrame(()=>{ row.querySelector('.gauge-marker').style.left = pos + '%'; });
+    });
+
+    const banner = document.getElementById('summaryBanner');
+    if(criticalHit){
+      banner.className = 'summary-banner summary-danger';
+      banner.innerHTML = '🚨 ' + t.summaryDanger;
+    } else if(abnormalCount > 0){
+      banner.className = 'summary-banner summary-warn';
+      banner.innerHTML = '⚠️ ' + t.summaryWarn(abnormalCount);
+    } else {
+      banner.className = 'summary-banner summary-ok';
+      banner.innerHTML = '✅ ' + t.summaryOk;
+    }
+
+    document.getElementById('resultsSection').style.display = 'block';
+    document.getElementById('resultsSection').scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  document.getElementById('analyzeBtn').addEventListener('click', analyze);
+
+  function buildAccordion(){
+    const list = document.getElementById('accordionList');
+    list.innerHTML = '';
+    PARAMS.forEach(p=>{
+      const acc = document.createElement('div');
+      acc.className = 'accordion';
+      acc.innerHTML = `
+        <div class="accordion-head">
+          <span>${p.label[currentLang]}</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="accordion-body">${p.info[currentLang]}</div>
+      `;
+      acc.querySelector('.accordion-head').addEventListener('click', ()=> acc.classList.toggle('open'));
+      list.appendChild(acc);
+    });
+  }
+  buildAccordion();
+
+  function setLanguage(lang){
+    currentLang = lang;
+    const t = I18N[lang];
+    document.body.className = document.body.className.replace(/lang-\w+/,'').trim() + ' lang-' + lang;
+    if(document.getElementById('darkToggle').dataset.dark==='1') document.body.classList.add('dark');
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      if(t[key]!==undefined) el.innerHTML = t[key];
+    });
+    document.querySelectorAll('.lang-select button').forEach(b=>{
+      b.classList.toggle('active', b.getAttribute('data-lang')===lang);
+    });
+    PARAMS.forEach(p=>{
+      const lbl = document.querySelector(`[data-param-label="${p.key}"]`);
+      if(lbl) lbl.innerHTML = `${p.label[lang]} <span class="unit-hint">(${p.unit})</span>`;
+    });
+    buildAccordion();
+    if(document.getElementById('resultsSection').style.display==='block') analyze();
+  }
+
+  document.querySelectorAll('.lang-select button').forEach(btn=>{
+    btn.addEventListener('click', ()=> setLanguage(btn.getAttribute('data-lang')));
+  });
+
+  const darkToggle = document.getElementById('darkToggle');
+  darkToggle.dataset.dark = '0';
+  darkToggle.addEventListener('click', function(){
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    this.dataset.dark = isDark ? '1':'0';
+    this.textContent = isDark ? '☀️' : '🌙';
+  });
+
+  setLanguage('en');
+
+})();
+</script>
+</body>
+</html>
