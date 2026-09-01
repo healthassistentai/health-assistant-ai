@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Blood Pressure Tracker</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  html, body{ margin:0; padding:0; background:transparent; }
+  #bp-root, #bp-root *{
+    box-sizing:border-box !important;
+    margin:0; padding:0;
+    float:none !important;
+    list-style:none;
+    text-align:left;
+  }
+  #bp-root{
+    --bp-ink:#152A3A;
+    --bp-paper:#EEF3F8;
+    --bp-card:#FFFFFF;
+    --bp-line:#D3DEE8;
+    --bp-blue:#1B5FA8;
+    --bp-blue-dark:#123F72;
+    --bp-low:#2F7FD1;
+    --bp-low-bg:#E6F0FB;
+    --bp-normal:#2E8B57;
+    --bp-normal-bg:#E5F3EB;
+    --bp-elevated:#C9821F;
+    --bp-elevated-bg:#FBF1DF;
+    --bp-stage1:#D4652B;
+    --bp-stage1-bg:#FCE9DE;
+    --bp-stage2:#C24B3F;
+    --bp-stage2-bg:#FBE9E6;
+    --bp-crisis:#9B1B1B;
+    --bp-crisis-bg:#F7DEDE;
+    font-family:'IBM Plex Sans','Noto Sans Bengali','Noto Sans Devanagari','Nirmala UI','Kohinoor Bangla','Kohinoor Devanagari','Vrinda','Mangal','SolaimanLipi','Segoe UI',sans-serif;
+    color:var(--bp-ink);
+    background:var(--bp-paper);
+    max-width:780px;
+    margin:0 auto;
+    padding:28px 20px 40px;
+    border:1px solid var(--bp-line);
+    border-radius:14px;
+  }
+  #bp-root .bp-eyebrow{
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--bp-blue); font-weight:600; margin-bottom:6px;
+  }
+  #bp-root h1{
+    font-family:'Fraunces','Nirmala UI','Kohinoor Bangla','Kohinoor Devanagari','Noto Sans Bengali','Noto Sans Devanagari', serif;
+    font-weight:600; font-size:clamp(22px,4vw,30px);
+    margin:0 0 6px; color:var(--bp-blue-dark); line-height:1.2;
+  }
+  #bp-root .bp-sub{ font-size:14.5px; color:#3F5875; margin:0 0 18px; line-height:1.5; }
+  #bp-root .bp-langbar{ display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap; }
+  #bp-root .bp-lang-btn{
+    border:1px solid var(--bp-line); background:var(--bp-card);
+    color:var(--bp-ink); padding:6px 14px; border-radius:999px;
+    font-size:13px; cursor:pointer; font-weight:600;
+  }
+  #bp-root .bp-lang-btn.active{ background:var(--bp-blue); border-color:var(--bp-blue); color:#fff; }
+
+  #bp-root .bp-disclaimer{
+    font-size:12.5px; color:#33465C; background:#E2ECF6; border:1px solid var(--bp-line);
+    border-left:4px solid var(--bp-blue); border-radius:8px; padding:12px 14px; margin-bottom:18px; line-height:1.55;
+  }
+
+  #bp-root .bp-card{
+    background:var(--bp-card); border:1px solid var(--bp-line);
+    border-radius:12px; padding:20px; margin-bottom:18px;
+  }
+  #bp-root .bp-grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  #bp-root .bp-field{ margin-bottom:14px; }
+  #bp-root label{ display:block; font-size:13px; font-weight:600; color:var(--bp-blue-dark); margin-bottom:6px; }
+  #bp-root input{
+    width:100%; padding:10px 12px; border:1px solid var(--bp-line);
+    border-radius:8px; font-size:14.5px; color:var(--bp-ink); background:#FBFCFE;
+  }
+  #bp-root input:focus{ outline:2px solid var(--bp-blue); outline-offset:1px; }
+  #bp-root .bp-btn{
+    border:none; border-radius:8px; padding:11px 20px; font-size:14.5px;
+    font-weight:600; cursor:pointer; background:var(--bp-blue); color:#fff; margin-top:4px;
+  }
+  #bp-root .bp-btn:hover{ background:var(--bp-blue-dark); }
+
+  #bp-root .bp-results{ display:none; }
+  #bp-root .bp-results.show{ display:block; }
+
+  #bp-root .bp-crisis-alert{
+    display:none; font-size:13.5px; font-weight:600; line-height:1.5;
+    background:var(--bp-crisis-bg); color:var(--bp-crisis); border:1px solid var(--bp-crisis);
+    border-radius:8px; padding:12px 14px; margin-bottom:16px;
+  }
+  #bp-root .bp-crisis-alert.show{ display:block; }
+
+  #bp-root .bp-stat-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:16px; }
+  #bp-root .bp-stat{
+    background:var(--bp-card); border:1px solid var(--bp-line); border-radius:12px; padding:16px;
+    border-top:4px solid var(--bp-blue);
+  }
+  #bp-root .bp-stat-label{ font-size:12px; color:#3F5875; font-weight:600; margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em; }
+  #bp-root .bp-stat-value{
+    font-family:'Fraunces','Nirmala UI','Kohinoor Bangla','Kohinoor Devanagari','Noto Sans Bengali','Noto Sans Devanagari', serif;
+    font-size:20px; font-weight:600; color:var(--bp-blue-dark);
+  }
+  #bp-root .bp-stat-tag{
+    display:inline-block; margin-top:6px; font-size:12.5px; font-weight:700;
+    padding:3px 10px; border-radius:999px;
+  }
+  #bp-root .bp-stat-tip{ font-size:12.5px; color:#3F5875; margin-top:8px; line-height:1.5; }
+
+  #bp-root .bp-bar-wrap{ margin-bottom:18px; }
+  #bp-root .bp-bar-labels{ display:flex; justify-content:space-between; font-size:10.5px; color:#5A7089; margin-bottom:6px; }
+  #bp-root .bp-bar-container{ width:100%; height:14px; background:var(--bp-line); border-radius:10px; overflow:hidden; }
+  #bp-root .bp-bar{ height:100%; width:0%; transition:width .5s, background .3s; background:var(--bp-normal); }
+
+  #bp-root .bp-result-title{
+    font-family:'Fraunces','Nirmala UI','Kohinoor Bangla','Kohinoor Devanagari','Noto Sans Bengali','Noto Sans Devanagari', serif;
+    font-size:16px; color:var(--bp-blue-dark); margin:6px 0 10px; font-weight:600;
+  }
+  #bp-root #bp-history{ font-size:13.5px; color:#33465C; line-height:1.8; padding-left:2px; }
+  #bp-root #bp-history li{ list-style:disc; margin-left:18px; }
+  #bp-root .bp-history-empty{ font-size:13px; color:#7A8CA0; }
+
+  #bp-root .bp-footer-note{
+    font-size:12px; color:#5A7089; margin-top:16px; line-height:1.6;
+    border-top:1px dashed var(--bp-line); padding-top:14px;
+  }
+  @media(max-width:480px){
+    #bp-root{padding:20px 14px 30px;}
+    #bp-root .bp-grid2{grid-template-columns:1fr;}
+    #bp-root .bp-stat-grid{grid-template-columns:1fr;}
+    #bp-root .bp-bar-labels{ font-size:9px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bp-root" id="bp-root">
+
+<div class="bp-eyebrow" id="bp-eyebrow">HEALTH TOOL</div>
+<h1 id="bp-title">Blood Pressure Tracker</h1>
+<p class="bp-sub" id="bp-subtitle">Enter your systolic and diastolic readings to check your blood pressure category and track it over time.</p>
+
+<div class="bp-langbar">
+  <button class="bp-lang-btn active" data-lang="en">English</button>
+  <button class="bp-lang-btn" data-lang="bn">বাংলা</button>
+  <button class="bp-lang-btn" data-lang="hi">हिंदी</button>
+</div>
+
+<div class="bp-disclaimer" id="bp-disclaimer"></div>
+
+<div class="bp-card">
+  <div class="bp-grid2">
+    <div class="bp-field">
+      <label id="bp-label-systolic">Systolic (upper, mmHg)</label>
+      <input id="bp-systolic" type="number" />
+    </div>
+    <div class="bp-field">
+      <label id="bp-label-diastolic">Diastolic (lower, mmHg)</label>
+      <input id="bp-diastolic" type="number" />
+    </div>
+  </div>
+  <button class="bp-btn" id="bp-calc"><span id="bp-calc-label">Check Blood Pressure</span></button>
+</div>
+
+<div class="bp-results" id="bp-results">
+
+  <div class="bp-crisis-alert" id="bp-crisis-alert"></div>
+
+  <div class="bp-stat-grid">
+    <div class="bp-stat">
+      <div class="bp-stat-label" id="bp-stat-reading-label">Your Reading</div>
+      <div class="bp-stat-value" id="bp-stat-reading-value">--/--</div>
+      <div class="bp-stat-tag" id="bp-stat-category"></div>
+      <div class="bp-stat-tip" id="bp-stat-tip"></div>
+    </div>
+    <div class="bp-stat">
+      <div class="bp-stat-label" id="bp-stat-normal-label">Normal reference range</div>
+      <div class="bp-stat-value" id="bp-stat-normal-value">&lt;120 / &lt;80 mmHg</div>
+    </div>
+  </div>
+
+  <div class="bp-bar-wrap">
+    <div class="bp-bar-labels">
+      <span id="bp-scale-low">Low</span>
+      <span id="bp-scale-normal">Normal</span>
+      <span id="bp-scale-elevated">Elevated</span>
+      <span id="bp-scale-stage1">Stage 1</span>
+      <span id="bp-scale-stage2">Stage 2</span>
+      <span id="bp-scale-crisis">Crisis</span>
+    </div>
+    <div class="bp-bar-container"><div class="bp-bar" id="bp-bar"></div></div>
+  </div>
+
+  <div class="bp-result-title" id="bp-history-title">History (this device)</div>
+  <ul id="bp-history"></ul>
+
+</div>
+
+<div class="bp-footer-note" id="bp-footer-note"></div>
+
+</div>
+
+<script>
+(function(){
+  var UI = {
+    en:{
+      eyebrow:"HEALTH TOOL", title:"Blood Pressure Tracker",
+      subtitle:"Enter your systolic and diastolic readings to check your blood pressure category and track it over time.",
+      disclaimer:"Blood pressure naturally varies with time of day, stress, caffeine, recent activity, and how the reading was taken. A single reading does not diagnose high or low blood pressure. This tool is educational and does not replace advice from a doctor.",
+      labelSystolic:"Systolic (upper, mmHg)", labelDiastolic:"Diastolic (lower, mmHg)", calc:"Check Blood Pressure",
+      statReadingLabel:"Your Reading", statNormalLabel:"Normal reference range", statNormalValue:"<120 / <80 mmHg",
+      scaleLow:"Low", scaleNormal:"Normal", scaleElevated:"Elevated", scaleStage1:"Stage 1", scaleStage2:"Stage 2", scaleCrisis:"Crisis",
+      low:"Low blood pressure", normal:"Normal", elevated:"Elevated", stage1:"High BP - Stage 1", stage2:"High BP - Stage 2", crisis:"Hypertensive crisis",
+      tipLow:"Readings below about 90/60 mmHg can sometimes cause dizziness or fatigue. If you feel unwell or this is a recurring pattern, speak with a doctor.",
+      tipNormal:"This reading falls in the range generally associated with lower cardiovascular risk. Keep up regular check-ins, balanced eating, and activity.",
+      tipElevated:"Your systolic reading is a little above the normal range. Lifestyle steps like reducing salt, staying active, and managing stress can help before it progresses further.",
+      tipStage1:"This range is generally classified as the first stage of high blood pressure. Consider discussing lifestyle changes, and possibly monitoring or treatment, with a doctor.",
+      tipStage2:"This range is generally classified as the second, more serious stage of high blood pressure. It's worth seeing a doctor to discuss monitoring and treatment options.",
+      tipCrisis:"This reading is in the range considered a hypertensive crisis.",
+      crisisWarning:"This reading is very high. If you also have chest pain, shortness of breath, severe headache, vision changes, or trouble speaking, seek emergency medical care right away.",
+      historyTitle:"History (this device)", historyEmpty:"No readings yet.",
+      footer:"Categories follow the standard AHA classification for adults (Low <90/<60, Normal <120/<80, Elevated 120-129/<80, Stage 1: 130-139 or 80-89, Stage 2: \u2265140 or \u226590, Crisis: >180 and/or >120). History is stored only in this browser on this device, not sent anywhere.",
+      invalid:"Please enter valid systolic and diastolic values."
+    },
+    bn:{
+      eyebrow:"\u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u099f\u09c1\u09b2", title:"\u09b0\u0995\u09cd\u09a4\u099a\u09be\u09aa \u099f\u09cd\u09b0\u09cd\u09af\u09be\u0995\u09be\u09b0",
+      subtitle:"\u0986\u09aa\u09a8\u09be\u09b0 \u09b8\u09bf\u09b8\u09cd\u099f\u09cb\u09b2\u09bf\u0995 \u0993 \u09a1\u09be\u09af\u09bc\u09be\u09b8\u09cd\u099f\u09cb\u09b2\u09bf\u0995 \u09b0\u09bf\u09a1\u09bf\u0982 \u09a6\u09bf\u09a8, \u09b0\u0995\u09cd\u09a4\u099a\u09be\u09aa\u09c7\u09b0 \u0995\u09cd\u09af\u09be\u099f\u09be\u0997\u09b0\u09bf \u099c\u09be\u09a8\u09c1\u09a8 \u098f\u09ac\u0982 \u09b8\u09ae\u09af\u09bc\u09c7\u09b0 \u09b8\u09be\u09a5\u09c7 \u099f\u09cd\u09b0\u09cd\u09af\u09be\u0995 \u0995\u09b0\u09c1\u09a8\u0964",
+      disclaimer:"\u09a6\u09bf\u09a8\u09c7\u09b0 \u09b8\u09ae\u09af\u09bc, \u09ae\u09be\u09a8\u09b8\u09bf\u0995 \u099a\u09be\u09aa, \u0995\u09cd\u09af\u09be\u09ab\u09c7\u0987\u09a8, \u09b8\u09be\u09ae\u09cd\u09aa\u09cd\u09b0\u09a4\u09bf\u0995 \u0995\u09be\u09b0\u09cd\u09af\u0995\u09b2\u09be\u09aa \u098f\u09ac\u0982 \u09b0\u09bf\u09a1\u09bf\u0982 \u09a8\u09c7\u0993\u09af\u09bc\u09be\u09b0 \u09aa\u09a6\u09cd\u09a7\u09a4\u09bf\u09b0 \u0989\u09aa\u09b0 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0 \u0995\u09b0\u09c7 \u09b0\u0995\u09cd\u09a4\u099a\u09be\u09aa \u09b8\u09cd\u09ac\u09be\u09ad\u09be\u09ac\u09bf\u0995\u09ad\u09be\u09ac\u09c7\u0987 \u0993\u09a0\u09be\u09a8\u09be\u09ae\u09be \u0995\u09b0\u09c7\u0964 \u098f\u0995\u099f\u09bf \u09ae\u09be\u09a4\u09cd\u09b0 \u09b0\u09bf\u09a1\u09bf\u0982 \u09a6\u09bf\u09af\u09bc\u09c7 \u0989\u099a\u09cd\u099a \u09ac\u09be \u09a8\u09bf\u09ae\u09cd\u09a8 \u09b0\u0995\u09cd\u09a4\u099a\u09be\u09aa \u09a8\u09bf\u09b0\u09cd\u09a3\u09af\u09bc \u0995\u09b0\u09be \u09af\u09be\u09af\u09bc \u09a8\u09be\u0964 \u098f\u0987 \u099f\u09c1\u09b2\u099f\u09bf \u09b6\u09bf\u0995\u09cd\u09b7\u09be\u09ae\u09c2\u09b2\u0995 \u098f\u09ac\u0982 \u09a1\u09be\u0995\u09cd\u09a4\u09be\u09b0\u09c7\u09b0 \u09aa\u09b0\u09be\u09ae\u09b0\u09cd\u09b6\u09c7\u09b0 \u09ac\u09bf\u0995\u09b2\u09cd\u09aa \u09a8\u09af\u09bc\u0964",
+      labelSystolic:"\u09b8\u09bf\u09b8\u09cd\u099f\u09cb\u09b2\u09bf\u0995 (\u0989\u09aa\u09b0\u09c7\u09b0, mmHg)", labelDiastolic:"\u09a1\u09be\u09af\u09bc\u09be\u09b8\u09cd\u099f\u09cb\u09b2\u09bf\u0995 (\u09a8\u09bf\u099a\u09c7\u09b0, mmHg)", calc:"\u09b0\u0995\u09cd\u09a4\u099a\u09be\u09aa \u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be \u0995\u09b0\u09c1\u09a8",
+      statReadingLabel:"\u0986\u09aa\u09a8\u09be\u09b0 \u09b0\u09bf\u09a1\u09bf\u0982", statNormalLabel:"\u09b8\u09cd\u09ac\u09be\u09ad\u09be\u09ac\u09bf\u0995 \u09aa\u09b0\u09bf\u09b8\u09c0\u09ae\u09be", statNormalValue:"<\u09e7\u09e8\u09e6 / <\u09ee\u09e6 mmHg",
+      scaleLow:"\u0995\u09ae", scaleNormal:"\u09b8\u09cd\u09ac\u09be\u09ad\u09be\u09ac\u09bf\u0995", scaleElevated:"\u09b8\u09be\u09ae\u09be\u09a8\u09cd\u09af \u09ac\u09c7\u09b6\u09bf", scaleStage1:"\u09aa\u09b0\u09cd\u09af\u09be\u09af\u09bc \u09e7", scaleStage2:"\u09aa\u09b0\u09cd\u09af\u09be\u09af\u09bc \u09e8", scaleCrisis:"\u09b8\u0982\u0995\u099f",
+      low:"\u09a8\u09bf\u09ae\u09cd\u09a8 \u09b0\u0995\u09cd\u09a4\u099a\u09be\u09aa", normal:"\u09b8\u09cd\u09ac\u09be\u09ad\u09be\u09ac\u09bf\u0995", elevated:"\u09b8\u09be\u09ae\u09be\u09a8\u09cd\u09af \u09ac\u09c7\u09b6\u09bf", stage1:"\u0989\u099a\u09cd\u099a \u09b0\u0995\u09cd\u09a4\u099a\u09be\u09aa - \u09aa\u09b0\u09cd\u09af\u09be\u09af\u09bc \u09e7", stage2:"\u0989\u099a\u09cd\u099a \u09b0\u0995\u09cd\u09a4\u099a\u09be\u09aa - \u09aa\u09b0\u09cd\u09af\u09be\u09af\u09bc \u09e8", crisis:"\u09b9\u09be\u0987\u09aa\u09be\u09b0\u099f\u09c7\u09a8\u09b8\u09bf\u09ad \u09b8\u0982\u0995\u099f",
+      tipLow:"\u09aa\u09cd\u09b0\u09be\u09af\u09bc \u09ef\u09e6/\u09ec\u09e6 mmHg-\u098f\u09b0 \u09a8\u09bf\u099a\u09c7 \u09b0\u09bf\u09a1\u09bf\u0982 \u09ae\u09be\u09a5\u09be \u0998\u09cb\u09b0\u09be \u09ac\u09be \u0995\u09cd\u09b2\u09be\u09a8\u09cd\u09a4\u09bf \u09b8\u09c3\u09b7\u09cd\u099f\u09bf \u0995\u09b0\u09a4\u09c7 \u09aa\u09be\u09b0\u09c7\u0964 \u0985\u09b8\u09c1\u09b8\u09cd\u09a5 \u09ac\u09cb\u09a7 \u0995\u09b0\u09b2\u09c7 \u09ac\u09be \u098f\u099f\u09bf \u09ac\u09be\u09b0\u09ac\u09be\u09b0 \u09b9\u09b2\u09c7 \u09a1\u09be\u0995\u09cd\u09a4\u09be\u09b0\u09c7\u09b0 \u09b8\u09be\u09a5\u09c7 \u0995\u09a5\u09be \u09ac\u09b2\u09c1\u09a8\u0964",
+      tipNormal:"\u0986\u09aa\u09a8\u09be\u09b0 \u09b0\u09bf\u09a1\u09bf\u0982 \u09b8\u09be\u09a7\u09be\u09b0\u09a3\u09a4 \u0995\u09ae \u09b9\u09c3\u09a6\u09b0\u09cb\u0997 \u099d\u09c1\u0981\u0995\u09bf\u09b0 \u09b8\u09be\u09a5\u09c7 \u09b8\u09ae\u09cd\u09aa\u09b0\u09cd\u0995\u09bf\u09a4 \u09aa\u09b0\u09bf\u09b8\u09c0\u09ae\u09be\u09af\u09bc \u09b0\u09af\u09bc\u09c7\u099b\u09c7\u0964 \u09a8\u09bf\u09af\u09bc\u09ae\u09bf\u09a4 \u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u09be, \u09b8\u09c1\u09b7\u09ae \u0996\u09be\u09ac\u09be\u09b0 \u0993 \u09b6\u09b0\u09c0\u09b0\u099a\u09b0\u09cd\u099a\u09be \u09ac\u099c\u09be\u09af\u09bc \u09b0\u09be\u0996\u09c1\u09a8\u0964",
+      tipElevated:"\u0986\u09aa\u09a8\u09be\u09b0 \u09b8\u09bf\u09b8\u09cd\u099f\u09cb\u09b2\u09bf\u0995 \u09b0\u09bf\u09a1\u09bf\u0982 \u09b8\u09cd\u09ac\u09be\u09ad\u09be\u09ac\u09bf\u0995\u09c7\u09b0 \u099a\u09c7\u09af\u09bc\u09c7 \u09b8\u09be\u09ae\u09be\u09a8\u09cd\u09af \u09ac\u09c7\u09b6\u09bf\u0964 \u09b2\u09ac\u09a3 \u0995\u09ae\u09be\u09a8\u09cb, \u09b8\u0995\u09cd\u09b0\u09bf\u09af\u09bc \u09a5\u09be\u0995\u09be \u098f\u09ac\u0982 \u09ae\u09be\u09a8\u09b8\u09bf\u0995 \u099a\u09be\u09aa \u09a8\u09bf\u09af\u09bc\u09a8\u09cd\u09a4\u09cd\u09b0\u09a3\u09c7\u09b0 \u09ae\u09a4\u09cb \u099c\u09c0\u09ac\u09a8\u09a7\u09be\u09b0\u09be\u09b0 \u09aa\u09a6\u0995\u09cd\u09b7\u09c7\u09aa \u098f\u099f\u09bf \u0986\u09b0\u0993 \u09ac\u09be\u09a1\u09bc\u09be\u09b0 \u0986\u0997\u09c7 \u09b8\u09be\u09b9\u09be\u09af\u09cd\u09af \u0995\u09b0\u09a4\u09c7 \u09aa\u09be\u09b0\u09c7\u0964",
+      tipStage1:"\u098f\u0987 \u09aa\u09b0\u09bf\u09b8\u09c0\u09ae\u09be\u0995\u09c7 \u09b8\u09be\u09a7\u09be\u09b0\u09a3\u09a4 \u0989\u099a\u09cd\u099a \u09b0\u0995\u09cd\u09a4\u099a\u09be\u09aa\u09c7\u09b0 \u09aa\u09cd\u09b0\u09a5\u09ae \u09aa\u09b0\u09cd\u09af\u09be\u09af\u09bc \u09b9\u09bf\u09b8\u09c7\u09ac\u09c7 \u09a7\u09b0\u09be \u09b9\u09af\u09bc\u0964 \u099c\u09c0\u09ac\u09a8\u09a7\u09be\u09b0\u09be \u09aa\u09b0\u09bf\u09ac\u09b0\u09cd\u09a4\u09a8 \u098f\u09ac\u0982 \u09aa\u09cd\u09b0\u09af\u09bc\u09cb\u099c\u09a8\u09c7 \u09aa\u09b0\u09cd\u09af\u09ac\u09c7\u0995\u09cd\u09b7\u09a3 \u09ac\u09be \u099a\u09bf\u0995\u09bf\u09ce\u09b8\u09be \u09a8\u09bf\u09af\u09bc\u09c7 \u09a1\u09be\u0995\u09cd\u09a4\u09be\u09b0\u09c7\u09b0 \u09b8\u09be\u09a5\u09c7 \u0986\u09b2\u09cb\u099a\u09a8\u09be \u0995\u09b0\u09c1\u09a8\u0964",
+      tipStage2:"\u098f\u0987 \u09aa\u09b0\u09bf\u09b8\u09c0\u09ae\u09be\u0995\u09c7 \u09b8\u09be\u09a7\u09be\u09b0\u09a3\u09a4 \u0989\u099a\u09cd\u099a \u09b0\u0995\u09cd\u09a4\u099a\u09be\u09aa\u09c7\u09b0 \u09a6\u09cd\u09ac\u09bf\u09a4\u09c0\u09af\u09bc, \u0986\u09b0\u0993 \u0997\u09c1\u09b0\u09c1\u09a4\u09b0 \u09aa\u09b0\u09cd\u09af\u09be\u09af\u09bc \u09b9\u09bf\u09b8\u09c7\u09ac\u09c7 \u09a7\u09b0\u09be \u09b9\u09af\u09bc\u0964 \u09aa\u09b0\u09cd\u09af\u09ac\u09c7\u0995\u09cd\u09b7\u09a3 \u0993 \u099a\u09bf\u0995\u09bf\u09ce\u09b8\u09be\u09b0 \u09ac\u09bf\u0995\u09b2\u09cd\u09aa \u09a8\u09bf\u09af\u09bc\u09c7 \u0986\u09b2\u09cb\u099a\u09a8\u09be\u09b0 \u099c\u09a8\u09cd\u09af \u09a1\u09be\u0995\u09cd\u09a4\u09be\u09b0 \u09a6\u09c7\u0996\u09be\u09a8\u09cb \u09ad\u09be\u09b2\u09cb\u0964",
+      tipCrisis:"\u098f\u0987 \u09b0\u09bf\u09a1\u09bf\u0982\u099f\u09bf \u09b9\u09be\u0987\u09aa\u09be\u09b0\u099f\u09c7\u09a8\u09b8\u09bf\u09ad \u09b8\u0982\u0995\u099f \u09b9\u09bf\u09b8\u09c7\u09ac\u09c7 \u09ac\u09bf\u09ac\u09c7\u099a\u09bf\u09a4 \u09aa\u09b0\u09bf\u09b8\u09c0\u09ae\u09be\u09af\u09bc \u09b0\u09af\u09bc\u09c7\u099b\u09c7\u0964",
+      crisisWarning:"\u098f\u0987 \u09b0\u09bf\u09a1\u09bf\u0982\u099f\u09bf \u0985\u09a4\u09cd\u09af\u09a8\u09cd\u09a4 \u09ac\u09c7\u09b6\u09bf\u0964 \u09af\u09a6\u09bf \u0986\u09aa\u09a8\u09be\u09b0 \u09ac\u09c1\u0995\u09c7 \u09ac\u09cd\u09af\u09a5\u09be, \u09b6\u09cd\u09ac\u09be\u09b8\u0995\u09b7\u09cd\u099f, \u09a4\u09c0\u09ac\u09cd\u09b0 \u09ae\u09be\u09a5\u09be\u09ac\u09cd\u09af\u09a5\u09be, \u09a6\u09c3\u09b7\u09cd\u099f\u09bf \u09b8\u09ae\u09b8\u09cd\u09af\u09be \u09ac\u09be \u0995\u09a5\u09be \u09ac\u09b2\u09a4\u09c7 \u0985\u09b8\u09c1\u09ac\u09bf\u09a7\u09be \u09b9\u09af\u09bc, \u09a4\u09ac\u09c7 \u0985\u09ac\u09bf\u09b2\u09ae\u09cd\u09ac\u09c7 \u099c\u09b0\u09c1\u09b0\u09bf \u099a\u09bf\u0995\u09bf\u09ce\u09b8\u09be \u09a8\u09bf\u09a8\u0964",
+      historyTitle:"\u0987\u09a4\u09bf\u09b9\u09be\u09b8 (\u098f\u0987 \u09a1\u09bf\u09ad\u09be\u0987\u09b8\u09c7)", historyEmpty:"\u098f\u0996\u09a8\u09cb \u0995\u09cb\u09a8\u09cb \u09b0\u09bf\u09a1\u09bf\u0982 \u09a8\u09c7\u0993\u09af\u09bc\u09be \u09b9\u09af\u09bc\u09a8\u09bf\u0964",
+      footer:"\u0995\u09cd\u09af\u09be\u099f\u09be\u0997\u09b0\u09bf\u0997\u09c1\u09b2\u09cb \u09aa\u09cd\u09b0\u09be\u09aa\u09cd\u09a4\u09ac\u09af\u09bc\u09b8\u09cd\u0995\u09a6\u09c7\u09b0 \u099c\u09a8\u09cd\u09af \u09b8\u09cd\u099f\u09cd\u09af\u09be\u09a8\u09cd\u09a1\u09be\u09b0\u09cd\u09a1 AHA \u09b6\u09cd\u09b0\u09c7\u09a3\u09bf\u09ac\u09bf\u09ad\u09be\u0997 \u0985\u09a8\u09c1\u09b8\u09b0\u09a3 \u0995\u09b0\u09c7 (\u0995\u09ae <\u09ef\u09e6/<\u09ec\u09e6, \u09b8\u09cd\u09ac\u09be\u09ad\u09be\u09ac\u09bf\u0995 <\u09e7\u09e8\u09e6/<\u09ee\u09e6, \u09b8\u09be\u09ae\u09be\u09a8\u09cd\u09af \u09ac\u09c7\u09b6\u09bf \u09e7\u09e8\u09e6-\u09e7\u09e8\u09ef/<\u09ee\u09e6, \u09aa\u09b0\u09cd\u09af\u09be\u09af\u09bc \u09e7: \u09e7\u09e9\u09e6-\u09e7\u09e9\u09ef \u09ac\u09be \u09ee\u09e6-\u09ee\u09ef, \u09aa\u09b0\u09cd\u09af\u09be\u09af\u09bc \u09e8: \u2265\u09e7\u09ea\u09e6 \u09ac\u09be \u2265\u09ef\u09e6, \u09b8\u0982\u0995\u099f: >\u09e7\u09ee\u09e6 \u098f\u09ac\u0982/\u0985\u09a5\u09ac\u09be >\u09e7\u09e8\u09e6)\u0964 \u0987\u09a4\u09bf\u09b9\u09be\u09b8 \u09b6\u09c1\u09a7\u09c1 \u098f\u0987 \u09ac\u09cd\u09b0\u09be\u0989\u099c\u09be\u09b0 \u0993 \u09a1\u09bf\u09ad\u09be\u0987\u09b8\u09c7 \u09b8\u0982\u09b0\u0995\u09cd\u09b7\u09bf\u09a4 \u09b9\u09af\u09bc, \u0995\u09cb\u09a5\u09be\u0993 \u09aa\u09be\u09a0\u09be\u09a8\u09cb \u09b9\u09af\u09bc \u09a8\u09be\u0964",
+      invalid:"\u0985\u09a8\u09c1\u0997\u09cd\u09b0\u09b9 \u0995\u09b0\u09c7 \u09b8\u09a0\u09bf\u0995 \u09b8\u09bf\u09b8\u09cd\u099f\u09cb\u09b2\u09bf\u0995 \u0993 \u09a1\u09be\u09af\u09bc\u09be\u09b8\u09cd\u099f\u09cb\u09b2\u09bf\u0995 \u09ae\u09be\u09a8 \u09a6\u09bf\u09a8\u0964"
+    },
+    hi:{
+      eyebrow:"\u0939\u0947\u0932\u094d\u0925 \u091f\u0942\u0932", title:"\u092c\u094d\u0932\u0921 \u092a\u094d\u0930\u0947\u0936\u0930 \u091f\u094d\u0930\u0948\u0915\u0930",
+      subtitle:"\u0905\u092a\u0928\u093e \u0938\u093f\u0938\u094d\u091f\u094b\u0932\u093f\u0915 \u0914\u0930 \u0921\u093e\u092f\u0938\u094d\u091f\u094b\u0932\u093f\u0915 \u0930\u0940\u0921\u093f\u0902\u0917 \u0926\u0930\u094d\u091c \u0915\u0930\u0947\u0902, \u092c\u094d\u0932\u0921 \u092a\u094d\u0930\u0947\u0936\u0930 \u0915\u0940 \u0936\u094d\u0930\u0947\u0923\u0940 \u091c\u093e\u0928\u0947\u0902 \u0914\u0930 \u0938\u092e\u092f \u0915\u0947 \u0938\u093e\u0925 \u091f\u094d\u0930\u0948\u0915 \u0915\u0930\u0947\u0902\u0964",
+      disclaimer:"\u0926\u093f\u0928 \u0915\u0947 \u0938\u092e\u092f, \u0924\u0928\u093e\u0935, \u0915\u0948\u092b\u0940\u0928, \u0939\u093e\u0932 \u0915\u0940 \u0917\u0924\u093f\u0935\u093f\u0927\u093f \u0914\u0930 \u0930\u0940\u0921\u093f\u0902\u0917 \u0932\u0947\u0928\u0947 \u0915\u0947 \u0924\u0930\u0940\u0915\u0947 \u0915\u0947 \u0906\u0927\u093e\u0930 \u092a\u0930 \u092c\u094d\u0932\u0921 \u092a\u094d\u0930\u0947\u0936\u0930 \u0938\u094d\u0935\u093e\u092d\u093e\u0935\u093f\u0915 \u0930\u0942\u092a \u0938\u0947 \u092c\u0926\u0932\u0924\u093e \u0930\u0939\u0924\u093e \u0939\u0948\u0964 \u090f\u0915 \u0905\u0915\u0947\u0932\u0940 \u0930\u0940\u0921\u093f\u0902\u0917 \u0938\u0947 \u0909\u091a\u094d\u091a \u092f\u093e \u0928\u093f\u092e\u094d\u0928 \u0930\u0915\u094d\u0924\u091a\u093e\u092a \u0915\u093e \u0928\u093f\u0926\u093e\u0928 \u0928\u0939\u0940\u0902 \u0939\u094b\u0924\u093e\u0964 \u092f\u0939 \u091f\u0942\u0932 \u0936\u0948\u0915\u094d\u0937\u093f\u0915 \u0939\u0948 \u0914\u0930 \u0921\u0949\u0915\u094d\u091f\u0930 \u0915\u0940 \u0938\u0932\u093e\u0939 \u0915\u093e \u0935\u093f\u0915\u0932\u094d\u092a \u0928\u0939\u0940\u0902 \u0939\u0948\u0964",
+      labelSystolic:"\u0938\u093f\u0938\u094d\u091f\u094b\u0932\u093f\u0915 (\u090a\u092a\u0930\u0940, mmHg)", labelDiastolic:"\u0921\u093e\u092f\u0938\u094d\u091f\u094b\u0932\u093f\u0915 (\u0928\u093f\u091a\u0932\u093e, mmHg)", calc:"\u092c\u094d\u0932\u0921 \u092a\u094d\u0930\u0947\u0936\u0930 \u091c\u093e\u0902\u091a\u0947\u0902",
+      statReadingLabel:"\u0906\u092a\u0915\u0940 \u0930\u0940\u0921\u093f\u0902\u0917", statNormalLabel:"\u0938\u093e\u092e\u093e\u0928\u094d\u092f \u0938\u0902\u0926\u0930\u094d\u092d \u0938\u0940\u092e\u093e", statNormalValue:"<120 / <80 mmHg",
+      scaleLow:"\u0915\u092e", scaleNormal:"\u0938\u093e\u092e\u093e\u0928\u094d\u092f", scaleElevated:"\u0925\u094b\u0921\u093c\u093e \u0905\u0927\u093f\u0915", scaleStage1:"\u0938\u094d\u091f\u0947\u091c 1", scaleStage2:"\u0938\u094d\u091f\u0947\u091c 2", scaleCrisis:"\u0938\u0902\u0915\u091f",
+      low:"\u0928\u093f\u092e\u094d\u0928 \u0930\u0915\u094d\u0924\u091a\u093e\u092a", normal:"\u0938\u093e\u092e\u093e\u0928\u094d\u092f", elevated:"\u0925\u094b\u0921\u093c\u093e \u0905\u0927\u093f\u0915", stage1:"\u0909\u091a\u094d\u091a \u0930\u0915\u094d\u0924\u091a\u093e\u092a - \u0938\u094d\u091f\u0947\u091c 1", stage2:"\u0909\u091a\u094d\u091a \u0930\u0915\u094d\u0924\u091a\u093e\u092a - \u0938\u094d\u091f\u0947\u091c 2", crisis:"\u0939\u093e\u0907\u092a\u0930\u091f\u0947\u0902\u0938\u093f\u0935 \u0938\u0902\u0915\u091f",
+      tipLow:"\u0932\u0917\u092d\u0917 90/60 mmHg \u0938\u0947 \u0915\u092e \u0930\u0940\u0921\u093f\u0902\u0917 \u0915\u092d\u0940-\u0915\u092d\u0940 \u091a\u0915\u094d\u0915\u0930 \u092f\u093e \u0925\u0915\u093e\u0928 \u0915\u093e \u0915\u093e\u0930\u0923 \u092c\u0928 \u0938\u0915\u0924\u0940 \u0939\u0948\u0964 \u0905\u0917\u0930 \u0906\u092a \u0905\u0938\u094d\u0935\u0938\u094d\u0925 \u092e\u0939\u0938\u0942\u0938 \u0915\u0930\u0947\u0902 \u092f\u093e \u092f\u0939 \u092c\u093e\u0930-\u092c\u093e\u0930 \u0939\u094b, \u0924\u094b \u0921\u0949\u0915\u094d\u091f\u0930 \u0938\u0947 \u092c\u093e\u0924 \u0915\u0930\u0947\u0902\u0964",
+      tipNormal:"\u0906\u092a\u0915\u0940 \u0930\u0940\u0921\u093f\u0902\u0917 \u0906\u092e\u0924\u094c\u0930 \u092a\u0930 \u0915\u092e \u0939\u0943\u0926\u092f \u091c\u094b\u0916\u093f\u092e \u0938\u0947 \u091c\u0941\u0921\u093c\u0940 \u0938\u0940\u092e\u093e \u092e\u0947\u0902 \u0939\u0948\u0964 \u0928\u093f\u092f\u092e\u093f\u0924 \u091c\u093e\u0902\u091a, \u0938\u0902\u0924\u0941\u0932\u093f\u0924 \u092d\u094b\u091c\u0928 \u0914\u0930 \u0938\u0915\u094d\u0930\u093f\u092f\u0924\u093e \u092c\u0928\u093e\u090f \u0930\u0916\u0947\u0902\u0964",
+      tipElevated:"\u0906\u092a\u0915\u0940 \u0938\u093f\u0938\u094d\u091f\u094b\u0932\u093f\u0915 \u0930\u0940\u0921\u093f\u0902\u0917 \u0938\u093e\u092e\u093e\u0928\u094d\u092f \u0938\u0940\u092e\u093e \u0938\u0947 \u0925\u094b\u0921\u093c\u0940 \u0905\u0927\u093f\u0915 \u0939\u0948\u0964 \u0928\u092e\u0915 \u0915\u092e \u0915\u0930\u0928\u093e, \u0938\u0915\u094d\u0930\u093f\u092f \u0930\u0939\u0928\u093e \u0914\u0930 \u0924\u0928\u093e\u0935 \u092a\u094d\u0930\u092c\u0902\u0927\u0928 \u091c\u0948\u0938\u0947 \u091c\u0940\u0935\u0928\u0936\u0948\u0932\u0940 \u092e\u0947\u0902 \u092c\u0926\u0932\u093e\u0935 \u0907\u0938\u0947 \u092c\u0922\u093c\u0928\u0947 \u0938\u0947 \u092a\u0939\u0932\u0947 \u092e\u0926\u0926 \u0915\u0930 \u0938\u0915\u0924\u0947 \u0939\u0948\u0902\u0964",
+      tipStage1:"\u0907\u0938 \u0938\u0940\u092e\u093e \u0915\u094b \u0906\u092e\u0924\u094c\u0930 \u092a\u0930 \u0909\u091a\u094d\u091a \u0930\u0915\u094d\u0924\u091a\u093e\u092a \u0915\u093e \u092a\u0939\u0932\u093e \u091a\u0930\u0923 \u092e\u093e\u0928\u093e \u091c\u093e\u0924\u093e \u0939\u0948\u0964 \u091c\u0940\u0935\u0928\u0936\u0948\u0932\u0940 \u092e\u0947\u0902 \u092c\u0926\u0932\u093e\u0935, \u0914\u0930 \u091c\u0930\u0942\u0930\u0924 \u092a\u0921\u093c\u0928\u0947 \u092a\u0930 \u0928\u093f\u0917\u0930\u093e\u0928\u0940 \u092f\u093e \u0907\u0932\u093e\u091c \u0915\u0947 \u092c\u093e\u0930\u0947 \u092e\u0947\u0902 \u0921\u0949\u0915\u094d\u091f\u0930 \u0938\u0947 \u091a\u0930\u094d\u091a\u093e \u0915\u0930\u0947\u0902\u0964",
+      tipStage2:"\u0907\u0938 \u0938\u0940\u092e\u093e \u0915\u094b \u0906\u092e\u0924\u094c\u0930 \u092a\u0930 \u0909\u091a\u094d\u091a \u0930\u0915\u094d\u0924\u091a\u093e\u092a \u0915\u093e \u0926\u0942\u0938\u0930\u093e, \u0905\u0927\u093f\u0915 \u0917\u0902\u092d\u0940\u0930 \u091a\u0930\u0923 \u092e\u093e\u0928\u093e \u091c\u093e\u0924\u093e \u0939\u0948\u0964 \u0928\u093f\u0917\u0930\u093e\u0928\u0940 \u0914\u0930 \u0909\u092a\u091a\u093e\u0930 \u0915\u0947 \u0935\u093f\u0915\u0932\u094d\u092a\u094b\u0902 \u092a\u0930 \u091a\u0930\u094d\u091a\u093e \u0915\u0947 \u0932\u093f\u090f \u0921\u0949\u0915\u094d\u091f\u0930 \u0938\u0947 \u092e\u093f\u0932\u0928\u093e \u0909\u091a\u093f\u0924 \u0939\u0948\u0964",
+      tipCrisis:"\u092f\u0939 \u0930\u0940\u0921\u093f\u0902\u0917 \u0939\u093e\u0907\u092a\u0930\u091f\u0947\u0902\u0938\u093f\u0935 \u0938\u0902\u0915\u091f \u092e\u093e\u0928\u0947 \u091c\u093e\u0928\u0947 \u0935\u093e\u0932\u0940 \u0938\u0940\u092e\u093e \u092e\u0947\u0902 \u0939\u0948\u0964",
+      crisisWarning:"\u092f\u0939 \u0930\u0940\u0921\u093f\u0902\u0917 \u092c\u0939\u0941\u0924 \u0905\u0927\u093f\u0915 \u0939\u0948\u0964 \u0905\u0917\u0930 \u0906\u092a\u0915\u094b \u0938\u0940\u0928\u0947 \u092e\u0947\u0902 \u0926\u0930\u094d\u0926, \u0938\u093e\u0902\u0938 \u0932\u0947\u0928\u0947 \u092e\u0947\u0902 \u0924\u0915\u0932\u0940\u092b, \u0924\u0947\u091c \u0938\u093f\u0930\u0926\u0930\u094d\u0926, \u0927\u0941\u0902\u0927\u0932\u093e \u0926\u093f\u0916\u0928\u093e \u092f\u093e \u092c\u094b\u0932\u0928\u0947 \u092e\u0947\u0902 \u0915\u0920\u093f\u0928\u093e\u0908 \u0939\u094b, \u0924\u094b \u0924\u0941\u0930\u0902\u0924 \u0906\u092a\u093e\u0924\u0915\u093e\u0932\u0940\u0928 \u091a\u093f\u0915\u093f\u0924\u094d\u0938\u093e \u0938\u0939\u093e\u092f\u0924\u093e \u0932\u0947\u0902\u0964",
+      historyTitle:"\u0907\u0924\u093f\u0939\u093e\u0938 (\u0907\u0938 \u0921\u093f\u0935\u093e\u0907\u0938 \u092a\u0930)", historyEmpty:"\u0905\u092d\u0940 \u0924\u0915 \u0915\u094b\u0908 \u0930\u0940\u0921\u093f\u0902\u0917 \u0928\u0939\u0940\u0902 \u0939\u0941\u0908\u0964",
+      footer:"\u0936\u094d\u0930\u0947\u0923\u093f\u092f\u093e\u0901 \u0935\u092f\u0938\u094d\u0915\u094b\u0902 \u0915\u0947 \u0932\u093f\u090f \u092e\u093e\u0928\u0915 AHA \u0935\u0930\u094d\u0917\u0940\u0915\u0930\u0923 \u0915\u093e \u092a\u093e\u0932\u0928 \u0915\u0930\u0924\u0940 \u0939\u0948\u0902 (\u0915\u092e <90/<60, \u0938\u093e\u092e\u093e\u0928\u094d\u092f <120/<80, \u0925\u094b\u0921\u093c\u093e \u0905\u0927\u093f\u0915 120-129/<80, \u0938\u094d\u091f\u0947\u091c 1: 130-139 \u092f\u093e 80-89, \u0938\u094d\u091f\u0947\u091c 2: \u2265140 \u092f\u093e \u226590, \u0938\u0902\u0915\u091f: >180 \u0914\u0930/\u092f\u093e >120)\u0964 \u0907\u0924\u093f\u0939\u093e\u0938 \u0915\u0947\u0935\u0932 \u0907\u0938 \u092c\u094d\u0930\u093e\u0909\u091c\u093c\u0930 \u0914\u0930 \u0921\u093f\u0935\u093e\u0907\u0938 \u092e\u0947\u0902 \u0938\u0939\u0947\u091c\u093e \u091c\u093e\u0924\u093e \u0939\u0948, \u0915\u0939\u0940\u0902 \u092d\u0947\u091c\u093e \u0928\u0939\u0940\u0902 \u091c\u093e\u0924\u093e\u0964",
+      invalid:"\u0915\u0943\u092a\u092f\u093e \u0938\u0939\u0940 \u0938\u093f\u0938\u094d\u091f\u094b\u0932\u093f\u0915 \u0914\u0930 \u0921\u093e\u092f\u0938\u094d\u091f\u094b\u0932\u093f\u0915 \u092e\u093e\u0928 \u0926\u0930\u094d\u091c \u0915\u0930\u0947\u0902\u0964"
+    }
+  };
+
+  var currentLang = "en";
+  var root = document.getElementById("bp-root");
+  var HISTORY_KEY = "healthassistentai_bp_history";
+
+  function applyLang(lang){
+    currentLang = lang;
+    var t = UI[lang];
+    document.getElementById("bp-eyebrow").textContent = t.eyebrow;
+    document.getElementById("bp-title").textContent = t.title;
+    document.getElementById("bp-subtitle").textContent = t.subtitle;
+    document.getElementById("bp-disclaimer").textContent = t.disclaimer;
+    document.getElementById("bp-label-systolic").textContent = t.labelSystolic;
+    document.getElementById("bp-label-diastolic").textContent = t.labelDiastolic;
+    document.getElementById("bp-calc-label").textContent = t.calc;
+    document.getElementById("bp-stat-reading-label").textContent = t.statReadingLabel;
+    document.getElementById("bp-stat-normal-label").textContent = t.statNormalLabel;
+    document.getElementById("bp-stat-normal-value").textContent = t.statNormalValue;
+    document.getElementById("bp-scale-low").textContent = t.scaleLow;
+    document.getElementById("bp-scale-normal").textContent = t.scaleNormal;
+    document.getElementById("bp-scale-elevated").textContent = t.scaleElevated;
+    document.getElementById("bp-scale-stage1").textContent = t.scaleStage1;
+    document.getElementById("bp-scale-stage2").textContent = t.scaleStage2;
+    document.getElementById("bp-scale-crisis").textContent = t.scaleCrisis;
+    document.getElementById("bp-history-title").textContent = t.historyTitle;
+    document.getElementById("bp-footer-note").textContent = t.footer;
+    root.querySelectorAll(".bp-lang-btn").forEach(function(btn){
+      btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
+    });
+    if(lastResult){ renderResult(lastResult); }
+    renderHistory();
+  }
+  root.querySelectorAll(".bp-lang-btn").forEach(function(btn){
+    btn.onclick = function(){ applyLang(btn.getAttribute("data-lang")); };
+  });
+
+  var lastResult = null;
+
+  function categoryFor(sys, dia){
+    if(sys > 180 || dia > 120) return { key:"crisis", cls:"crisis" };
+    if(sys >= 140 || dia >= 90) return { key:"stage2", cls:"stage2" };
+    if(sys >= 130 || dia >= 80) return { key:"stage1", cls:"stage1" };
+    if(sys >= 120 && dia < 80) return { key:"elevated", cls:"elevated" };
+    if(sys < 90 || dia < 60) return { key:"low", cls:"low" };
+    return { key:"normal", cls:"normal" };
+  }
+
+  function renderResult(r){
+    var t = UI[currentLang];
+    document.getElementById("bp-stat-reading-value").textContent = r.sys + " / " + r.dia + " mmHg";
+    var cat = categoryFor(r.sys, r.dia);
+    var tag = document.getElementById("bp-stat-category");
+    tag.textContent = t[cat.key];
+    tag.style.color = "var(--bp-"+cat.cls+")";
+    tag.style.background = "var(--bp-"+cat.cls+"-bg)";
+    document.getElementById("bp-stat-tip").textContent = t["tip"+cat.key.charAt(0).toUpperCase()+cat.key.slice(1)];
+
+    var alertBox = document.getElementById("bp-crisis-alert");
+    if(cat.key === "crisis"){
+      alertBox.textContent = t.crisisWarning;
+      alertBox.classList.add("show");
+    } else {
+      alertBox.classList.remove("show");
+      alertBox.textContent = "";
+    }
+
+    var bar = document.getElementById("bp-bar");
+    var pct = Math.max(4, Math.min(96, ((r.sys - 70) / (200 - 70)) * 100));
+    bar.style.width = pct + "%";
+    bar.style.background = "var(--bp-"+cat.cls+")";
+  }
+
+  function renderHistory(){
+    var t = UI[currentLang];
+    var list = document.getElementById("bp-history");
+    var history = [];
+    try{ history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); }catch(e){ history = []; }
+    if(history.length === 0){
+      list.innerHTML = '<div class="bp-history-empty">'+t.historyEmpty+'</div>';
+      return;
+    }
+    list.innerHTML = "";
+    history.forEach(function(h){
+      var cat = categoryFor(h.sys, h.dia);
+      var li = document.createElement("li");
+      li.textContent = h.sys + "/" + h.dia + " mmHg (" + t[cat.key] + ")";
+      list.appendChild(li);
+    });
+  }
+
+  document.getElementById("bp-calc").onclick = function(){
+    var t = UI[currentLang];
+    var sys = parseFloat(document.getElementById("bp-systolic").value);
+    var dia = parseFloat(document.getElementById("bp-diastolic").value);
+    if(!(sys > 0) || !(dia > 0) || sys > 300 || dia > 200){
+      alert(t.invalid);
+      return;
+    }
+    sys = Math.round(sys);
+    dia = Math.round(dia);
+
+    lastResult = { sys:sys, dia:dia };
+    document.getElementById("bp-results").classList.add("show");
+    renderResult(lastResult);
+
+    var history = [];
+    try{ history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); }catch(e){ history = []; }
+    history.unshift({ sys:sys, dia:dia, date:new Date().toISOString() });
+    history = history.slice(0, 5);
+    try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); }catch(e){}
+    renderHistory();
+
+    document.getElementById("bp-results").scrollIntoView({behavior:"smooth", block:"start"});
+  };
+
+  applyLang("en");
+})();
+</script>
+
+</body>
+</html>
