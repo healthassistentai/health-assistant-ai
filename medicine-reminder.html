@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Medicine Reminder Tool</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:transparent; }
+  #mrt-root, #mrt-root * { box-sizing: border-box; }
+  #mrt-root {
+    --mrt-teal-900:#0b3d3a;
+    --mrt-teal-700:#0f6b63;
+    --mrt-teal-500:#1f8f83;
+    --mrt-blue-600:#0077cc;
+    --mrt-mint-100:#eaf6f2;
+    --mrt-bg:#f6faf9;
+    --mrt-card:#ffffff;
+    --mrt-ink:#173430;
+    --mrt-muted:#5c7570;
+    --mrt-amber:#b8611b;
+    --mrt-amber-bg:#fdf1e4;
+    --mrt-red:#c0392b;
+    --mrt-green:#1f8f4d;
+    font-family: "Noto Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    max-width: 600px;
+    margin: 12px auto;
+  }
+  #mrt-root.lang-bn { font-family: "Noto Sans Bengali", "Noto Sans", sans-serif; }
+  #mrt-root.lang-hi { font-family: "Noto Sans Devanagari", "Noto Sans", sans-serif; }
+  #mrt-root .mrt-card, #mrt-root label, #mrt-root button,
+  #mrt-root .mrt-result, #mrt-root .mrt-disclaimer, #mrt-root .mrt-brand {
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+  #mrt-root.lang-bn *, #mrt-root.lang-hi * { line-height: 1.7; }
+
+  .mrt-card {
+    background: var(--mrt-card);
+    border: 1px solid #dceee9;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(15,107,99,0.08);
+    overflow: hidden;
+  }
+  .mrt-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, var(--mrt-teal-700), var(--mrt-teal-900));
+    color: #fff;
+  }
+  .mrt-header-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .mrt-avatar {
+    width: 42px; height: 42px; flex: 0 0 42px; font-size: 20px;
+    background: rgba(255,255,255,0.15); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mrt-title { font-size: 17px; font-weight: 700; }
+  .mrt-subtitle { font-size: 12px; opacity: .85; margin-top: 2px; }
+  .mrt-lang-switch { display: flex; gap: 4px; flex: 0 0 auto; }
+  .mrt-lang-btn {
+    font-size: 11px; font-weight: 600; padding: 6px 9px;
+    border-radius: 999px; border: 1px solid rgba(255,255,255,.35);
+    background: transparent; color: #eafff9; cursor: pointer;
+  }
+  .mrt-lang-btn.is-active { background: #fff; color: var(--mrt-teal-900); }
+
+  .mrt-disclaimer {
+    font-size: 12px; line-height: 1.5;
+    background: var(--mrt-amber-bg); color: var(--mrt-amber);
+    padding: 10px 20px; border-bottom: 1px solid #f3ddc2;
+  }
+
+  .mrt-notify-row {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 14px 20px 0; background: var(--mrt-bg);
+  }
+  .mrt-notify-btn {
+    font-size: 12.5px; font-weight: 700; padding: 9px 14px;
+    background: #fff; color: var(--mrt-teal-700); border: 1px solid var(--mrt-teal-500);
+    border-radius: 999px; cursor: pointer;
+  }
+  .mrt-notify-btn:hover { background: var(--mrt-mint-100); }
+  .mrt-notify-status { font-size: 11.5px; color: var(--mrt-muted); }
+
+  .mrt-form { padding: 18px 20px; background: var(--mrt-bg); }
+  .mrt-field { margin-bottom: 14px; }
+  .mrt-field label { display: block; font-size: 13px; font-weight: 600; color: var(--mrt-teal-900); margin-bottom: 6px; }
+  .mrt-field input, .mrt-field select {
+    width: 100%; padding: 11px 12px; font-size: 14px;
+    border: 1px solid #cfe1dd; border-radius: 10px; outline: none;
+    background: #fff; color: var(--mrt-ink);
+  }
+  .mrt-field input:focus, .mrt-field select:focus {
+    border-color: var(--mrt-teal-500); box-shadow: 0 0 0 3px rgba(31,143,131,.15);
+  }
+  .mrt-times-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mrt-times-list input[type="time"] { flex: 1 1 120px; }
+
+  .mrt-add-btn {
+    width: 100%; padding: 13px; font-size: 14.5px; font-weight: 700;
+    background: var(--mrt-teal-700); color: #fff; border: none; border-radius: 10px; cursor: pointer;
+  }
+  .mrt-add-btn:hover { background: var(--mrt-teal-900); }
+
+  .mrt-list-wrap { padding: 4px 20px 20px; background: var(--mrt-bg); }
+  .mrt-list-title { font-size: 13.5px; font-weight: 700; color: var(--mrt-teal-900); margin-bottom: 8px; }
+  .mrt-empty { font-size: 12.5px; color: var(--mrt-muted); }
+  .mrt-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .mrt-list li {
+    background: #fff; border: 1px solid #dceee9; border-radius: 10px;
+    padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .mrt-item-info { min-width: 0; }
+  .mrt-item-name { font-size: 13.5px; font-weight: 700; color: var(--mrt-teal-900); }
+  .mrt-item-meta { font-size: 11.5px; color: var(--mrt-muted); margin-top: 2px; }
+  .mrt-item-times { font-size: 11.5px; color: var(--mrt-teal-700); font-weight: 600; margin-top: 2px; }
+  .mrt-remove-btn {
+    flex: 0 0 auto; font-size: 11px; font-weight: 700; padding: 6px 10px;
+    background: #fdecea; color: var(--mrt-red); border: none; border-radius: 8px; cursor: pointer;
+  }
+  .mrt-remove-btn:hover { background: #fbd8d3; }
+
+  .mrt-alert {
+    margin: 0 20px 20px; padding: 14px 16px; border-radius: 12px;
+    background: var(--mrt-mint-100); color: var(--mrt-teal-900);
+    font-size: 13.5px; font-weight: 600; border: 1px solid #bfe3da;
+  }
+
+  .mrt-brand {
+    text-align: center; padding: 18px 20px 22px;
+    border-top: 1px solid #e4efec; background: #fff;
+  }
+  .mrt-brand-name { font-size: 13px; font-weight: 800; letter-spacing: .06em; color: var(--mrt-teal-900); }
+  .mrt-brand-tag { font-size: 12px; color: var(--mrt-teal-700); font-weight: 600; margin-top: 2px; }
+  .mrt-brand-services { font-size: 11px; color: var(--mrt-muted); margin-top: 6px; }
+  .mrt-brand-site { font-size: 11.5px; margin-top: 8px; }
+  .mrt-brand-site a { color: var(--mrt-teal-700); text-decoration: none; font-weight: 600; }
+  .mrt-brand-site a:hover { text-decoration: underline; }
+
+  @media (max-width: 500px) {
+    #mrt-root { margin: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="mrt-root">
+  <div class="mrt-card">
+
+    <div class="mrt-header">
+      <div class="mrt-header-left">
+        <div class="mrt-avatar">💊</div>
+        <div>
+          <div class="mrt-title" data-i18n="title">AI Medicine Reminder Tool</div>
+          <div class="mrt-subtitle" data-i18n="subtitle">Never miss a dose again</div>
+        </div>
+      </div>
+      <div class="mrt-lang-switch">
+        <button class="mrt-lang-btn is-active" data-lang="en">EN</button>
+        <button class="mrt-lang-btn" data-lang="bn">বাংলা</button>
+        <button class="mrt-lang-btn" data-lang="hi">हिंदी</button>
+      </div>
+    </div>
+
+    <div class="mrt-disclaimer" data-i18n="disclaimer">⚠ This tool only sends reminders while this page stays open in your browser. It is not a substitute for medical advice — always follow your doctor's prescription.</div>
+
+    <div class="mrt-notify-row">
+      <button class="mrt-notify-btn" data-i18n="enableNotify" id="mrt-enable-notify">🔔 Enable Browser Notifications</button>
+      <span class="mrt-notify-status" id="mrt-notify-status"></span>
+    </div>
+
+    <div class="mrt-form">
+      <div class="mrt-field">
+        <label data-i18n="nameLabel">Medicine Name</label>
+        <input data-i18n-ph="namePh" id="mrt-name" placeholder="Example: Paracetamol" type="text" />
+      </div>
+      <div class="mrt-field">
+        <label data-i18n="doseLabel">Dose (optional)</label>
+        <input data-i18n-ph="dosePh" id="mrt-dose" placeholder="Example: 1 tablet" type="text" />
+      </div>
+      <div class="mrt-field">
+        <label data-i18n="freqLabel">Times Per Day</label>
+        <select id="mrt-freq">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      </div>
+      <div class="mrt-field" id="mrt-times-wrap">
+        <label data-i18n="timesLabel">Reminder Time(s)</label>
+        <div class="mrt-times-list" id="mrt-times-list"></div>
+      </div>
+      <button class="mrt-add-btn" data-i18n="addBtn" id="mrt-add">Add Medicine Reminder</button>
+    </div>
+
+    <div class="mrt-list-wrap">
+      <div class="mrt-list-title" data-i18n="listTitle">Your Reminders</div>
+      <div class="mrt-empty" data-i18n="emptyMsg" id="mrt-empty">No medicine reminders added yet.</div>
+      <ul class="mrt-list" id="mrt-list"></ul>
+    </div>
+
+    <div class="mrt-alert" id="mrt-alert" style="display: none;"></div>
+
+    <div class="mrt-brand">
+      <div class="mrt-brand-name">HEALTH ASSISTENT AI</div>
+      <div class="mrt-brand-tag" data-i18n="brandTag">Your Smart AI Health Companion</div>
+      <div class="mrt-brand-site">Website: <a href="https://www.healthassistentai.com" rel="noopener" target="_blank">healthassistentai.com</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var STRINGS = {
+    en: {
+      title: "AI Medicine Reminder Tool",
+      subtitle: "Never miss a dose again",
+      disclaimer: "⚠ This tool only sends reminders while this page stays open in your browser. It is not a substitute for medical advice — always follow your doctor's prescription.",
+      enableNotify: "🔔 Enable Browser Notifications",
+      notifyOn: "Notifications enabled ✅",
+      notifyDenied: "Notifications blocked — enable them in browser settings.",
+      notifyUnsupported: "Notifications not supported in this browser.",
+      nameLabel: "Medicine Name",
+      namePh: "Example: Paracetamol",
+      doseLabel: "Dose (optional)",
+      dosePh: "Example: 1 tablet",
+      freqLabel: "Times Per Day",
+      timesLabel: "Reminder Time(s)",
+      addBtn: "Add Medicine Reminder",
+      listTitle: "Your Reminders",
+      emptyMsg: "No medicine reminders added yet.",
+      removeBtn: "Remove",
+      nameRequired: "Please enter the medicine name.",
+      doseTag: "Dose:",
+      timesTag: "Times:",
+      notifTitle: "💊 Medicine Reminder",
+      notifBodySuffix: "It's time to take your medicine.",
+      onPageAlertPrefix: "⏰ Time to take",
+      dismissBtn: "Dismiss",
+      brandTag: "Your Smart AI Health Companion"
+    },
+    bn: {
+      title: "এআই মেডিসিন রিমাইন্ডার টুল",
+      subtitle: "ওষুধ খেতে আর ভুলবেন না",
+      disclaimer: "⚠ এই টুলটি শুধুমাত্র ব্রাউজারে এই পেজ খোলা থাকলেই রিমাইন্ডার পাঠায়। এটি চিকিৎসা পরামর্শের বিকল্প নয় — সর্বদা ডাক্তারের নির্দেশনা অনুসরণ করুন।",
+      enableNotify: "🔔 ব্রাউজার নোটিফিকেশন চালু করুন",
+      notifyOn: "নোটিফিকেশন চালু হয়েছে ✅",
+      notifyDenied: "নোটিফিকেশন বন্ধ আছে — ব্রাউজার সেটিংসে চালু করুন।",
+      notifyUnsupported: "এই ব্রাউজারে নোটিফিকেশন সমর্থিত নয়।",
+      nameLabel: "ওষুধের নাম",
+      namePh: "উদাহরণ: প্যারাসিটামল",
+      doseLabel: "ডোজ (ঐচ্ছিক)",
+      dosePh: "উদাহরণ: ১টি ট্যাবলেট",
+      freqLabel: "দৈনিক কতবার",
+      timesLabel: "রিমাইন্ডার সময়",
+      addBtn: "রিমাইন্ডার যোগ করুন",
+      listTitle: "আপনার রিমাইন্ডারসমূহ",
+      emptyMsg: "এখনো কোনো রিমাইন্ডার যোগ করা হয়নি।",
+      removeBtn: "মুছুন",
+      nameRequired: "দয়া করে ওষুধের নাম লিখুন।",
+      doseTag: "ডোজ:",
+      timesTag: "সময়:",
+      notifTitle: "💊 মেডিসিন রিমাইন্ডার",
+      notifBodySuffix: "এখন আপনার ওষুধ খাওয়ার সময়।",
+      onPageAlertPrefix: "⏰ এখন খাওয়ার সময়:",
+      dismissBtn: "বন্ধ করুন",
+      brandTag: "আপনার স্মার্ট এআই হেলথ সহচর"
+    },
+    hi: {
+      title: "एआई मेडिसिन रिमाइंडर टूल",
+      subtitle: "अब दवा लेना नहीं भूलेंगे",
+      disclaimer: "⚠ यह टूल केवल तभी रिमाइंडर भेजता है जब यह पेज आपके ब्राउज़र में खुला हो। यह चिकित्सा सलाह का विकल्प नहीं है — हमेशा डॉक्टर के निर्देशों का पालन करें।",
+      enableNotify: "🔔 ब्राउज़र नोटिफिकेशन चालू करें",
+      notifyOn: "नोटिफिकेशन चालू हैं ✅",
+      notifyDenied: "नोटिफिकेशन बंद हैं — ब्राउज़र सेटिंग्स में चालू करें।",
+      notifyUnsupported: "इस ब्राउज़र में नोटिफिकेशन समर्थित नहीं है।",
+      nameLabel: "दवा का नाम",
+      namePh: "उदाहरण: पैरासिटामोल",
+      doseLabel: "खुराक (वैकल्पिक)",
+      dosePh: "उदाहरण: 1 टैबलेट",
+      freqLabel: "दिन में कितनी बार",
+      timesLabel: "रिमाइंडर समय",
+      addBtn: "रिमाइंडर जोड़ें",
+      listTitle: "आपके रिमाइंडर",
+      emptyMsg: "अभी तक कोई रिमाइंडर नहीं जोड़ा गया।",
+      removeBtn: "हटाएं",
+      nameRequired: "कृपया दवा का नाम दर्ज करें।",
+      doseTag: "खुराक:",
+      timesTag: "समय:",
+      notifTitle: "💊 मेडिसिन रिमाइंडर",
+      notifBodySuffix: "अब आपकी दवा लेने का समय है।",
+      onPageAlertPrefix: "⏰ अब लेने का समय है:",
+      dismissBtn: "बंद करें",
+      brandTag: "आपका स्मार्ट एआई हेल्थ साथी"
+    }
+  };
+
+  function decodeEntities(str) {
+    if (typeof str !== "string") return str;
+    if (str.indexOf("&#") === -1 && str.indexOf("&amp;") === -1) return str;
+    var el = document.createElement("textarea");
+    el.innerHTML = str;
+    return el.value;
+  }
+  function deepDecode(obj) {
+    if (typeof obj === "string") return decodeEntities(obj);
+    if (Array.isArray(obj)) return obj.map(deepDecode);
+    if (obj && typeof obj === "object") {
+      var out = {};
+      for (var k in obj) out[k] = deepDecode(obj[k]);
+      return out;
+    }
+    return obj;
+  }
+  STRINGS = deepDecode(STRINGS);
+
+  var currentLang = "en";
+  var rootEl = document.getElementById("mrt-root");
+  var meds = [];
+  var medIdCounter = 1;
+  var lastTriggerMinute = {};
+
+  function t(key) { return STRINGS[currentLang][key]; }
+
+  function applyStaticStrings() {
+    document.querySelectorAll("#mrt-root [data-i18n]").forEach(function (el) {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.getElementById("mrt-name").setAttribute("placeholder", t("namePh"));
+    document.getElementById("mrt-dose").setAttribute("placeholder", t("dosePh"));
+    renderTimeInputs();
+    renderList();
+    updateNotifyStatus();
+  }
+
+  function renderTimeInputs() {
+    var count = parseInt(document.getElementById("mrt-freq").value, 10);
+    var wrap = document.getElementById("mrt-times-list");
+    var existing = wrap.querySelectorAll("input[type='time']");
+    var values = [];
+    existing.forEach(function (inp) { values.push(inp.value); });
+    wrap.innerHTML = "";
+    for (var i = 0; i < count; i++) {
+      var inp = document.createElement("input");
+      inp.type = "time";
+      inp.value = values[i] || "";
+      inp.className = "mrt-time-input";
+      wrap.appendChild(inp);
+    }
+  }
+
+  function updateNotifyStatus() {
+    var statusEl = document.getElementById("mrt-notify-status");
+    if (!("Notification" in window)) {
+      statusEl.textContent = t("notifyUnsupported");
+      return;
+    }
+    if (Notification.permission === "granted") {
+      statusEl.textContent = t("notifyOn");
+    } else if (Notification.permission === "denied") {
+      statusEl.textContent = t("notifyDenied");
+    } else {
+      statusEl.textContent = "";
+    }
+  }
+
+  document.getElementById("mrt-enable-notify").addEventListener("click", function () {
+    if (!("Notification" in window)) { updateNotifyStatus(); return; }
+    Notification.requestPermission().then(function () { updateNotifyStatus(); });
+  });
+
+  document.getElementById("mrt-freq").addEventListener("change", renderTimeInputs);
+
+  function renderList() {
+    var listEl = document.getElementById("mrt-list");
+    var emptyEl = document.getElementById("mrt-empty");
+    listEl.innerHTML = "";
+    if (meds.length === 0) {
+      emptyEl.style.display = "block";
+      return;
+    }
+    emptyEl.style.display = "none";
+    meds.forEach(function (med) {
+      var li = document.createElement("li");
+      var info = document.createElement("div");
+      info.className = "mrt-item-info";
+      var nameDiv = document.createElement("div");
+      nameDiv.className = "mrt-item-name";
+      nameDiv.textContent = med.name;
+      info.appendChild(nameDiv);
+      if (med.dose) {
+        var doseDiv = document.createElement("div");
+        doseDiv.className = "mrt-item-meta";
+        doseDiv.textContent = t("doseTag") + " " + med.dose;
+        info.appendChild(doseDiv);
+      }
+      var timesDiv = document.createElement("div");
+      timesDiv.className = "mrt-item-times";
+      timesDiv.textContent = t("timesTag") + " " + med.times.join(", ");
+      info.appendChild(timesDiv);
+      li.appendChild(info);
+
+      var removeBtn = document.createElement("button");
+      removeBtn.className = "mrt-remove-btn";
+      removeBtn.textContent = t("removeBtn");
+      removeBtn.addEventListener("click", function () {
+        meds = meds.filter(function (m) { return m.id !== med.id; });
+        renderList();
+      });
+      li.appendChild(removeBtn);
+      listEl.appendChild(li);
+    });
+  }
+
+  document.getElementById("mrt-add").addEventListener("click", function () {
+    var nameInput = document.getElementById("mrt-name");
+    var name = nameInput.value.trim();
+    var dose = document.getElementById("mrt-dose").value.trim();
+    var timeInputs = document.querySelectorAll("#mrt-times-list input[type='time']");
+    var times = [];
+    timeInputs.forEach(function (inp) { if (inp.value) times.push(inp.value); });
+
+    if (!name) {
+      alert(t("nameRequired"));
+      return;
+    }
+    if (times.length === 0) {
+      alert(t("nameRequired"));
+      return;
+    }
+
+    meds.push({ id: medIdCounter++, name: name, dose: dose, times: times });
+    renderList();
+
+    nameInput.value = "";
+    document.getElementById("mrt-dose").value = "";
+    document.getElementById("mrt-freq").value = "1";
+    renderTimeInputs();
+  });
+
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+
+  function showAlert(med, time) {
+    var alertEl = document.getElementById("mrt-alert");
+    alertEl.style.display = "block";
+    alertEl.textContent = t("onPageAlertPrefix") + " " + med.name +
+      (med.dose ? " (" + med.dose + ")" : "") + " — " + time;
+
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        new Notification(t("notifTitle"), {
+          body: med.name + (med.dose ? " — " + med.dose : "") + ". " + t("notifBodySuffix"),
+          icon: ""
+        });
+      } catch (e) { /* ignore notification errors */ }
+    }
+  }
+
+  function checkReminders() {
+    var now = new Date();
+    var hh = pad(now.getHours());
+    var mm = pad(now.getMinutes());
+    var current = hh + ":" + mm;
+    var dateKey = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+
+    meds.forEach(function (med) {
+      med.times.forEach(function (time) {
+        if (time === current) {
+          var fireKey = med.id + "-" + time;
+          if (lastTriggerMinute[fireKey] !== dateKey) {
+            lastTriggerMinute[fireKey] = dateKey;
+            showAlert(med, time);
+          }
+        }
+      });
+    });
+  }
+
+  setInterval(checkReminders, 30000);
+
+  document.querySelectorAll(".mrt-lang-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".mrt-lang-btn").forEach(function (b) { b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      currentLang = btn.getAttribute("data-lang");
+      rootEl.classList.remove("lang-bn", "lang-hi");
+      if (currentLang === "bn") rootEl.classList.add("lang-bn");
+      if (currentLang === "hi") rootEl.classList.add("lang-hi");
+      applyStaticStrings();
+    });
+  });
+
+  renderTimeInputs();
+  applyStaticStrings();
+})();
+</script>
+</body>
+</html>
