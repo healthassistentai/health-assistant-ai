@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Water Intake Calculator</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:transparent; }
+  #wic-root, #wic-root * { box-sizing: border-box; }
+  #wic-root {
+    --wic-teal-900:#0b3d3a;
+    --wic-teal-700:#0f6b63;
+    --wic-teal-500:#1f8f83;
+    --wic-blue-600:#0077cc;
+    --wic-mint-100:#eaf6f2;
+    --wic-bg:#f6faf9;
+    --wic-card:#ffffff;
+    --wic-ink:#173430;
+    --wic-muted:#5c7570;
+    --wic-amber:#b8611b;
+    --wic-amber-bg:#fdf1e4;
+    --wic-red:#c0392b;
+    font-family: "Noto Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    max-width: 600px;
+    margin: 12px auto;
+  }
+  #wic-root.lang-bn { font-family: "Noto Sans Bengali", "Noto Sans", sans-serif; }
+  #wic-root.lang-hi { font-family: "Noto Sans Devanagari", "Noto Sans", sans-serif; }
+  #wic-root .wic-card, #wic-root label, #wic-root button,
+  #wic-root .wic-result, #wic-root .wic-disclaimer, #wic-root .wic-brand {
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+  #wic-root.lang-bn *, #wic-root.lang-hi * { line-height: 1.7; }
+
+  .wic-card {
+    background: var(--wic-card);
+    border: 1px solid #dceee9;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(15,107,99,0.08);
+    overflow: hidden;
+  }
+  .wic-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, var(--wic-teal-700), var(--wic-teal-900));
+    color: #fff;
+  }
+  .wic-header-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .wic-avatar {
+    width: 42px; height: 42px; flex: 0 0 42px; font-size: 20px;
+    background: rgba(255,255,255,0.15); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wic-title { font-size: 17px; font-weight: 700; }
+  .wic-subtitle { font-size: 12px; opacity: .85; margin-top: 2px; }
+  .wic-lang-switch { display: flex; gap: 4px; flex: 0 0 auto; }
+  .wic-lang-btn {
+    font-size: 11px; font-weight: 600; padding: 6px 9px;
+    border-radius: 999px; border: 1px solid rgba(255,255,255,.35);
+    background: transparent; color: #eafff9; cursor: pointer;
+  }
+  .wic-lang-btn.is-active { background: #fff; color: var(--wic-teal-900); }
+
+  .wic-disclaimer {
+    font-size: 12px; line-height: 1.5;
+    background: var(--wic-amber-bg); color: var(--wic-amber);
+    padding: 10px 20px; border-bottom: 1px solid #f3ddc2;
+  }
+
+  .wic-form { padding: 20px; background: var(--wic-bg); }
+  .wic-field { margin-bottom: 14px; }
+  .wic-field label { display: block; font-size: 13px; font-weight: 600; color: var(--wic-teal-900); margin-bottom: 6px; }
+  .wic-field input, .wic-field select {
+    width: 100%; padding: 11px 12px; font-size: 14px;
+    border: 1px solid #cfe1dd; border-radius: 10px; outline: none;
+    background: #fff; color: var(--wic-ink);
+  }
+  .wic-field input:focus, .wic-field select:focus {
+    border-color: var(--wic-teal-500); box-shadow: 0 0 0 3px rgba(31,143,131,.15);
+  }
+  .wic-calc-btn {
+    width: 100%; padding: 13px; font-size: 14.5px; font-weight: 700;
+    background: var(--wic-teal-700); color: #fff; border: none; border-radius: 10px; cursor: pointer;
+  }
+  .wic-calc-btn:hover { background: var(--wic-teal-900); }
+
+  .wic-result { margin: 0 20px 20px; padding: 18px; border-radius: 12px; background: var(--wic-mint-100); color: var(--wic-teal-900); }
+  .wic-result.error { background: #fdecea; color: var(--wic-red); font-size: 13.5px; }
+  .wic-result h3 { margin: 0 0 6px; font-size: 15px; }
+  .wic-result .wic-total { font-size: 22px; font-weight: 800; color: var(--wic-teal-700); }
+  .wic-result .wic-ml { font-size: 12.5px; color: var(--wic-muted); margin-top: 2px; }
+  .wic-result hr { border: none; border-top: 1px solid #d5eae4; margin: 12px 0; }
+  .wic-result ul { margin: 4px 0 0; padding-left: 18px; font-size: 12.5px; line-height: 1.7; }
+
+  .wic-brand {
+    text-align: center; padding: 18px 20px 22px;
+    border-top: 1px solid #e4efec; background: #fff;
+  }
+  .wic-brand-name { font-size: 13px; font-weight: 800; letter-spacing: .06em; color: var(--wic-teal-900); }
+  .wic-brand-tag { font-size: 12px; color: var(--wic-teal-700); font-weight: 600; margin-top: 2px; }
+  .wic-brand-site { font-size: 11.5px; margin-top: 8px; }
+  .wic-brand-site a { color: var(--wic-teal-700); text-decoration: none; font-weight: 600; }
+  .wic-brand-site a:hover { text-decoration: underline; }
+
+  @media (max-width: 500px) {
+    #wic-root { margin: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="wic-root">
+  <div class="wic-card">
+
+    <div class="wic-header">
+      <div class="wic-header-left">
+        <div class="wic-avatar">💧</div>
+        <div>
+          <div class="wic-title" data-i18n="title">AI Water Intake Calculator</div>
+          <div class="wic-subtitle" data-i18n="subtitle">Find your ideal daily water goal</div>
+        </div>
+      </div>
+      <div class="wic-lang-switch">
+        <button class="wic-lang-btn is-active" data-lang="en">EN</button>
+        <button class="wic-lang-btn" data-lang="bn">বাংলা</button>
+        <button class="wic-lang-btn" data-lang="hi">हिंदी</button>
+      </div>
+    </div>
+
+    <div class="wic-disclaimer" data-i18n="disclaimer">⚠ This is a general estimate, not medical advice. People with kidney, heart, or other conditions should follow their doctor's fluid guidance.</div>
+
+    <div class="wic-form">
+      <div class="wic-field">
+        <label data-i18n="weightLabel">Weight (kg)</label>
+        <input data-i18n-ph="weightPh" id="wic-weight" placeholder="Example: 65" type="number" />
+      </div>
+      <div class="wic-field">
+        <label data-i18n="activityLabel">Activity Level</label>
+        <select id="wic-activity">
+          <option data-i18n="activitySedentary" value="0">Sedentary (little or no exercise)</option>
+          <option data-i18n="activityModerate" value="500">Moderate activity (+500 ml)</option>
+          <option data-i18n="activityHeavy" value="1000">Heavy exercise (+1000 ml)</option>
+        </select>
+      </div>
+      <div class="wic-field">
+        <label data-i18n="weatherLabel">Weather</label>
+        <select id="wic-weather">
+          <option data-i18n="weatherNormal" value="0">Normal climate</option>
+          <option data-i18n="weatherHot" value="500">Hot climate (+500 ml)</option>
+        </select>
+      </div>
+      <button class="wic-calc-btn" data-i18n="calcBtn" id="wic-calc">Calculate Water Intake</button>
+    </div>
+
+    <div class="wic-result" id="wic-result" style="display: none;"></div>
+
+    <div class="wic-brand">
+      <div class="wic-brand-name">HEALTH ASSISTENT AI</div>
+      <div class="wic-brand-tag" data-i18n="brandTag">Your Smart AI Health Companion</div>
+      <div class="wic-brand-site">Website: <a href="https://www.healthassistentai.com" rel="noopener" target="_blank">healthassistentai.com</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var STRINGS = {
+    en: {
+      title: "AI Water Intake Calculator",
+      subtitle: "Find your ideal daily water goal",
+      disclaimer: "⚠ This is a general estimate, not medical advice. People with kidney, heart, or other conditions should follow their doctor's fluid guidance.",
+      weightLabel: "Weight (kg)",
+      weightPh: "Example: 65",
+      activityLabel: "Activity Level",
+      activitySedentary: "Sedentary (little or no exercise)",
+      activityModerate: "Moderate activity (+500 ml)",
+      activityHeavy: "Heavy exercise (+1000 ml)",
+      weatherLabel: "Weather",
+      weatherNormal: "Normal climate",
+      weatherHot: "Hot climate (+500 ml)",
+      calcBtn: "Calculate Water Intake",
+      errorMsg: "Please enter a valid weight.",
+      resultTitle: "✅ Recommended Water Intake",
+      perDay: "per day",
+      tipsTitle: "💡 Tips:",
+      tips: [
+        "Drink water throughout the day, not all at once.",
+        "Increase intake before, during, and after exercise.",
+        "Drink more in hot or humid weather.",
+        "Don't wait until you feel thirsty to drink."
+      ],
+      brandTag: "Your Smart AI Health Companion"
+    },
+    bn: {
+      title: "এআই ওয়াটার ইনটেক ক্যালকুলেটর",
+      subtitle: "আপনার দৈনিক পানি পানের লক্ষ্যমাত্রা জানুন",
+      disclaimer: "⚠ এটি একটি সাধারণ আনুমানিক হিসাব, চিকিৎসা পরামর্শ নয়। কিডনি, হৃদরোগ বা অন্য কোনো সমস্যা থাকলে ডাক্তারের নির্দেশনা অনুসরণ করুন।",
+      weightLabel: "ওজন (কেজি)",
+      weightPh: "উদাহরণ: ৬৫",
+      activityLabel: "কার্যকলাপের মাত্রা",
+      activitySedentary: "স্বল্প বা কোনো ব্যায়াম নেই",
+      activityModerate: "মাঝারি কার্যকলাপ (+৫০০ মিলি)",
+      activityHeavy: "ভারী ব্যায়াম (+১০০০ মিলি)",
+      weatherLabel: "আবহাওয়া",
+      weatherNormal: "স্বাভাবিক আবহাওয়া",
+      weatherHot: "গরম আবহাওয়া (+৫০০ মিলি)",
+      calcBtn: "পানির পরিমাণ হিসাব করুন",
+      errorMsg: "দয়া করে সঠিক ওজন লিখুন।",
+      resultTitle: "✅ প্রস্তাবিত পানি পানের পরিমাণ",
+      perDay: "প্রতিদিন",
+      tipsTitle: "💡 পরামর্শ:",
+      tips: [
+        "সারাদিন ধরে অল্প অল্প করে পানি পান করুন, একবারে নয়।",
+        "ব্যায়ামের আগে, চলাকালীন ও পরে বেশি পানি পান করুন।",
+        "গরম বা আর্দ্র আবহাওয়ায় বেশি পানি পান করুন।",
+        "তৃষ্ণা পাওয়ার জন্য অপেক্ষা করবেন না।"
+      ],
+      brandTag: "আপনার স্মার্ট এআই স্বাস্থ্য সহায়ক"
+    },
+    hi: {
+      title: "एआई वॉटर इनटेक कैलकुलेटर",
+      subtitle: "अपना दैनिक पानी पीने का लक्ष्य जानें",
+      disclaimer: "⚠ यह एक सामान्य अनुमान है, चिकित्सा सलाह नहीं। किडनी, हृदय या अन्य स्थिति वाले लोग अपने डॉक्टर के निर्देशों का पालन करें।",
+      weightLabel: "वजन (किग्रा)",
+      weightPh: "उदाहरण: 65",
+      activityLabel: "गतिविधि स्तर",
+      activitySedentary: "कम या कोई व्यायाम नहीं",
+      activityModerate: "मध्यम गतिविधि (+500 मिली)",
+      activityHeavy: "भारी व्यायाम (+1000 मिली)",
+      weatherLabel: "मौसम",
+      weatherNormal: "सामान्य मौसम",
+      weatherHot: "गर्म मौसम (+500 मिली)",
+      calcBtn: "पानी की मात्रा calculate करें",
+      errorMsg: "कृपया सही वजन दर्ज करें।",
+      resultTitle: "✅ अनुशंसित पानी की मात्रा",
+      perDay: "प्रतिदिन",
+      tipsTitle: "💡 सुझाव:",
+      tips: [
+        "दिनभर थोड़ा-थोड़ा पानी पिएं, एक बार में नहीं।",
+        "व्यायाम से पहले, दौरान और बाद में पानी बढ़ाएं।",
+        "गर्म या उमस भरे मौसम में ज़्यादा पानी पिएं।",
+        "प्यास लगने का इंतज़ार न करें।"
+      ],
+      brandTag: "आपका स्मार्ट एआई हेल्थ साथी"
+    }
+  };
+
+  function decodeEntities(str) {
+    if (typeof str !== "string") return str;
+    if (str.indexOf("&#") === -1 && str.indexOf("&amp;") === -1) return str;
+    var el = document.createElement("textarea");
+    el.innerHTML = str;
+    return el.value;
+  }
+  function deepDecode(obj) {
+    if (typeof obj === "string") return decodeEntities(obj);
+    if (Array.isArray(obj)) return obj.map(deepDecode);
+    if (obj && typeof obj === "object") {
+      var out = {};
+      for (var k in obj) out[k] = deepDecode(obj[k]);
+      return out;
+    }
+    return obj;
+  }
+  STRINGS = deepDecode(STRINGS);
+
+  var currentLang = "en";
+  var rootEl = document.getElementById("wic-root");
+
+  function t(key) { return STRINGS[currentLang][key]; }
+
+  function applyStaticStrings() {
+    document.querySelectorAll("#wic-root [data-i18n]").forEach(function (el) {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.getElementById("wic-weight").setAttribute("placeholder", t("weightPh"));
+  }
+
+  function calculateWater() {
+    var weight = parseFloat(document.getElementById("wic-weight").value);
+    var resultEl = document.getElementById("wic-result");
+    resultEl.style.display = "block";
+
+    if (isNaN(weight) || weight <= 0) {
+      resultEl.className = "wic-result error";
+      resultEl.textContent = t("errorMsg");
+      return;
+    }
+
+    var activity = parseInt(document.getElementById("wic-activity").value, 10);
+    var weather = parseInt(document.getElementById("wic-weather").value, 10);
+
+    var total = (weight * 35) + activity + weather;
+    var liters = (total / 1000).toFixed(2);
+
+    var tipsHtml = t("tips").map(function (tip) { return "<li>" + tip + "</li>"; }).join("");
+
+    resultEl.className = "wic-result";
+    resultEl.innerHTML =
+      "<h3>" + t("resultTitle") + "</h3>" +
+      "<div class='wic-total'>" + liters + " L/" + t("perDay") + "</div>" +
+      "<div class='wic-ml'>" + total + " ml " + t("perDay") + "</div>" +
+      "<hr>" +
+      "<div>" + t("tipsTitle") + "</div>" +
+      "<ul>" + tipsHtml + "</ul>";
+  }
+
+  document.querySelectorAll(".wic-lang-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".wic-lang-btn").forEach(function (b) { b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      currentLang = btn.getAttribute("data-lang");
+      rootEl.classList.remove("lang-bn", "lang-hi");
+      if (currentLang === "bn") rootEl.classList.add("lang-bn");
+      if (currentLang === "hi") rootEl.classList.add("lang-hi");
+      applyStaticStrings();
+      document.getElementById("wic-result").style.display = "none";
+    });
+  });
+
+  document.getElementById("wic-calc").addEventListener("click", calculateWater);
+
+  applyStaticStrings();
+})();
+</script>
+</body>
+</html>
