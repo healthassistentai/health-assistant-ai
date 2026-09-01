@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BMI Calculator</title>
+<link href="https://fonts.googleapis.com" rel="preconnect" />
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin:0; padding:0; background:transparent; }
+  #bmi-root, #bmi-root * { box-sizing: border-box; }
+  #bmi-root {
+    --bmi-teal-900:#0b3d3a;
+    --bmi-teal-700:#0f6b63;
+    --bmi-teal-500:#1f8f83;
+    --bmi-blue-600:#0077cc;
+    --bmi-mint-100:#eaf6f2;
+    --bmi-bg:#f6faf9;
+    --bmi-card:#ffffff;
+    --bmi-ink:#173430;
+    --bmi-muted:#5c7570;
+    --bmi-amber:#b8611b;
+    --bmi-amber-bg:#fdf1e4;
+    --bmi-red:#c0392b;
+    --bmi-blue:#2b6cb0;
+    --bmi-green:#1f8f4d;
+    font-family: "Noto Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    max-width: 600px;
+    margin: 12px auto;
+  }
+  #bmi-root.lang-bn { font-family: "Noto Sans Bengali", "Noto Sans", sans-serif; }
+  #bmi-root.lang-hi { font-family: "Noto Sans Devanagari", "Noto Sans", sans-serif; }
+  #bmi-root .bmi-card, #bmi-root label, #bmi-root button,
+  #bmi-root .bmi-result, #bmi-root .bmi-disclaimer, #bmi-root .bmi-brand {
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+  #bmi-root.lang-bn *, #bmi-root.lang-hi * { line-height: 1.7; }
+
+  .bmi-card {
+    background: var(--bmi-card);
+    border: 1px solid #dceee9;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(15,107,99,0.08);
+    overflow: hidden;
+  }
+  .bmi-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, var(--bmi-teal-700), var(--bmi-teal-900));
+    color: #fff;
+  }
+  .bmi-header-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .bmi-avatar {
+    width: 42px; height: 42px; flex: 0 0 42px; font-size: 20px;
+    background: rgba(255,255,255,0.15); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .bmi-title { font-size: 17px; font-weight: 700; }
+  .bmi-subtitle { font-size: 12px; opacity: .85; margin-top: 2px; }
+  .bmi-lang-switch { display: flex; gap: 4px; flex: 0 0 auto; }
+  .bmi-lang-btn {
+    font-size: 11px; font-weight: 600; padding: 6px 9px;
+    border-radius: 999px; border: 1px solid rgba(255,255,255,.35);
+    background: transparent; color: #eafff9; cursor: pointer;
+  }
+  .bmi-lang-btn.is-active { background: #fff; color: var(--bmi-teal-900); }
+
+  .bmi-disclaimer {
+    font-size: 12px; line-height: 1.5;
+    background: var(--bmi-amber-bg); color: var(--bmi-amber);
+    padding: 10px 20px; border-bottom: 1px solid #f3ddc2;
+  }
+
+  .bmi-form { padding: 20px; background: var(--bmi-bg); }
+  .bmi-field { margin-bottom: 14px; }
+  .bmi-field.bmi-hidden { display: none; }
+  .bmi-field label { display: block; font-size: 13px; font-weight: 600; color: var(--bmi-teal-900); margin-bottom: 6px; }
+  .bmi-field input, .bmi-field select {
+    width: 100%; padding: 11px 12px; font-size: 14px;
+    border: 1px solid #cfe1dd; border-radius: 10px; outline: none;
+    background: #fff; color: var(--bmi-ink);
+  }
+  .bmi-field input:focus, .bmi-field select:focus {
+    border-color: var(--bmi-teal-500); box-shadow: 0 0 0 3px rgba(31,143,131,.15);
+  }
+  .bmi-two-col { display: flex; gap: 10px; }
+  .bmi-two-col input { flex: 1; }
+
+  .bmi-unit-toggle { display: flex; gap: 8px; }
+  .bmi-unit-btn {
+    flex: 1; padding: 9px; font-size: 12.5px; font-weight: 700; cursor: pointer;
+    border: 1px solid #cfe1dd; border-radius: 8px; background: #fff; color: var(--bmi-teal-700);
+  }
+  .bmi-unit-btn.is-active { background: var(--bmi-teal-700); color: #fff; border-color: var(--bmi-teal-700); }
+
+  .bmi-calc-btn {
+    width: 100%; padding: 13px; font-size: 14.5px; font-weight: 700;
+    background: var(--bmi-teal-700); color: #fff; border: none; border-radius: 10px; cursor: pointer;
+  }
+  .bmi-calc-btn:hover { background: var(--bmi-teal-900); }
+
+  .bmi-result { margin: 0 20px 20px; padding: 18px; border-radius: 12px; background: var(--bmi-mint-100); color: var(--bmi-teal-900); }
+  .bmi-result.error { background: #fdecea; color: var(--bmi-red); font-size: 13.5px; }
+  .bmi-result h3 { margin: 0 0 6px; font-size: 15px; }
+  .bmi-result .bmi-total { font-size: 28px; font-weight: 800; color: var(--bmi-teal-700); }
+  .bmi-result .bmi-category { display: inline-block; margin-top: 6px; padding: 4px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 700; }
+  .bmi-category.cat-under { background: #e5f0fb; color: var(--bmi-blue); }
+  .bmi-category.cat-normal { background: #e6f6ec; color: var(--bmi-green); }
+  .bmi-category.cat-over { background: var(--bmi-amber-bg); color: var(--bmi-amber); }
+  .bmi-category.cat-obese { background: #fdecea; color: var(--bmi-red); }
+  .bmi-result .bmi-range { font-size: 12.5px; color: var(--bmi-muted); margin-top: 10px; }
+  .bmi-result hr { border: none; border-top: 1px solid #d5eae4; margin: 12px 0; }
+  .bmi-result .bmi-scale { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 10px; }
+  .bmi-scale span { flex: 1; }
+  .bmi-scale .seg-under { background: var(--bmi-blue); }
+  .bmi-scale .seg-normal { background: var(--bmi-green); }
+  .bmi-scale .seg-over { background: var(--bmi-amber); }
+  .bmi-scale .seg-obese { background: var(--bmi-red); }
+
+  .bmi-brand {
+    text-align: center; padding: 18px 20px 22px;
+    border-top: 1px solid #e4efec; background: #fff;
+  }
+  .bmi-brand-name { font-size: 13px; font-weight: 800; letter-spacing: .06em; color: var(--bmi-teal-900); }
+  .bmi-brand-tag { font-size: 12px; color: var(--bmi-teal-700); font-weight: 600; margin-top: 2px; }
+  .bmi-brand-services { font-size: 11px; color: var(--bmi-muted); margin-top: 6px; }
+  .bmi-brand-site { font-size: 11.5px; margin-top: 8px; }
+  .bmi-brand-site a { color: var(--bmi-teal-700); text-decoration: none; font-weight: 600; }
+  .bmi-brand-site a:hover { text-decoration: underline; }
+
+  @media (max-width: 500px) {
+    #bmi-root { margin: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="bmi-root">
+  <div class="bmi-card">
+
+    <!--Header-->
+    <div class="bmi-header">
+      <div class="bmi-header-left">
+        <div class="bmi-avatar">⚖️</div>
+        <div>
+          <div class="bmi-title" data-i18n="title">BMI Calculator</div>
+          <div class="bmi-subtitle" data-i18n="subtitle">Check your healthy weight range</div>
+        </div>
+      </div>
+      <div class="bmi-lang-switch">
+        <button class="bmi-lang-btn is-active" data-lang="en">EN</button>
+        <button class="bmi-lang-btn" data-lang="bn">বাংলা</button>
+        <button class="bmi-lang-btn" data-lang="hi">हिंदी</button>
+      </div>
+    </div>
+
+    <!--Disclaimer-->
+    <div class="bmi-disclaimer" data-i18n="disclaimer">⚠ BMI is a general screening tool, not a diagnosis. It does not directly measure body fat and may not be accurate for athletes, pregnant women, children, or older adults. Consult a doctor for a full health assessment.</div>
+
+    <!--Form-->
+    <div class="bmi-form">
+
+      <div class="bmi-field">
+        <label data-i18n="heightUnitLabel">Height Unit</label>
+        <div class="bmi-unit-toggle">
+          <button class="bmi-unit-btn is-active" data-i18n="unitCm" data-unit-group="height" data-unit="cm">cm</button>
+          <button class="bmi-unit-btn" data-i18n="unitFtIn" data-unit-group="height" data-unit="ftin">ft / in</button>
+        </div>
+      </div>
+
+      <div class="bmi-field" id="bmi-height-cm-wrap">
+        <label data-i18n="heightCmLabel">Height (cm)</label>
+        <input data-i18n-ph="heightCmPh" id="bmi-height-cm" placeholder="Example: 170" type="number" />
+      </div>
+
+      <div class="bmi-field bmi-hidden" id="bmi-height-ftin-wrap">
+        <label data-i18n="heightFtInLabel">Height (ft / in)</label>
+        <div class="bmi-two-col">
+          <input data-i18n-ph="ftPh" id="bmi-height-ft" type="number" />
+          <input data-i18n-ph="inPh" id="bmi-height-in" type="number" />
+        </div>
+      </div>
+
+      <div class="bmi-field">
+        <label data-i18n="weightUnitLabel">Weight Unit</label>
+        <div class="bmi-unit-toggle">
+          <button class="bmi-unit-btn is-active" data-i18n="unitKg" data-unit-group="weight" data-unit="kg">kg</button>
+          <button class="bmi-unit-btn" data-i18n="unitLb" data-unit-group="weight" data-unit="lb">lb</button>
+        </div>
+      </div>
+
+      <div class="bmi-field">
+        <label data-i18n="weightKgLabel" id="bmi-weight-label">Weight (kg)</label>
+        <input data-i18n-ph="weightPh" id="bmi-weight" placeholder="Example: 65" type="number" />
+      </div>
+
+      <button class="bmi-calc-btn" data-i18n="calcBtn" id="bmi-calc">Calculate BMI</button>
+    </div>
+
+    <!--Result-->
+    <div class="bmi-result" id="bmi-result" style="display: none;"></div>
+
+    <!--Footer / brand-->
+    <div class="bmi-brand">
+      <div class="bmi-brand-name">HEALTH ASSISTENT AI</div>
+      <div class="bmi-brand-tag" data-i18n="brandTag">Your Smart AI Health Companion</div>
+      <div class="bmi-brand-services" data-i18n="brandServices">AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content</div>
+      <div class="bmi-brand-site">Website: <a href="https://www.healthassistentai.com" rel="noopener" target="_blank">healthassistentai.com</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var STRINGS = {
+    en: {
+      title: "BMI Calculator",
+      subtitle: "Check your healthy weight range",
+      disclaimer: "⚠ BMI is a general screening tool, not a diagnosis. It does not directly measure body fat and may not be accurate for athletes, pregnant women, children, or older adults. Consult a doctor for a full health assessment.",
+      heightUnitLabel: "Height Unit",
+      unitCm: "cm",
+      unitFtIn: "ft / in",
+      heightCmLabel: "Height (cm)",
+      heightCmPh: "Example: 170",
+      heightFtInLabel: "Height (ft / in)",
+      ftPh: "ft",
+      inPh: "in",
+      weightUnitLabel: "Weight Unit",
+      unitKg: "kg",
+      unitLb: "lb",
+      weightKgLabel: "Weight (kg)",
+      weightLbLabel: "Weight (lb)",
+      weightPh: "Example: 65",
+      calcBtn: "Calculate BMI",
+      errorMsg: "Please enter valid height and weight values.",
+      resultTitle: "✅ Your BMI Result",
+      catUnder: "Underweight",
+      catNormal: "Normal weight",
+      catOver: "Overweight",
+      catObese: "Obese",
+      rangeLabel: "Healthy weight range for your height:",
+      brandTag: "Your Smart AI Health Companion",
+      brandServices: "AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content"
+    },
+    bn: {
+      title: "বিএমআই ক্যালকুলেটর",
+      subtitle: "আপনার স্বাস্থ্যকর ওজনের সীমা জানুন",
+      disclaimer: "⚠ বিএমআই একটি সাধারণ স্ক্রিনিং টুল, রোগ নির্ণয় নয়। এটি সরাসরি শরীরের চর্বি পরিমাপ করে না এবং খেলোয়াড়, গর্ভবতী নারী, শিশু বা বয়স্কদের ক্ষেত্রে সঠিক নাও হতে পারে। সম্পূর্ণ স্বাস্থ্য মূল্যায়নের জন্য ডাক্তারের পরামর্শ নিন।",
+      heightUnitLabel: "উচ্চতার একক",
+      unitCm: "সেমি",
+      unitFtIn: "ফুট / ইঞ্চি",
+      heightCmLabel: "উচ্চতা (সেমি)",
+      heightCmPh: "উদাহরণ: ১৭০",
+      heightFtInLabel: "উচ্চতা (ফুট / ইঞ্চি)",
+      ftPh: "ফুট",
+      inPh: "ইঞ্চি",
+      weightUnitLabel: "ওজনের একক",
+      unitKg: "কেজি",
+      unitLb: "পাউন্ড",
+      weightKgLabel: "ওজন (কেজি)",
+      weightLbLabel: "ওজন (পাউন্ড)",
+      weightPh: "উদাহরণ: ৬৫",
+      calcBtn: "বিএমআই হিসাব করুন",
+      errorMsg: "দয়া করে সঠিক উচ্চতা ও ওজন লিখুন।",
+      resultTitle: "✅ আপনার বিএমআই ফলাফল",
+      catUnder: "কম ওজন",
+      catNormal: "স্বাভাবিক ওজন",
+      catOver: "অতিরিক্ত ওজন",
+      catObese: "স্থূলতা",
+      rangeLabel: "আপনার উচ্চতার জন্য স্বাস্থ্যকর ওজনের সীমা:",
+      brandTag: "আপনার স্মার্ট এআই স্বাস্থ্য সহায়ক",
+      brandServices: "এআই স্বাস্থ্য নির্দেশনা • স্বাস্থ্য টুলস • রিপোর্ট বিশ্লেষণ • স্বাস্থ্য শিক্ষা • স্বাস্থ্য কনটেন্ট"
+    },
+    hi: {
+      title: "बीएमआई कैलकुलेटर",
+      subtitle: "अपनी स्वस्थ वजन सीमा जानें",
+      disclaimer: "⚠ बीएमआई एक सामान्य स्क्रीनिंग टूल है, निदान नहीं। यह सीधे शरीर की चर्बी नहीं मापता और एथलीट, गर्भवती महिलाओं, बच्चों या बुज़ुर्गों के लिए सटीक नहीं हो सकता। पूर्ण स्वास्थ्य मूल्यांकन के लिए डॉक्टर से सलाह लें।",
+      heightUnitLabel: "ऊंचाई की इकाई",
+      unitCm: "सेमी",
+      unitFtIn: "फुट / इंच",
+      heightCmLabel: "ऊंचाई (सेमी)",
+      heightCmPh: "उदाहरण: 170",
+      heightFtInLabel: "ऊंचाई (फुट / इंच)",
+      ftPh: "फुट",
+      inPh: "इंच",
+      weightUnitLabel: "वजन की इकाई",
+      unitKg: "किग्रा",
+      unitLb: "पाउंड",
+      weightKgLabel: "वजन (किग्रा)",
+      weightLbLabel: "वजन (पाउंड)",
+      weightPh: "उदाहरण: 65",
+      calcBtn: "बीएमआई calculate करें",
+      errorMsg: "कृपया सही ऊंचाई और वजन दर्ज करें।",
+      resultTitle: "✅ आपका बीएमआई परिणाम",
+      catUnder: "कम वजन",
+      catNormal: "सामान्य वजन",
+      catOver: "अधिक वजन",
+      catObese: "मोटापा",
+      rangeLabel: "आपकी ऊंचाई के लिए स्वस्थ वजन सीमा:",
+      brandTag: "आपका स्मार्ट एआई हेल्थ साथी",
+      brandServices: "एआई स्वास्थ्य मार्गदर्शन • हेल्थ टूल्स • रिपोर्ट विश्लेषण • स्वास्थ्य शिक्षा • स्वास्थ्य कंटेंट"
+    }
+  };
+
+  function decodeEntities(str) {
+    if (typeof str !== "string") return str;
+    if (str.indexOf("&#") === -1 && str.indexOf("&amp;") === -1) return str;
+    var el = document.createElement("textarea");
+    el.innerHTML = str;
+    return el.value;
+  }
+  function deepDecode(obj) {
+    if (typeof obj === "string") return decodeEntities(obj);
+    if (Array.isArray(obj)) return obj.map(deepDecode);
+    if (obj && typeof obj === "object") {
+      var out = {};
+      for (var k in obj) out[k] = deepDecode(obj[k]);
+      return out;
+    }
+    return obj;
+  }
+  STRINGS = deepDecode(STRINGS);
+
+  var currentLang = "en";
+  var heightUnit = "cm";
+  var weightUnit = "kg";
+  var rootEl = document.getElementById("bmi-root");
+
+  function t(key) { return STRINGS[currentLang][key]; }
+
+  function applyStaticStrings() {
+    document.querySelectorAll("#bmi-root [data-i18n]").forEach(function (el) {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.getElementById("bmi-height-cm").setAttribute("placeholder", t("heightCmPh"));
+    document.getElementById("bmi-height-ft").setAttribute("placeholder", t("ftPh"));
+    document.getElementById("bmi-height-in").setAttribute("placeholder", t("inPh"));
+    document.getElementById("bmi-weight").setAttribute("placeholder", t("weightPh"));
+    document.getElementById("bmi-weight-label").textContent = weightUnit === "kg" ? t("weightKgLabel") : t("weightLbLabel");
+  }
+
+  document.querySelectorAll(".bmi-unit-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var group = btn.getAttribute("data-unit-group");
+      var unit = btn.getAttribute("data-unit");
+      document.querySelectorAll(".bmi-unit-btn[data-unit-group='" + group + "']").forEach(function (b) {
+        b.classList.remove("is-active");
+      });
+      btn.classList.add("is-active");
+
+      if (group === "height") {
+        heightUnit = unit;
+        document.getElementById("bmi-height-cm-wrap").classList.toggle("bmi-hidden", unit !== "cm");
+        document.getElementById("bmi-height-ftin-wrap").classList.toggle("bmi-hidden", unit !== "ftin");
+      } else {
+        weightUnit = unit;
+        document.getElementById("bmi-weight-label").textContent = unit === "kg" ? t("weightKgLabel") : t("weightLbLabel");
+      }
+    });
+  });
+
+  function getHeightInMeters() {
+    if (heightUnit === "cm") {
+      var cm = parseFloat(document.getElementById("bmi-height-cm").value);
+      if (isNaN(cm) || cm <= 0) return null;
+      return cm / 100;
+    } else {
+      var ft = parseFloat(document.getElementById("bmi-height-ft").value) || 0;
+      var inch = parseFloat(document.getElementById("bmi-height-in").value) || 0;
+      var totalInches = (ft * 12) + inch;
+      if (totalInches <= 0) return null;
+      return (totalInches * 2.54) / 100;
+    }
+  }
+
+  function getWeightInKg() {
+    var val = parseFloat(document.getElementById("bmi-weight").value);
+    if (isNaN(val) || val <= 0) return null;
+    return weightUnit === "kg" ? val : val * 0.453592;
+  }
+
+  function formatWeight(kg) {
+    if (weightUnit === "kg") return kg.toFixed(1) + " kg";
+    return (kg / 0.453592).toFixed(1) + " lb";
+  }
+
+  function calculateBMI() {
+    var resultEl = document.getElementById("bmi-result");
+    resultEl.style.display = "block";
+
+    var heightM = getHeightInMeters();
+    var weightKg = getWeightInKg();
+
+    if (heightM === null || weightKg === null) {
+      resultEl.className = "bmi-result error";
+      resultEl.textContent = t("errorMsg");
+      return;
+    }
+
+    var bmi = weightKg / (heightM * heightM);
+    var bmiRounded = bmi.toFixed(1);
+
+    var catKey, catClass;
+    if (bmi < 18.5) { catKey = "catUnder"; catClass = "cat-under"; }
+    else if (bmi < 25) { catKey = "catNormal"; catClass = "cat-normal"; }
+    else if (bmi < 30) { catKey = "catOver"; catClass = "cat-over"; }
+    else { catKey = "catObese"; catClass = "cat-obese"; }
+
+    var minHealthyKg = 18.5 * heightM * heightM;
+    var maxHealthyKg = 24.9 * heightM * heightM;
+
+    resultEl.className = "bmi-result";
+    resultEl.innerHTML =
+      "<h3>" + t("resultTitle") + "</h3>" +
+      "<div class='bmi-total'>" + bmiRounded + "</div>" +
+      "<span class='bmi-category " + catClass + "'>" + t(catKey) + "</span>" +
+      "<div class='bmi-scale'><span class='seg-under'></span><span class='seg-normal'></span><span class='seg-over'></span><span class='seg-obese'></span></div>" +
+      "<hr>" +
+      "<div class='bmi-range'>" + t("rangeLabel") + " " + formatWeight(minHealthyKg) + " – " + formatWeight(maxHealthyKg) + "</div>";
+  }
+
+  document.querySelectorAll(".bmi-lang-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".bmi-lang-btn").forEach(function (b) { b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      currentLang = btn.getAttribute("data-lang");
+      rootEl.classList.remove("lang-bn", "lang-hi");
+      if (currentLang === "bn") rootEl.classList.add("lang-bn");
+      if (currentLang === "hi") rootEl.classList.add("lang-hi");
+      applyStaticStrings();
+      document.getElementById("bmi-result").style.display = "none";
+    });
+  });
+
+  document.getElementById("bmi-calc").addEventListener("click", calculateBMI);
+
+  applyStaticStrings();
+})();
+</script>
+
+</body>
+</html>
