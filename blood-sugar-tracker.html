@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Blood Sugar Tracker</title>
+<meta name="robots" content="noindex">
+<style>
+  html,body{
+    margin:0;
+    padding:0;
+    background:#ffffff;
+  }
+</style>
+</head>
+<body>
+
+<style>
+/* =========================================================
+   HEALTH ASSISTENT AI - BLOOD SUGAR TRACKER
+   STANDALONE GITHUB PAGES VERSION (for amp-iframe embedding)
+========================================================= */
+
+#hsaiBloodSugarTool{
+  all:initial;
+  display:block;
+  width:100%;
+  max-width:850px;
+  margin:0 auto;
+  font-family:Arial,Helvetica,sans-serif;
+  color:#222;
+}
+
+#hsaiBloodSugarTool,
+#hsaiBloodSugarTool *{
+  box-sizing:border-box;
+}
+
+#hsaiBloodSugarTool .hsaiBox{
+  width:100%;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 6px 24px rgba(0,0,0,.08);
+}
+
+#hsaiBloodSugarTool a:focus-visible,
+#hsaiBloodSugarTool button:focus-visible,
+#hsaiBloodSugarTool input:focus-visible,
+#hsaiBloodSugarTool select:focus-visible{
+  outline:3px solid #7fb3ff !important;
+  outline-offset:2px !important;
+}
+
+#hsaiBloodSugarTool .hsaiHeader{
+  background:#b91c1c;
+  color:#fff;
+  padding:20px;
+}
+
+#hsaiBloodSugarTool .hsaiHeaderTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+#hsaiBloodSugarTool .hsaiHeaderIdentity{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+#hsaiBloodSugarTool .hsaiAvatar{
+  width:50px;
+  height:50px;
+  min-width:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:rgba(255,255,255,.18);
+  font-size:25px;
+}
+
+#hsaiBloodSugarTool .hsaiTitle{
+  margin:0;
+  padding:0;
+  font-size:23px;
+  line-height:1.3;
+  font-weight:800;
+}
+
+#hsaiBloodSugarTool .hsaiSubtitle{
+  margin-top:4px;
+  font-size:14px;
+  line-height:1.5;
+}
+
+#hsaiBloodSugarTool .hsaiLanguageSwitcher{
+  display:flex !important;
+  flex-direction:row !important;
+  flex-wrap:nowrap !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:6px !important;
+  width:auto !important;
+  height:auto !important;
+  margin:0 !important;
+  padding:0 !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+
+#hsaiBloodSugarTool .hsaiLanguageButton{
+  display:inline-flex !important;
+  flex:0 0 auto !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:auto !important;
+  min-width:55px !important;
+  height:38px !important;
+  margin:0 !important;
+  padding:6px 11px !important;
+  border:1px solid #fff !important;
+  border-radius:20px !important;
+  background:transparent !important;
+  color:#fff !important;
+  font-family:Arial,Helvetica,sans-serif !important;
+  font-size:13px !important;
+  font-weight:700 !important;
+  line-height:22px !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  cursor:pointer !important;
+  float:none !important;
+  position:relative !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  box-shadow:none !important;
+}
+
+#hsaiBloodSugarTool .hsaiLanguageButton:hover{
+  background:rgba(255,255,255,.18) !important;
+}
+
+#hsaiBloodSugarTool .hsaiLanguageButton.hsaiCurrentLanguage{
+  background:#fff !important;
+  color:#b91c1c !important;
+}
+
+#hsaiBloodSugarTool .hsaiLanguageButton[aria-pressed="true"]{
+  background:#fff !important;
+  color:#b91c1c !important;
+}
+
+#hsaiBloodSugarTool .hsaiDisclaimer{
+  padding:15px 20px;
+  background:#fff7f7;
+  border-bottom:1px solid #ead0d0;
+  color:#713838;
+  font-size:14px;
+  line-height:1.7;
+}
+
+#hsaiBloodSugarTool .hsaiUnitRow{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:8px !important;
+  padding:12px 20px 0 !important;
+}
+
+#hsaiBloodSugarTool .hsaiUnitLabel{
+  color:#666 !important;
+  font-size:12px !important;
+  font-weight:700 !important;
+  text-transform:uppercase !important;
+  letter-spacing:.03em !important;
+}
+
+#hsaiBloodSugarTool .hsaiUnitSwitcher{
+  display:inline-flex !important;
+  border:1px solid #ddd !important;
+  border-radius:20px !important;
+  overflow:hidden !important;
+}
+
+#hsaiBloodSugarTool .hsaiUnitButton{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:6px 12px !important;
+  margin:0 !important;
+  border:0 !important;
+  background:#fff !important;
+  color:#555 !important;
+  font-family:Arial,Helvetica,sans-serif !important;
+  font-size:12px !important;
+  font-weight:700 !important;
+  cursor:pointer !important;
+}
+
+#hsaiBloodSugarTool .hsaiUnitButton.hsaiUnitActive{
+  background:#b91c1c !important;
+  color:#fff !important;
+}
+
+#hsaiBloodSugarTool .hsaiForm{
+  padding:25px 20px;
+}
+
+#hsaiBloodSugarTool .hsaiField{
+  margin:0 0 17px;
+}
+
+#hsaiBloodSugarTool .hsaiFieldLabel{
+  display:block !important;
+  margin:0 0 7px !important;
+  padding:0 !important;
+  color:#222 !important;
+  font-size:14px !important;
+  font-weight:700 !important;
+  line-height:1.5 !important;
+}
+
+#hsaiBloodSugarTool .hsaiInput,
+#hsaiBloodSugarTool .hsaiSelect{
+  display:block !important;
+  width:100% !important;
+  height:50px !important;
+  margin:0 !important;
+  padding:10px 13px !important;
+  border:1px solid #ccc !important;
+  border-radius:9px !important;
+  background:#fff !important;
+  color:#222 !important;
+  font-family:Arial,Helvetica,sans-serif !important;
+  font-size:15px !important;
+  line-height:28px !important;
+}
+
+#hsaiBloodSugarTool .hsaiInput:focus,
+#hsaiBloodSugarTool .hsaiSelect:focus{
+  border-color:#b91c1c !important;
+  box-shadow:0 0 0 3px rgba(185,28,28,.10) !important;
+}
+
+#hsaiBloodSugarTool .hsaiInput[aria-invalid="true"],
+#hsaiBloodSugarTool .hsaiSelect[aria-invalid="true"]{
+  border-color:#b91c1c !important;
+  box-shadow:0 0 0 3px rgba(185,28,28,.14) !important;
+}
+
+#hsaiBloodSugarTool .hsaiFieldError{
+  display:none;
+  margin-top:6px;
+  color:#b91c1c;
+  font-size:13px;
+  line-height:1.5;
+}
+
+#hsaiBloodSugarTool .hsaiFieldError.hsaiVisible{
+  display:block;
+}
+
+#hsaiBloodSugarTool .hsaiFormActions{
+  display:flex !important;
+  gap:10px !important;
+}
+
+#hsaiBloodSugarTool .hsaiFormActions .hsaiSaveButton{
+  flex:1 1 auto !important;
+}
+
+#hsaiBloodSugarTool .hsaiSaveButton{
+  display:block !important;
+  width:100% !important;
+  height:52px !important;
+  margin:0 !important;
+  padding:10px 15px !important;
+  border:0 !important;
+  border-radius:9px !important;
+  background:#b91c1c !important;
+  color:#fff !important;
+  font-family:Arial,Helvetica,sans-serif !important;
+  font-size:16px !important;
+  font-weight:700 !important;
+  line-height:30px !important;
+  cursor:pointer !important;
+}
+
+#hsaiBloodSugarTool .hsaiSaveButton:hover{
+  background:#991b1b !important;
+}
+
+#hsaiBloodSugarTool .hsaiCancelEditButton{
+  display:none !important;
+  width:auto !important;
+  height:52px !important;
+  margin:0 !important;
+  padding:10px 18px !important;
+  border:1px solid #ccc !important;
+  border-radius:9px !important;
+  background:#fff !important;
+  color:#444 !important;
+  font-family:Arial,Helvetica,sans-serif !important;
+  font-size:15px !important;
+  font-weight:700 !important;
+  cursor:pointer !important;
+}
+
+#hsaiBloodSugarTool .hsaiCancelEditButton:hover{
+  background:#f5f5f5 !important;
+}
+
+#hsaiBloodSugarTool .hsaiEditingNotice{
+  display:none;
+  margin:0 0 15px;
+  padding:10px 13px;
+  border-radius:9px;
+  background:#fff7e3;
+  color:#8a6100;
+  font-size:13px;
+  line-height:1.6;
+}
+
+#hsaiBloodSugarTool .hsaiAnalysis{
+  display:none;
+  margin:0 20px 20px;
+  padding:18px;
+  border:1px solid #ead0d0;
+  border-radius:12px;
+  background:#fffafa;
+}
+
+#hsaiBloodSugarTool .hsaiAnalysisTitle{
+  margin-bottom:8px;
+  font-size:20px;
+  font-weight:800;
+}
+
+#hsaiBloodSugarTool .hsaiAnalysisValue{
+  margin-bottom:5px;
+  font-size:28px;
+  font-weight:800;
+}
+
+#hsaiBloodSugarTool .hsaiAnalysisType{
+  margin-bottom:12px;
+  color:#666;
+  font-size:13px;
+}
+
+#hsaiBloodSugarTool .hsaiStatus{
+  display:inline-block;
+  padding:7px 12px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:700;
+}
+
+#hsaiBloodSugarTool .hsaiAnalysisNote{
+  margin-top:12px;
+  color:#555;
+  font-size:13px;
+  line-height:1.7;
+}
+
+#hsaiBloodSugarTool .hsaiRecordsHeader{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  padding:20px 20px 12px;
+  border-top:1px solid #eee;
+}
+
+#hsaiBloodSugarTool .hsaiRecordsTitle{
+  margin:0;
+  padding:0;
+  font-size:20px;
+  font-weight:800;
+}
+
+#hsaiBloodSugarTool .hsaiExportButton{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:6px !important;
+  padding:8px 14px !important;
+  margin:0 !important;
+  border:1px solid #b91c1c !important;
+  border-radius:20px !important;
+  background:#fff !important;
+  color:#b91c1c !important;
+  font-family:Arial,Helvetica,sans-serif !important;
+  font-size:12px !important;
+  font-weight:700 !important;
+  cursor:pointer !important;
+  white-space:nowrap !important;
+}
+
+#hsaiBloodSugarTool .hsaiExportButton:hover{
+  background:#fff0f0 !important;
+}
+
+#hsaiBloodSugarTool .hsaiExportButton:disabled{
+  opacity:.45 !important;
+  cursor:not-allowed !important;
+}
+
+#hsaiBloodSugarTool .hsaiTableWrap{
+  width:100%;
+  padding:0 20px 20px;
+  overflow-x:auto;
+}
+
+#hsaiBloodSugarTool .hsaiTable{
+  width:100%;
+  min-width:650px;
+  border-collapse:collapse;
+}
+
+#hsaiBloodSugarTool .hsaiTable th,
+#hsaiBloodSugarTool .hsaiTable td{
+  padding:12px 10px;
+  border-bottom:1px solid #e7e7e7;
+  font-size:13px;
+  line-height:1.5;
+  text-align:left;
+}
+
+#hsaiBloodSugarTool .hsaiTable th{
+  background:#fafafa;
+  font-weight:700;
+}
+
+#hsaiBloodSugarTool .hsaiRowActions{
+  display:flex !important;
+  gap:6px !important;
+}
+
+#hsaiBloodSugarTool .hsaiEditButton,
+#hsaiBloodSugarTool .hsaiDeleteButton{
+  display:inline-block !important;
+  margin:0 !important;
+  padding:6px 10px !important;
+  border:0 !important;
+  border-radius:6px !important;
+  font-size:12px !important;
+  font-weight:700 !important;
+  cursor:pointer !important;
+}
+
+#hsaiBloodSugarTool .hsaiEditButton{
+  background:#f0f4ff !important;
+  color:#1d4ed8 !important;
+}
+
+#hsaiBloodSugarTool .hsaiDeleteButton{
+  background:#fff0f0 !important;
+  color:#b91c1c !important;
+}
+
+#hsaiBloodSugarTool .hsaiEmpty{
+  display:block;
+  padding:20px 10px;
+  color:#777;
+  font-size:14px;
+  text-align:center;
+}
+
+#hsaiBloodSugarTool .hsaiSummary{
+  display:none;
+  margin:0 20px 25px;
+  padding:18px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  background:#fafafa;
+}
+
+#hsaiBloodSugarTool .hsaiSummaryTitle{
+  margin-bottom:14px;
+  font-size:20px;
+  font-weight:800;
+}
+
+#hsaiBloodSugarTool .hsaiSummaryGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+#hsaiBloodSugarTool .hsaiSummaryBox{
+  padding:13px;
+  border:1px solid #e5e5e5;
+  border-radius:9px;
+  background:#fff;
+}
+
+#hsaiBloodSugarTool .hsaiSummaryLabel{
+  margin-bottom:5px;
+  color:#666;
+  font-size:12px;
+}
+
+#hsaiBloodSugarTool .hsaiSummaryValue{
+  color:#b91c1c;
+  font-size:18px;
+  font-weight:800;
+}
+
+#hsaiBloodSugarTool .hsaiBrand{
+  padding:23px 20px;
+  border-top:1px solid #eee;
+  background:#fafafa;
+  text-align:center;
+}
+
+#hsaiBloodSugarTool .hsaiBrandName{
+  font-size:18px;
+  font-weight:800;
+}
+
+#hsaiBloodSugarTool .hsaiBrandTag{
+  margin-top:4px;
+  color:#777;
+  font-size:13px;
+}
+
+#hsaiBloodSugarTool .hsaiBrandServices{
+  margin-top:7px;
+  color:#888;
+  font-size:12px;
+  line-height:1.6;
+}
+
+#hsaiBloodSugarTool .hsaiBrandSite{
+  margin-top:8px;
+  color:#666;
+  font-size:13px;
+}
+
+#hsaiBloodSugarTool .hsaiBrandSite a{
+  color:#b91c1c !important;
+  text-decoration:none !important;
+  font-weight:700;
+}
+
+#hsaiBloodSugarTool .hsaiModalOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(20,10,10,.45);
+}
+
+#hsaiBloodSugarTool .hsaiModalOverlay.hsaiModalOpen{
+  display:flex;
+}
+
+#hsaiBloodSugarTool .hsaiModalBox{
+  width:100%;
+  max-width:380px;
+  padding:22px;
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+#hsaiBloodSugarTool .hsaiModalTitle{
+  margin-bottom:8px;
+  font-size:17px;
+  font-weight:800;
+  color:#222;
+}
+
+#hsaiBloodSugarTool .hsaiModalBody{
+  margin-bottom:18px;
+  color:#555;
+  font-size:14px;
+  line-height:1.6;
+}
+
+#hsaiBloodSugarTool .hsaiModalActions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+}
+
+#hsaiBloodSugarTool .hsaiModalButton{
+  padding:9px 16px;
+  border-radius:8px;
+  border:0;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+#hsaiBloodSugarTool .hsaiModalCancel{
+  background:#f2f2f2;
+  color:#333;
+}
+
+#hsaiBloodSugarTool .hsaiModalCancel:hover{
+  background:#e8e8e8;
+}
+
+#hsaiBloodSugarTool .hsaiModalConfirm{
+  background:#b91c1c;
+  color:#fff;
+}
+
+#hsaiBloodSugarTool .hsaiModalConfirm:hover{
+  background:#991b1b;
+}
+
+#hsaiBloodSugarTool .hsaiSrOnly{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+@media(max-width:680px){
+  #hsaiBloodSugarTool .hsaiHeaderTop{ display:block; }
+  #hsaiBloodSugarTool .hsaiHeaderIdentity{ margin-bottom:16px; }
+  #hsaiBloodSugarTool .hsaiLanguageSwitcher{
+    display:flex !important;
+    flex-direction:row !important;
+    flex-wrap:nowrap !important;
+    width:100% !important;
+    min-width:0 !important;
+    justify-content:stretch !important;
+  }
+  #hsaiBloodSugarTool .hsaiLanguageButton{
+    display:inline-flex !important;
+    flex:1 1 33.333% !important;
+    width:33.333% !important;
+    min-width:0 !important;
+    padding-left:6px !important;
+    padding-right:6px !important;
+  }
+  #hsaiBloodSugarTool .hsaiTitle{ font-size:20px; }
+  #hsaiBloodSugarTool .hsaiForm{ padding:22px 15px; }
+  #hsaiBloodSugarTool .hsaiDisclaimer{ padding:14px 15px; }
+  #hsaiBloodSugarTool .hsaiUnitRow{ padding:12px 15px 0 !important; }
+  #hsaiBloodSugarTool .hsaiAnalysis{ margin-left:15px; margin-right:15px; }
+  #hsaiBloodSugarTool .hsaiRecordsHeader{ padding-left:15px; padding-right:15px; }
+  #hsaiBloodSugarTool .hsaiTableWrap{ padding-left:15px; padding-right:15px; }
+  #hsaiBloodSugarTool .hsaiSummary{ margin-left:15px; margin-right:15px; }
+  #hsaiBloodSugarTool .hsaiSummaryGrid{ grid-template-columns:repeat(2,1fr); }
+}
+
+@media(max-width:400px){
+  #hsaiBloodSugarTool .hsaiLanguageButton{ font-size:12px !important; }
+  #hsaiBloodSugarTool .hsaiSummaryGrid{ grid-template-columns:1fr; }
+  #hsaiBloodSugarTool .hsaiRecordsHeader{ flex-wrap:wrap !important; }
+}
+
+@media(prefers-reduced-motion:reduce){
+  #hsaiBloodSugarTool *{
+    transition:none !important;
+    animation:none !important;
+  }
+}
+</style>
+
+<div id="hsaiBloodSugarTool">
+
+  <div class="hsaiBox">
+
+    <div class="hsaiHeader">
+      <div class="hsaiHeaderTop">
+        <div class="hsaiHeaderIdentity">
+          <div class="hsaiAvatar" aria-hidden="true">🩸</div>
+          <div>
+            <h2 class="hsaiTitle" id="hsaiTitle">AI Blood Sugar Tracker</h2>
+            <div class="hsaiSubtitle" id="hsaiSubtitle">Track, save and understand your readings</div>
+          </div>
+        </div>
+
+        <div class="hsaiLanguageSwitcher" id="hsaiLanguageSwitcher" role="group" aria-label="Language">
+          <button type="button" class="hsaiLanguageButton hsaiCurrentLanguage" data-hsai-language="en" aria-pressed="true">EN</button>
+          <button type="button" class="hsaiLanguageButton" data-hsai-language="bn" aria-pressed="false">বাংলা</button>
+          <button type="button" class="hsaiLanguageButton" data-hsai-language="hi" aria-pressed="false">हिंदी</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hsaiDisclaimer" id="hsaiDisclaimer" role="note">
+      This tool gives general information only. It is not a medical diagnosis. Always confirm results with a doctor or lab test.
+    </div>
+
+    <div class="hsaiUnitRow">
+      <span class="hsaiUnitLabel" id="hsaiUnitLabel">Unit</span>
+      <div class="hsaiUnitSwitcher" id="hsaiUnitSwitcher" role="group" aria-label="Blood sugar unit">
+        <button type="button" class="hsaiUnitButton hsaiUnitActive" data-hsai-unit="mgdl" aria-pressed="true">mg/dL</button>
+        <button type="button" class="hsaiUnitButton" data-hsai-unit="mmol" aria-pressed="false">mmol/L</button>
+      </div>
+    </div>
+
+    <form class="hsaiForm" id="hsaiForm" novalidate>
+
+      <div class="hsaiEditingNotice" id="hsaiEditingNotice" role="status"></div>
+
+      <div class="hsaiField">
+        <label class="hsaiFieldLabel" id="hsaiDateLabel" for="hsaiDate">Date</label>
+        <input class="hsaiInput" id="hsaiDate" type="date" autocomplete="off">
+        <div class="hsaiFieldError" id="hsaiDateError" role="alert"></div>
+      </div>
+
+      <div class="hsaiField">
+        <label class="hsaiFieldLabel" id="hsaiSugarLabel" for="hsaiSugar">Blood Sugar (mg/dL)</label>
+        <input class="hsaiInput" id="hsaiSugar" type="number" inputmode="decimal" min="1" max="1000" step="0.1" autocomplete="off" placeholder="Example: 120">
+        <div class="hsaiFieldError" id="hsaiSugarError" role="alert"></div>
+      </div>
+
+      <div class="hsaiField">
+        <label class="hsaiFieldLabel" id="hsaiTypeLabel" for="hsaiType">Reading Type</label>
+        <select class="hsaiSelect" id="hsaiType">
+          <option value="fasting" id="hsaiFasting">Fasting</option>
+          <option value="postmeal" id="hsaiPostmeal">2 hrs after meal</option>
+          <option value="random" id="hsaiRandom">Random</option>
+        </select>
+      </div>
+
+      <div class="hsaiFormActions">
+        <button type="submit" class="hsaiSaveButton" id="hsaiSaveButton">Save Reading</button>
+        <button type="button" class="hsaiCancelEditButton" id="hsaiCancelEditButton">Cancel</button>
+      </div>
+
+    </form>
+
+    <div class="hsaiAnalysis" id="hsaiAnalysis" role="status" aria-live="polite"></div>
+
+    <div class="hsaiRecordsHeader">
+      <h3 class="hsaiRecordsTitle" id="hsaiRecordsTitle">Saved Records</h3>
+      <button type="button" class="hsaiExportButton" id="hsaiExportButton">
+        <span id="hsaiExportLabel">Export CSV</span>
+      </button>
+    </div>
+
+    <div class="hsaiTableWrap">
+      <table class="hsaiTable" id="hsaiTable">
+        <caption class="hsaiSrOnly" id="hsaiTableCaption">Saved blood sugar readings</caption>
+        <thead>
+          <tr>
+            <th id="hsaiColDate" scope="col">Date</th>
+            <th id="hsaiColType" scope="col">Type</th>
+            <th id="hsaiColSugar" scope="col">Sugar</th>
+            <th id="hsaiColStatus" scope="col">Status</th>
+            <th id="hsaiColActions" scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="hsaiTableBody"></tbody>
+      </table>
+      <div class="hsaiEmpty" id="hsaiEmpty">No records available yet.</div>
+    </div>
+
+    <div class="hsaiSummary" id="hsaiSummary"></div>
+
+    <div class="hsaiBrand">
+      <div class="hsaiBrandName">HEALTH ASSISTENT AI</div>
+      <div class="hsaiBrandTag">Your Smart AI Health Companion</div>
+      <div class="hsaiBrandServices">AI Health Guidance • Health Tools • Report Analysis • Health Education • Health Content</div>
+      <div class="hsaiBrandSite">Website: <a href="https://www.healthassistentai.com" target="_blank" rel="noopener">healthassistentai.com</a></div>
+    </div>
+
+  </div>
+
+  <div class="hsaiModalOverlay" id="hsaiModalOverlay" role="dialog" aria-modal="true" aria-labelledby="hsaiModalTitle" aria-describedby="hsaiModalBody">
+    <div class="hsaiModalBox">
+      <div class="hsaiModalTitle" id="hsaiModalTitle">Delete this reading?</div>
+      <div class="hsaiModalBody" id="hsaiModalBody">This action cannot be undone.</div>
+      <div class="hsaiModalActions">
+        <button type="button" class="hsaiModalButton hsaiModalCancel" id="hsaiModalCancel">Cancel</button>
+        <button type="button" class="hsaiModalButton hsaiModalConfirm" id="hsaiModalConfirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hsaiSrOnly" id="hsaiSrAnnouncer" role="status" aria-live="polite"></div>
+
+</div>
+
+<script>
+(function(){
+
+"use strict";
+
+var root=document.getElementById("hsaiBloodSugarTool");
+if(!root){ return; }
+
+var TRANSLATIONS_B64=
+"eyJlbiI6eyJ0aXRsZSI6IkFJIEJsb29kIFN1Z2FyIFRyYWNrZXIiLCJzdWJ0aXRsZSI6IlRyYWNrLCBzYXZlIGFuZCB1bmRlcnN0YW5kIHlvdXIgcmVhZGluZ3MiLCJkaXNjbGFpbWVyIjoiVGhpcyB0b29sIGdpdmVzIGdlbmVyYWwgaW5mb3JtYXRpb24gb25seS4gSXQgaXMgbm90IGEgbWVkaWNhbCBkaWFnbm9zaXMuIEFsd2F5cyBjb25maXJtIHJlc3VsdHMgd2l0aCBhIGRvY3RvciBvciBsYWIgdGVzdC4iLCJ1bml0IjoiVW5pdCIsImRhdGUiOiJEYXRlIiwic3VnYXJNZ2RsIjoiQmxvb2QgU3VnYXIgKG1nL2RMKSIsInN1Z2FyTW1vbCI6IkJsb29kIFN1Z2FyIChtbW9sL0wpIiwicGxhY2Vob2xkZXJNZ2RsIjoiRXhhbXBsZTogMTIwIiwicGxhY2Vob2xkZXJNbW9sIjoiRXhhbXBsZTogNi43IiwidHlwZSI6IlJlYWRpbmcgVHlwZSIsImZhc3RpbmciOiJGYXN0aW5nIiwicG9zdG1lYWwiOiIyIGhycyBhZnRlciBtZWFsIiwicmFuZG9tIjoiUmFuZG9tIiwic2F2ZSI6IlNhdmUgUmVhZGluZyIsInVwZGF0ZSI6IlVwZGF0ZSBSZWFkaW5nIiwiY2FuY2VsIjoiQ2FuY2VsIiwiZWRpdGluZ05vdGljZSI6IkVkaXRpbmcgYSBzYXZlZCByZWFkaW5nLiBVcGRhdGUgdGhlIGZpZWxkcyBhbmQgcHJlc3MgVXBkYXRlIFJlYWRpbmcsIG9yIENhbmNlbC4iLCJyZWNvcmRzIjoiU2F2ZWQgUmVjb3JkcyIsImV4cG9ydENzdiI6IkV4cG9ydCBDU1YiLCJjb2xEYXRlIjoiRGF0ZSIsImNvbFR5cGUiOiJUeXBlIiwiY29sU3VnYXIiOiJTdWdhciIsImNvbFN0YXR1cyI6IlN0YXR1cyIsImNvbEFjdGlvbnMiOiJBY3Rpb25zIiwiZWRpdCI6IkVkaXQiLCJkZWxldGUiOiJEZWxldGUiLCJlbXB0eSI6Ik5vIHJlY29yZHMgYXZhaWxhYmxlIHlldC4iLCJhbmFseXNpcyI6IlJlYWRpbmcgQW5hbHlzaXMiLCJhdmVyYWdlIjoiQXZlcmFnZSIsImhpZ2hlc3QiOiJIaWdoZXN0IiwibG93ZXN0IjoiTG93ZXN0IiwidG90YWwiOiJUb3RhbCBSZWFkaW5ncyIsInN1bW1hcnkiOiJTYXZlZCBSZWFkaW5nIFN1bW1hcnkiLCJsb3ciOiJCZWxvdyBjb21tb24gcmVmZXJlbmNlIHJhbmdlIiwibm9ybWFsIjoiV2l0aGluIGNvbW1vbiByZWZlcmVuY2UgcmFuZ2UiLCJlbGV2YXRlZCI6IkFib3ZlIGNvbW1vbiByZWZlcmVuY2UgcmFuZ2UiLCJoaWdoIjoiSGlnaCByZWFkaW5nIC0gZm9sbG93LXVwIG1heSBiZSBhcHByb3ByaWF0ZSIsImdlbmVyYWwiOiJHZW5lcmFsIHJlYWRpbmcgLSBpbnRlcnByZXRhdGlvbiBkZXBlbmRzIG9uIHRpbWluZyBhbmQgY29udGV4dCIsIm5vdGUiOiJSZWZlcmVuY2UgcmFuZ2VzIGNhbiB2YXJ5IGJ5IHBlcnNvbiwgdGltaW5nIGFuZCBjbGluaWNhbCBzaXR1YXRpb24uIFRoaXMgdG9vbCBkb2VzIG5vdCBkaWFnbm9zZSBhbnkgbWVkaWNhbCBjb25kaXRpb24uIiwiZGF0ZUVycm9yIjoiUGxlYXNlIHNlbGVjdCBhIGRhdGUuIiwic3VnYXJFcnJvciI6IlBsZWFzZSBlbnRlciBhIHZhbGlkIGJsb29kIHN1Z2FyIHZhbHVlLiIsIm1vZGFsRGVsZXRlVGl0bGUiOiJEZWxldGUgdGhpcyByZWFkaW5nPyIsIm1vZGFsRGVsZXRlQm9keSI6IlRoaXMgd2lsbCBwZXJtYW5lbnRseSByZW1vdmUgdGhlIHJlYWRpbmcgZnJvbSB7ZGF0ZX0gKHt2YWx1ZX0pLiBUaGlzIGFjdGlvbiBjYW5ub3QgYmUgdW5kb25lLiIsIm1vZGFsQ2FuY2VsIjoiQ2FuY2VsIiwibW9kYWxDb25maXJtIjoiRGVsZXRlIiwic2F2ZWRBbm5vdW5jZSI6IlJlYWRpbmcgc2F2ZWQuIiwidXBkYXRlZEFubm91bmNlIjoiUmVhZGluZyB1cGRhdGVkLiIsImRlbGV0ZWRBbm5vdW5jZSI6IlJlYWRpbmcgZGVsZXRlZC4iLCJleHBvcnRFbXB0eSI6IlRoZXJlIGFyZSBubyByZWNvcmRzIHRvIGV4cG9ydCB5ZXQuIn0sImJuIjp7InRpdGxlIjoi4KaP4KaG4KaHIOCmrOCnjeCmsuCmvuCmoSDgprjgp4Hgppfgpr7gprAg4Kaf4KeN4Kaw4KeN4Kav4Ka+4KaV4Ka+4KawIiwic3VidGl0bGUiOiLgpobgpqrgpqjgpr7gprAg4Kaw4Ka/4Kah4Ka/4KaCIOCmuOCmguCmsOCmleCnjeCmt+CmoyDgppXgprDgp4Hgpqgg4KaP4Kas4KaCIOCmrOCngeCmneCngeCmqCIsImRpc2NsYWltZXIiOiLgpo/gpocg4Kaf4KeB4Kay4Kaf4Ka/IOCmtuCngeCmp+CngeCmruCmvuCmpOCnjeCmsCDgprjgpr7gpqfgpr7gprDgpqMg4Kak4Kal4KeN4KavIOCmquCnjeCmsOCmpuCmvuCmqCDgppXgprDgp4fgpaQg4KaP4Kaf4Ka/IOCmleCni+CmqOCniyDgpprgpr/gppXgpr/gp47gprjgpr4t4Kao4Ka/4Kaw4KeN4Kaj4Kav4Ka8IOCmqOCmr+CmvOClpCDgpqvgprLgpr7gpqvgprIg4Kah4Ka+4KaV4KeN4Kak4Ka+4KawIOCmrOCmviDgprLgp43gpq/gpr7gpqwg4Kaf4KeH4Ka44KeN4Kaf4KeH4KawIOCmruCmvuCmp+CnjeCmr+CmruCnhyDgpqjgpr/gprbgp43gpprgpr/gpqQg4KaV4Kaw4KeB4Kao4KWkIiwidW5pdCI6IuCmj+CmleCmlSIsImRhdGUiOiLgpqTgpr7gprDgpr/gppYiLCJzdWdhck1nZGwiOiLgpqzgp43gprLgpr7gpqEg4Ka44KeB4KaX4Ka+4KawIChtZy9kTCkiLCJzdWdhck1tb2wiOiLgpqzgp43gprLgpr7gpqEg4Ka44KeB4KaX4Ka+4KawIChtbW9sL0wpIiwicGxhY2Vob2xkZXJNZ2RsIjoi4KaJ4Kam4Ka+4Ka54Kaw4KajOiAxMjAiLCJwbGFjZWhvbGRlck1tb2wiOiLgpongpqbgpr7gprngprDgpqM6IDYuNyIsInR5cGUiOiLgprDgpr/gpqHgpr/gpoLgpq/gprzgp4fgprAg4Kan4Kaw4KaoIiwiZmFzdGluZyI6IuCmluCmvuCmsuCmvyDgpqrgp4fgpp/gp4ciLCJwb3N0bWVhbCI6IuCmluCmvuCmrOCmvuCmsOCnh+CmsCDgp6gg4KaY4Kaj4KeN4Kaf4Ka+IOCmquCmsOCnhyIsInJhbmRvbSI6IuCmr+Cnh+CmleCni+CmqOCniyDgprjgpq7gpq/gprwiLCJzYXZlIjoi4Kaw4Ka/4Kah4Ka/4KaCIOCmuOCnh+CmrSDgppXgprDgp4HgpqgiLCJ1cGRhdGUiOiLgprDgpr/gpqHgpr/gpoIg4KaG4Kaq4Kah4KeH4KafIOCmleCmsOCngeCmqCIsImNhbmNlbCI6IuCmrOCmvuCmpOCmv+CmsiDgprDgprwgUXAiLCJlZGl0aW5nTm90aWNlIjoi4KaP4KaV4Kaf4Ka/IOCmuOCmguCmsOCmleCnjeCmt+Cmv+CmpCDgprDgpr/gpqHgpr/gpoIg4Ka44Kau4KeN4Kaq4Ka+4Kam4Kao4Ka+IOCmleCmsOCmviDgprngpprgp43gppvgp4fgpaQg4Kar4Ka/4Kay4KeN4KahIOCmhuCmquCmoeCnh+CmnyDgppXgprDgp4cgJ+CmsOCmv+CmoeCmv+CmgiDgpobgpqrgpqHgp4fgpp8g4KaV4Kaw4KeB4KaoJyDgpprgpr7gpqrgp4HgpqgsIOCmheCmpeCmrOCmviDgpqzgpr7gpqTgpr/gprIg4KaV4Kaw4KeB4Kao4KWkIiwicmVjb3JkcyI6IuCmuOCnh+CmrSDgppXgprDgpr4g4Kaw4KeH4KaV4Kaw4KeN4KahIiwiZXhwb3J0Q3N2IjoiQ1NWIOCmj+CmleCnjeCmuOCmquCni+CmsOCnjeCmnyDgppXgprDgp4HgpqgiLCJjb2xEYXRlIjoi4Kak4Ka+4Kaw4Ka/4KaWIiwiY29sVHlwZSI6IuCmp+CmsOCmqCIsImNvbFN1Z2FyIjoi4Ka44KeB4KaX4Ka+4KawIiwiY29sU3RhdHVzIjoi4KaF4Kas4Ka44KeN4Kal4Ka+IiwiY29sQWN0aW9ucyI6IuCmheCnjeCmr+CmvuCmleCmtuCmqCIsImVkaXQiOiLgprjgpq7gp43gpqrgpr7gpqbgpqjgpr4iLCJkZWxldGUiOiLgpq7gp4Hgppvgp4HgpqgiLCJlbXB0eSI6IuCmj+CmluCmqOCmkyDgppXgp4vgpqjgp4sg4Kaw4KeH4KaV4Kaw4KeN4KahIOCmqOCnh+Cmh+ClpCIsImFuYWx5c2lzIjoi4Kaw4Ka/4Kah4Ka/4KaCIOCmrOCmv+CmtuCnjeCmsuCnh+Cmt+CmoyIsImF2ZXJhZ2UiOiLgppfgpqHgprwiLCJoaWdoZXN0Ijoi4Ka44Kaw4KeN4Kas4KeL4Kaa4KeN4KaaIiwibG93ZXN0Ijoi4Ka44Kaw4KeN4Kas4Kao4Ka/4Kau4KeN4KaoIiwidG90YWwiOiLgpq7gp4vgpp8g4Kaw4Ka/4Kah4Ka/4KaCIiwic3VtbWFyeSI6IuCmuOCnh+CmrSDgppXgprDgpr4g4Kaw4Ka/4Kah4Ka/4KaC4Kav4Ka84KeH4KawIOCmuOCmvuCmsOCmvuCmguCmtiIsImxvdyI6IuCmuOCmvuCmp+CmvuCmsOCmoyDgprDgp4fgpp7gp43gppzgp4fgprAg4Kao4Ka/4Kaa4KeHIiwibm9ybWFsIjoi4Ka44Ka+4Kan4Ka+4Kaw4KajIOCmsOCnh+CmnuCnjeCmnOCnh+CmsCDgpq7gpqfgp43gpq/gp4ciLCJlbGV2YXRlZCI6IuCmuOCmvuCmp+CmvuCmsOCmoyDgprDgp4fgpp7gp43gppzgp4fgprAg4KaJ4Kaq4Kaw4KeHIiwiaGlnaCI6IuCmieCmmuCnjeCmmiDgprDgpr/gpqHgpr/gpoIgLSDgpqrgp43gprDgpq/gprzgp4vgppzgpqjgp4cg4Kaa4Ka/4KaV4Ka/4KeO4Ka44KaV4KeH4KawIOCmquCmsOCmvuCmruCmsOCnjeCmtiDgpqjgpr/gpqgiLCJnZW5lcmFsIjoi4Ka44Ka+4Kan4Ka+4Kaw4KajIOCmsOCmv+CmoeCmv+CmgiAtIOCmuOCmruCmr+CmvCDgppMg4Kaq4Kaw4Ka/4Ka44KeN4Kal4Ka/4Kak4Ka/4KawIOCmieCmquCmsCDgpqzgp43gpq/gpr7gppbgp43gpq/gpr4g4Kao4Ka/4Kaw4KeN4Kat4KawIOCmleCmsOCnhyIsIm5vdGUiOiLgprDgp4fgpqvgpr7gprDgp4fgpqjgp43gprgg4Kaw4KeH4Kae4KeN4KacIOCmrOCnjeCmr+CmleCnjeCmpOCmvywg4Ka44Kau4Kav4Ka8IOCmkyDgpprgpr/gppXgpr/gp47gprjgpr7gppfgpqQg4Kaq4Kaw4Ka/4Ka44KeN4Kal4Ka/4Kak4Ka/4KawIOCmieCmquCmsCDgpqjgpr/gprDgp43gpqPgpq/gprwg4KaV4Kaw4KeHIOCmqOCmvuClpCDgpo/ghyDgpp/gp4Hgprwg4Kaq4KeL4Kao4KeLIOCmsOCni+CmlyDgpqjgpr/gprDgp43gpqPgpq/gprwg4KaV4Kaw4KeHIOCmqOCmvuClpCIsImRhdGVFcnJvciI6IuCmpuCmr+CmvOCmviDgppXgprDgp4cg4KaP4KaV4Kaf4Ka/IOCmpOCmvuCmsOCmv+CmliDgpqjgpr/gprDgp43gpqzgpr7gpprgpqgg4KaV4Kaw4KeB4Kao4KWkIiwic3VnYXJFcnJvciI6IuCmpuCmr+CmvOCmviDgppXgprDgp4cg4Ka44Kag4Ka/4KaVIOCmrOCnjeCmsuCmvuCmoSDgprjgp4Hgppfgpr7gprAg4Kau4Ka+4KaoIOCmsuCmv+CmluCngeCmqOClpCIsIm1vZGFsRGVsZXRlVGl0bGUiOiLgpo/gpocg4Kaw4Ka/4Kah4Ka/4KaC4Kaf4Ka/IOCmruCngeCmm+CnhyDgpqvgp4fgprLgpqzgp4fgpqg/IiwibW9kYWxEZWxldGVCb2R5Ijoie2RhdGV9IOCmpOCmvuCmsOCmv+CmluCnh+CmsCDgprDgpr/gpqHgpr/gpoIgKHt2YWx1ZX0pIOCmuOCnjeCmpeCmvuCmr+CmvOCngOCmreCmvuCmrOCnhyDgprngpq/gprzgp4fgppvgp4cg4Kav4Ka+4Kas4KeH4KWkIOCmj+CmhyDgppXgprbgpp/gpr8g4KaQ4Kaw4KeN4Kas4Ka+4Kas4Ka44KeN4Kal4Ka+4Kav4Ka8IOCmq+Cnh+CmsOCmvuCmqOCniyDgpq/gpr7gpqzgp4cg4Kao4Ka+4KWkIiwibW9kYWxDYW5jZWwiOiLgpqzgpr7gpqTgpr/gprIg4KaV4Kaw4KeB4KaoIiwibW9kYWxDb25maXJtIjoi4Kau4KeB4Kab4KeB4KaoIiwic2F2ZWRBbm5vdW5jZSI6IuCmsOCmv+CmoeCmv+CmgiDgprjgp4fgpq0g4Ka54Kav4Ka84KeH4Kab4KeH4KWkIiwidXBkYXRlZEFubm91bmNlIjoi4Kaw4Ka/4Kah4Ka/4KaCIOCmhuCmquCmoeCnh+CmnyDgprngpq/gprzgp4fgppvgp4fgpaQiLCJkZWxldGVkQW5ub3VuY2UiOiLgprDgpr/gpqHgpr/gpoIg4Kau4KeB4Kab4KeHIOCmq+Cnh+CmsuCmviDgprngpq/gprzgp4fgppvgp4fgpaQiLCJleHBvcnRFbXB0eSI6IuCmj+CmluCmqOCniyDgpo/gppXgp43gprjgpqrgp4vgprDgp43gpp8g4KaV4Kaw4Ka+4KawIOCmruCkpOCniyDgppXgp4vgpqjgp4sg4Kaw4KeH4KaV4Kaw4KeN4KahIOCmqOCnh+Cmh+ClpCJ9LCJoaSI6eyJ0aXRsZSI6IuCkj+CkhuCkiCDgpKzgpY3gpLLgpKEg4KS24KWB4KSX4KSwIOCkn+CljeCksOCliOCkleCksCIsInN1YnRpdGxlIjoi4KSF4KSq4KSo4KWAIOCksOClgOCkoeCkv+CkguCklyDgpLjgpYfgpLUg4KSV4KSw4KWH4KSCIOCklOCksCDgpLjgpK7gpJ3gpYfgpIIiLCJkaXNjbGFpbWVyIjoi4KSv4KS5IOCkn+ClguCksiDgpJXgpYfgpLXgpLIg4KS44KS+4KSu4KS+4KSo4KWN4KSvIOCknOCkvuCkqOCkleCkvuCksOClgCDgpKbgpYfgpKTgpL4g4KS54KWI4KWkIOCkr+CkuSDgpJrgpL/gpJXgpL/gpKTgpY3gpLjgpYDgpK8g4KSo4KS/4KSm4KS+4KSoIOCkqOCkueClgOCkgiDgpLngpYjgpaQg4KSq4KSw4KS/4KSj4KS+4KSuIOCkleClgCDgpKrgpYHgpLfgpY3gpJ/gpL8g4KSh4KWJ4KSV4KWN4KSf4KSwIOCkr+CkviDgpLLgpYjgpKwg4KSf4KWH4KS44KWN4KSfIOCkuOClhyDgpJXgprDgpYfgpILgpaQiLCJ1bml0Ijoi4KSH4KSV4KS+4KSIIiwiZGF0ZSI6IuCkpOCkvuCksOClgOCkliIsInN1Z2FyTWdkbCI6IuCkrOCljeCksuCkoSDgpLbgpYHgpJfgpLAgKG1nL2RMKSIsInN1Z2FyTW1vbCI6IuCkrOCljeCksuCkoSDgpLbgpYHgpJfgpLAgKG1tb2wvTCkiLCJwbGFjZWhvbGRlck1nZGwiOiLgpIngpKbgpL7gpLngpLDgpKM6IDEyMCIsInBsYWNlaG9sZGVyTW1vbCI6IuCkieCkpuCkvuCkueCksOCkozogNi43IiwidHlwZSI6IuCksOClgOCkoeCkv+CkguCklyDgpJXgpL4g4KSq4KWN4KSw4KSV4KS+4KSwIiwiZmFzdGluZyI6IuCkluCkvuCksuClgCDgpKrgpYfgpJ8iLCJwb3N0bWVhbCI6IuCkluCkvuCkqOClhyDgpJXgpYcgMiDgpJjgpILgpJ/gpYcg4KSs4KS+4KSmIiwicmFuZG9tIjoi4KSV4KS/4KS44KWAIOCkreClgCDgpLjgpK7gpK8iLCJzYXZlIjoi4KSw4KWA4KSh4KS/4KSC4KSXIOCkuOClh+CktSDgpJXgpLDgpYfgpIIiLCJ1cGRhdGUiOiLgpLDgpYDgpKHgpL/gpILgpJcg4KSF4KSq4KSh4KWH4KSfIOCkleCksOClh+CkgiIsImNhbmNlbCI6IuCksOCkpuCljeCkpiDgpJXgpLDgpYfgpIIiLCJlZGl0aW5nTm90aWNlIjoi4KSP4KSVIOCkuOClh+CktSDgpJXgpYAg4KSX4KSIIOCksOClgOCkoeCkv+CkguCklyDgpLjgpILgpKrgpL7gpKbgpL/gpKQg4KSV4KWAIOCknOCkviDgpLDgpLngpYAg4KS54KWI4KWkIOCkq+CkvOClgOCksuCljeCkoSDgpIXgpKrgpKHgpYfgpJ8g4KSV4KSw4KWH4KSCIOCklOCksCAn4KSw4KWA4KSh4KS/4KSC4KSXIOCkheCkquCkoeClh+CknyDgpJXgprDgpYfgpIInIOCkpuCkrOCkvuCkj+Ckgiwg4KSv4KS+IOCksOCkpuCljeCkpiDgpJXgprDgpYfgpILgpaQiLCJyZWNvcmRzIjoi4KS44KWH4KS1IOCkleClgCDgpJfgpIgg4KSw4KWA4KSh4KS/4KSC4KSXIiwiZXhwb3J0Q3N2IjoiQ1NWIOCkj+CkleCljeCkuOCkquCli+CksOCljeCknyDgpJXgprDgpYfgpIIiLCJjb2xEYXRlIjoi4KSk4KS+4KSw4KWA4KSWIiwiY29sVHlwZSI6IuCkquCljeCksOCkleCkvuCksCIsImNvbFN1Z2FyIjoi4KS24KWB4KSX4KSwIiwiY29sU3RhdHVzIjoi4KS44KWN4KSl4KS/4KSk4KS/IiwiY29sQWN0aW9ucyI6IuCkleCkvuCksOCljeCksOCkteCkvuCkiCIsImVkaXQiOiLgpLjgpILgpKrgpL7gpKbgpL/gpKQg4KSV4KSw4KWH4KSCIiwiZGVsZXRlIjoi4KS54KSf4KS+4KSP4KSCIiwiZW1wdHkiOiLgpIXgpK3gpYAg4KSV4KWL4KSIIOCksOCkv+CkleClieCksOCljeCkoSDgpIngpKrgpLLgpKzgpY3gpKcg4KSo4KS54KWA4KSCIOCkueCliOClpCIsImFuYWx5c2lzIjoi4KSw4KWA4KSh4KS/4KSC4KSXIOCkteCkv+CktuCljeCksuClh+Ckt+CkoyIsImF2ZXJhZ2UiOiLgpJTgpLjgpKQiLCJoaWdoZXN0Ijoi4KS44KSs4KS44KWHIOCkheCkp+Ckv+CklSIsImxvd2VzdCI6IuCkuOCkrOCkuOClhyDgpJXgpK4iLCJ0b3RhbCI6IuCkleClgeCksiDgpLDgpYDgpKHgpL/gpILgpJciLCJzdW1tYXJ5Ijoi4KS44KWH4KS1IOCkleClgCDgpJfgpIgg4KSw4KWA4KSh4KS/4KSC4KSXIOCkleCkviDgpLjgpL7gpLDgpL7gpILgpLYiLCJsb3ciOiLgpLjgpL7gpK7gpL7gpKjgpY3gpK8g4KSw4KWH4KSC4KScIOCkuOClhyDgpJXgpK4iLCJub3JtYWwiOiLgpLjgpL7gpK7gpL7gpKjgpY3gpK8g4KSw4KWH4KSC4KScIOCkleClhyDgpK3gpYDgpKTgpLAiLCJlbGV2YXRlZCI6IuCkuOCkvuCkruCkvuCkqOCljeCkryDgpLDgpYfgpILgpJwg4KS44KWHIOCkheCkp+Ckv+CklSIsImhpZ2giOiLgpIngpJrgpY3gpJog4KSw4KWA4KSh4KS/4KSC4KSXIC0g4KSG4KS14KS24KWN4KSv4KSV4KSk4KS+IOCkueCli+CkqOClhyDgpKrgpLAg4KSh4KWJ4KSV4KWN4KSf4KSwIOCkuOClhyDgpLLgpL7gpLkg4KSy4KWH4KSCIiwiZ2VuZXJhbCI6IuCkuOCkvuCkruCkvuCkqOCljeCkryDgpLDgpYDgpKHgpL/gpILgpJcgLSDgpLXgpY3gpK/gpL7gpJbgpY3gpK/gpL4g4KS44KSu4KSvIOCklOCksCDgpKrgpLDgpL/gpLjgpY3gpKXgpL/gpKTgpL8g4KSq4KSwIOCkqOCkv+CksOCljeCkreCksCDgpJXgprDgpKTgpYAg4KS54KWIIiwibm90ZSI6IuCksOClh+Ckq+CksOClh+CkguCkuCDgpLDgpYfgpILgpJwg4KS14KWN4KSv4KSV4KWN4KSk4KS/LCDgpLjgpK7gpK8g4KSU4KSwIOCkmuCkv+CkleCkv+CkpOCljeCkuOClgOCkryDgpLjgpY3gpKXgpL/gpKTgpL8g4KSV4KWHIOCkheCkqOClgeCkuOCkvuCksCDgpKzgpKbgpLIg4KS44KSV4KSk4KWAIOCkueCliOClpCDgpK/gpLkg4KSf4KWC4KSyIOCkleCkv+CkuOClgCDgpKzgpYDgpK7gpL7gprCgpYAg4KSV4KS+IOCkqOCkv+CkpuCkvuCkqCDgpKjgpLngpYDgpIIg4KSV4KSw4KSk4KS+4KWkIiwiZGF0ZUVycm9yIjoi4KSV4KWD4KSq4KSv4KS+IOCkpOCkvuCksOClgOCkliDgpJrgpYHgpKjgpYfgpILgpaQiLCJzdWdhckVycm9yIjoi4KSV4KWD4KSq4KSv4KS+IOCkuOCkueClgCDgpKzgpY3gpLLgpKEg4KS24KWB4KSX4KSwIOCkruCkvuCkqCDgpKbgpLDgpY3gpJwg4KSV4KSw4KWH4KSC4KWkIiwibW9kYWxEZWxldGVUaXRsZSI6IuCkleCljeCkr+CkviDgpIbgpKog4KSH4KS4IOCksOClgOCkoeCkv+CkguCklyDgpJXgpYsg4KS54KSf4KS+4KSo4KS+IOCkmuCkvuCkueCkpOClhyDgpLngpYjgpII/IiwibW9kYWxEZWxldGVCb2R5Ijoie2RhdGV9IOCkleClgCDgprDgpYDgpKHgpL/gpILgpJcgKHt2YWx1ZX0pIOCkuOCljeCkpeCkvuCkr+ClgCDgprDgpYLgpKog4KSXfSDgpLngpJ8g4KSc4KS+4KSP4KSX4KWA4KWkIOCkr+CkuSDgpJXgpL7gprDgpY3gprDgprLgpL7gpIQg4KSq4KWC4KSw4KWN4KS14KS14KSkIOCkqOCkueClgOCkgiDgpJXgpYAg4KSc4KS+IOCkuOCkleCkpOClgOClpCIsIm1vZGFsQ2FuY2VsIjoi4KSw4KSm4KWN4KSmIOCkleCksOClh+CkgiIsIm1vZGFsQ29uZmlybSI6IuCkueCkn+CkvuCkj+CkgiIsInNhdmVkQW5ub3VuY2UiOiLgprDgpYDgpKHgpL/gpILgpJcg4KS44KWH4KS1IOCkueCli+CklyDgpJfgpIjgpaQiLCJ1cGRhdGVkQW5ub3VuY2UiOiLgprDgpYDgpKHgpL/gpILgpJcg4KSF4KSq4KSh4KWH4KSfIOCkueCli+CklyDgpJfgpIjgpaQiLCJkZWxldGVkQW5ub3VuY2UiOiLgprDgpYDgpKHgpL/gpILgpJcg4KS54KSf4KS+IOCkpuClgCDgpJfgpIjgpaQiLCJleHBvcnRFbXB0eSI6IuCkheCkreClgCDgpI/gpKXgpY3gpLjgpKrgpYvgprDgpY3gpJ8g4KSV4Kaw4KSo4KWHIOCkleClhyDgpLLgpL/gpI8g4KSV4KWL4KSIIOCksOCkv+CkleClieCksOCljeCkoSDgpKjgpLngpYDgpIIg4KS54KWI4KWkIn19";
+
+function decodeTranslations(base64Data){
+  var binary=atob(base64Data);
+  var bytes=new Uint8Array(binary.length);
+  for(var i=0;i<binary.length;i++){ bytes[i]=binary.charCodeAt(i); }
+  var json=new TextDecoder("utf-8").decode(bytes);
+  return JSON.parse(json);
+}
+
+var translations;
+try{
+  translations=decodeTranslations(TRANSLATIONS_B64);
+}catch(error){
+  console.error("HSAI Blood Sugar Tracker: failed to decode translations -",error);
+  translations={
+    en:{
+      title:"AI Blood Sugar Tracker",subtitle:"Track, save and understand your readings",
+      disclaimer:"This tool gives general information only. It is not a medical diagnosis. Always confirm results with a doctor or lab test.",
+      unit:"Unit",date:"Date",sugarMgdl:"Blood Sugar (mg/dL)",sugarMmol:"Blood Sugar (mmol/L)",
+      placeholderMgdl:"Example: 120",placeholderMmol:"Example: 6.7",type:"Reading Type",
+      fasting:"Fasting",postmeal:"2 hrs after meal",random:"Random",save:"Save Reading",
+      update:"Update Reading",cancel:"Cancel",editingNotice:"Editing a saved reading.",
+      records:"Saved Records",exportCsv:"Export CSV",colDate:"Date",colType:"Type",
+      colSugar:"Sugar",colStatus:"Status",colActions:"Actions",edit:"Edit",delete:"Delete",
+      empty:"No records available yet.",analysis:"Reading Analysis",average:"Average",
+      highest:"Highest",lowest:"Lowest",total:"Total Readings",summary:"Saved Reading Summary",
+      low:"Below common reference range",normal:"Within common reference range",
+      elevated:"Above common reference range",high:"High reading - follow-up may be appropriate",
+      general:"General reading",note:"Reference ranges can vary by person, timing and clinical situation.",
+      dateError:"Please select a date.",sugarError:"Please enter a valid blood sugar value.",
+      modalDeleteTitle:"Delete this reading?",modalDeleteBody:"This will permanently remove the reading from {date} ({value}).",
+      modalCancel:"Cancel",modalConfirm:"Delete",savedAnnounce:"Reading saved.",
+      updatedAnnounce:"Reading updated.",deletedAnnounce:"Reading deleted.",
+      exportEmpty:"There are no records to export yet."
+    }
+  };
+}
+
+var language="en";
+var unit="mgdl";
+var storageKey="hsaiBloodSugarRecords2026";
+var records=[];
+var editingId=null;
+var pendingDeleteId=null;
+var MMOL_FACTOR=18.0182;
+
+function el(id){ return root.querySelector("#"+id); }
+
+function setText(id,text){
+  var node=el(id);
+  if(node){ node.textContent=text; }
+  else{ console.error("HSAI Blood Sugar Tracker: missing element #"+id); }
+}
+
+function loadRecords(){
+  try{
+    var data=localStorage.getItem(storageKey);
+    if(data){
+      var parsed=JSON.parse(data);
+      if(Array.isArray(parsed)){ records=parsed; }
+    }
+  }catch(error){ records=[]; }
+}
+
+function saveRecords(){
+  try{ localStorage.setItem(storageKey,JSON.stringify(records)); }catch(error){}
+}
+
+function today(){
+  var d=new Date();
+  var m=String(d.getMonth()+1).padStart(2,"0");
+  var day=String(d.getDate()).padStart(2,"0");
+  return d.getFullYear()+"-"+m+"-"+day;
+}
+
+function toDisplayValue(mgdlValue){
+  if(unit==="mmol"){ return Math.round((mgdlValue/MMOL_FACTOR)*10)/10; }
+  return Math.round(mgdlValue*10)/10;
+}
+
+function toMgdl(displayValue){
+  if(unit==="mmol"){ return displayValue*MMOL_FACTOR; }
+  return displayValue;
+}
+
+function formatValue(mgdlValue){
+  var displayValue=toDisplayValue(mgdlValue);
+  if(unit==="mmol"){ return displayValue+" mmol/L"; }
+  return displayValue+" mg/dL";
+}
+
+function getStatus(mgdlValue,type){
+  if(mgdlValue<70){ return "low"; }
+  if(type==="fasting"){
+    if(mgdlValue<100){ return "normal"; }
+    if(mgdlValue<126){ return "elevated"; }
+    return "high";
+  }
+  if(type==="postmeal"){
+    if(mgdlValue<140){ return "normal"; }
+    if(mgdlValue<200){ return "elevated"; }
+    return "high";
+  }
+  if(mgdlValue<200){ return "general"; }
+  return "high";
+}
+
+function typeLabel(type){
+  var t=translations[language];
+  if(type==="fasting"){ return t.fasting; }
+  if(type==="postmeal"){ return t.postmeal; }
+  return t.random;
+}
+
+function statusCSS(status){
+  if(status==="normal"){ return "background:#eaf7ed;color:#237a35;"; }
+  if(status==="low"){ return "background:#fff0f0;color:#b91c1c;"; }
+  if(status==="elevated"){ return "background:#fff7e3;color:#8a6100;"; }
+  return "background:#ffe8e8;color:#a40000;";
+}
+
+function announce(message){
+  var region=el("hsaiSrAnnouncer");
+  if(!region){ return; }
+  region.textContent="";
+  window.setTimeout(function(){ region.textContent=message; },50);
+}
+
+function showFieldError(inputId,errorId,message){
+  var input=el(inputId);
+  var errorBox=el(errorId);
+  input.setAttribute("aria-invalid","true");
+  errorBox.textContent=message;
+  errorBox.classList.add("hsaiVisible");
+}
+
+function clearFieldError(inputId,errorId){
+  var input=el(inputId);
+  var errorBox=el(errorId);
+  input.removeAttribute("aria-invalid");
+  errorBox.textContent="";
+  errorBox.classList.remove("hsaiVisible");
+}
+
+function clearAllFieldErrors(){
+  clearFieldError("hsaiDate","hsaiDateError");
+  clearFieldError("hsaiSugar","hsaiSugarError");
+}
+
+function changeLanguage(newLanguage){
+  if(!translations[newLanguage]){
+    console.error("HSAI Blood Sugar Tracker: unknown language '"+newLanguage+"'");
+    return;
+  }
+  language=newLanguage;
+  var t=translations[language];
+
+  try{
+    setText("hsaiTitle",t.title);
+    setText("hsaiSubtitle",t.subtitle);
+    setText("hsaiDisclaimer",t.disclaimer);
+    setText("hsaiUnitLabel",t.unit);
+    setText("hsaiDateLabel",t.date);
+    setText("hsaiTypeLabel",t.type);
+    setText("hsaiFasting",t.fasting);
+    setText("hsaiPostmeal",t.postmeal);
+    setText("hsaiRandom",t.random);
+    setText("hsaiSaveButton", editingId ? t.update : t.save);
+    setText("hsaiCancelEditButton",t.cancel);
+    setText("hsaiEditingNotice",t.editingNotice);
+    setText("hsaiRecordsTitle",t.records);
+    setText("hsaiExportLabel",t.exportCsv);
+    setText("hsaiColDate",t.colDate);
+    setText("hsaiColType",t.colType);
+    setText("hsaiColSugar",t.colSugar);
+    setText("hsaiColStatus",t.colStatus);
+    setText("hsaiColActions",t.colActions);
+    setText("hsaiEmpty",t.empty);
+    setText("hsaiModalCancel",t.modalCancel);
+    setText("hsaiModalConfirm",t.modalConfirm);
+
+    var sugarLabelNode=el("hsaiSugarLabel");
+    if(sugarLabelNode){ sugarLabelNode.textContent = unit==="mmol" ? t.sugarMmol : t.sugarMgdl; }
+
+    var sugarInputNode=el("hsaiSugar");
+    if(sugarInputNode){ sugarInputNode.placeholder = unit==="mmol" ? t.placeholderMmol : t.placeholderMgdl; }
+
+    var languageButtons=root.querySelectorAll(".hsaiLanguageButton");
+    for(var i=0;i<languageButtons.length;i++){
+      var b=languageButtons[i];
+      if(b.getAttribute("data-hsai-language")===newLanguage){
+        b.classList.add("hsaiCurrentLanguage");
+        b.setAttribute("aria-pressed","true");
+      }else{
+        b.classList.remove("hsaiCurrentLanguage");
+        b.setAttribute("aria-pressed","false");
+      }
+    }
+
+    renderRecords();
+
+  }catch(error){
+    console.error("HSAI Blood Sugar Tracker: changeLanguage('"+newLanguage+"') failed -",error);
+  }
+}
+
+var languageButtons=root.querySelectorAll(".hsaiLanguageButton");
+for(var i=0;i<languageButtons.length;i++){
+  languageButtons[i].addEventListener("click",function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var selected=this.getAttribute("data-hsai-language");
+    changeLanguage(selected);
+  },false);
+}
+
+var unitButtons=root.querySelectorAll(".hsaiUnitButton");
+for(var u=0;u<unitButtons.length;u++){
+  unitButtons[u].addEventListener("click",function(){
+    var selected=this.getAttribute("data-hsai-unit");
+    if(selected===unit){ return; }
+    unit=selected;
+    for(var k=0;k<unitButtons.length;k++){
+      var isActive=unitButtons[k].getAttribute("data-hsai-unit")===unit;
+      unitButtons[k].classList.toggle("hsaiUnitActive",isActive);
+      unitButtons[k].setAttribute("aria-pressed", isActive ? "true" : "false");
+    }
+    var t=translations[language];
+    el("hsaiSugarLabel").textContent = unit==="mmol" ? t.sugarMmol : t.sugarMgdl;
+    el("hsaiSugar").placeholder = unit==="mmol" ? t.placeholderMmol : t.placeholderMgdl;
+    el("hsaiSugar").value="";
+    renderRecords();
+    el("hsaiAnalysis").style.display="none";
+  },false);
+}
+
+el("hsaiForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  var t=translations[language];
+  clearAllFieldErrors();
+
+  var date=el("hsaiDate").value;
+  var rawValue=parseFloat(el("hsaiSugar").value);
+  var type=el("hsaiType").value;
+
+  var hasError=false;
+
+  if(!date){
+    showFieldError("hsaiDate","hsaiDateError",t.dateError);
+    hasError=true;
+  }
+
+  if(!isFinite(rawValue) || rawValue<=0){
+    showFieldError("hsaiSugar","hsaiSugarError",t.sugarError);
+    hasError=true;
+  }
+
+  if(hasError){ return; }
+
+  var mgdlValue=toMgdl(rawValue);
+
+  if(mgdlValue<=0 || mgdlValue>1000){
+    showFieldError("hsaiSugar","hsaiSugarError",t.sugarError);
+    return;
+  }
+
+  if(editingId){
+    var target=null;
+    for(var i=0;i<records.length;i++){
+      if(String(records[i].id)===String(editingId)){ target=records[i]; break; }
+    }
+    if(target){
+      target.date=date;
+      target.value=Math.round(mgdlValue*10)/10;
+      target.type=type;
+    }
+    saveRecords();
+    renderRecords();
+    showAnalysis({date:date,value:Math.round(mgdlValue*10)/10,type:type});
+    announce(t.updatedAnnounce);
+    exitEditMode();
+  }else{
+    var record={
+      id:String(Date.now())+String(Math.random()),
+      date:date,
+      value:Math.round(mgdlValue*10)/10,
+      type:type
+    };
+    records.push(record);
+    saveRecords();
+    renderRecords();
+    showAnalysis(record);
+    announce(t.savedAnnounce);
+  }
+
+  el("hsaiSugar").value="";
+},false);
+
+function enterEditMode(record){
+  editingId=record.id;
+  el("hsaiDate").value=record.date;
+  el("hsaiSugar").value=toDisplayValue(Number(record.value));
+  el("hsaiType").value=record.type;
+  var t=translations[language];
+  el("hsaiSaveButton").textContent=t.update;
+  el("hsaiCancelEditButton").style.display="inline-flex";
+  el("hsaiEditingNotice").style.display="block";
+  clearAllFieldErrors();
+  root.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function exitEditMode(){
+  editingId=null;
+  var t=translations[language];
+  el("hsaiSaveButton").textContent=t.save;
+  el("hsaiCancelEditButton").style.display="none";
+  el("hsaiEditingNotice").style.display="none";
+  el("hsaiDate").value=today();
+  el("hsaiSugar").value="";
+  el("hsaiType").value="fasting";
+  clearAllFieldErrors();
+}
+
+el("hsaiCancelEditButton").addEventListener("click",function(){ exitEditMode(); },false);
+
+function showAnalysis(record){
+  var t=translations[language];
+  var mgdlValue=Number(record.value);
+  var status=getStatus(mgdlValue,record.type);
+
+  var box=el("hsaiAnalysis");
+  box.innerHTML="";
+
+  var title=document.createElement("div");
+  title.className="hsaiAnalysisTitle";
+  title.textContent=t.analysis;
+
+  var value=document.createElement("div");
+  value.className="hsaiAnalysisValue";
+  value.textContent=formatValue(mgdlValue);
+
+  var type=document.createElement("div");
+  type.className="hsaiAnalysisType";
+  type.textContent=typeLabel(record.type);
+
+  var badge=document.createElement("span");
+  badge.className="hsaiStatus";
+  badge.style.cssText=statusCSS(status);
+  badge.textContent=t[status];
+
+  var note=document.createElement("div");
+  note.className="hsaiAnalysisNote";
+  note.textContent=t.note;
+
+  box.appendChild(title);
+  box.appendChild(value);
+  box.appendChild(type);
+  box.appendChild(badge);
+  box.appendChild(note);
+  box.style.display="block";
+}
+
+function renderRecords(){
+  var t=translations[language];
+  var body=el("hsaiTableBody");
+  body.innerHTML="";
+
+  el("hsaiExportButton").disabled = records.length===0;
+
+  if(records.length===0){
+    el("hsaiTable").style.display="none";
+    el("hsaiEmpty").style.display="block";
+    el("hsaiSummary").style.display="none";
+    return;
+  }
+
+  el("hsaiTable").style.display="table";
+  el("hsaiEmpty").style.display="none";
+
+  var sorted=records.slice().sort(function(a,b){
+    var dateDiff=new Date(b.date)-new Date(a.date);
+    if(dateDiff!==0){ return dateDiff; }
+    return String(a.id).localeCompare(String(b.id));
+  });
+
+  for(var i=0;i<sorted.length;i++){
+    var r=sorted[i];
+    var mgdlValue=Number(r.value);
+    var status=getStatus(mgdlValue,r.type);
+
+    var row=document.createElement("tr");
+
+    var dateCell=document.createElement("td");
+    dateCell.textContent=r.date;
+
+    var typeCell=document.createElement("td");
+    typeCell.textContent=typeLabel(r.type);
+
+    var sugarCell=document.createElement("td");
+    sugarCell.textContent=formatValue(mgdlValue);
+
+    var statusCell=document.createElement("td");
+    var statusBadge=document.createElement("span");
+    statusBadge.className="hsaiStatus";
+    statusBadge.style.cssText=statusCSS(status);
+    statusBadge.textContent=t[status];
+    statusCell.appendChild(statusBadge);
+
+    var actionsCell=document.createElement("td");
+    var actionsWrap=document.createElement("div");
+    actionsWrap.className="hsaiRowActions";
+
+    var editButton=document.createElement("button");
+    editButton.type="button";
+    editButton.className="hsaiEditButton";
+    editButton.textContent=t.edit;
+    editButton.setAttribute("data-hsai-edit",r.id);
+    editButton.setAttribute("aria-label",t.edit+" - "+r.date+" - "+formatValue(mgdlValue));
+
+    var deleteButton=document.createElement("button");
+    deleteButton.type="button";
+    deleteButton.className="hsaiDeleteButton";
+    deleteButton.textContent=t.delete;
+    deleteButton.setAttribute("data-hsai-delete",r.id);
+    deleteButton.setAttribute("aria-label",t.delete+" - "+r.date+" - "+formatValue(mgdlValue));
+
+    actionsWrap.appendChild(editButton);
+    actionsWrap.appendChild(deleteButton);
+    actionsCell.appendChild(actionsWrap);
+
+    row.appendChild(dateCell);
+    row.appendChild(typeCell);
+    row.appendChild(sugarCell);
+    row.appendChild(statusCell);
+    row.appendChild(actionsCell);
+
+    body.appendChild(row);
+  }
+
+  renderSummary();
+}
+
+el("hsaiTableBody").addEventListener("click",function(e){
+  var editTarget=e.target.closest("[data-hsai-edit]");
+  if(editTarget){
+    var editId=editTarget.getAttribute("data-hsai-edit");
+    var record=null;
+    for(var i=0;i<records.length;i++){
+      if(String(records[i].id)===String(editId)){ record=records[i]; break; }
+    }
+    if(record){ enterEditMode(record); }
+    return;
+  }
+
+  var deleteTarget=e.target.closest("[data-hsai-delete]");
+  if(deleteTarget){
+    pendingDeleteId=deleteTarget.getAttribute("data-hsai-delete");
+    openDeleteModal(pendingDeleteId);
+  }
+},false);
+
+function openDeleteModal(id){
+  var t=translations[language];
+  var record=null;
+  for(var i=0;i<records.length;i++){
+    if(String(records[i].id)===String(id)){ record=records[i]; break; }
+  }
+  if(!record){ return; }
+
+  el("hsaiModalTitle").textContent=t.modalDeleteTitle;
+  el("hsaiModalBody").textContent=t.modalDeleteBody
+    .replace("{date}",record.date)
+    .replace("{value}",formatValue(Number(record.value)));
+
+  el("hsaiModalOverlay").classList.add("hsaiModalOpen");
+  el("hsaiModalConfirm").focus();
+}
+
+function closeDeleteModal(){
+  pendingDeleteId=null;
+  el("hsaiModalOverlay").classList.remove("hsaiModalOpen");
+}
+
+el("hsaiModalCancel").addEventListener("click",closeDeleteModal,false);
+
+el("hsaiModalOverlay").addEventListener("click",function(e){
+  if(e.target===el("hsaiModalOverlay")){ closeDeleteModal(); }
+},false);
+
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape" && el("hsaiModalOverlay").classList.contains("hsaiModalOpen")){
+    closeDeleteModal();
+  }
+},false);
+
+el("hsaiModalConfirm").addEventListener("click",function(){
+  if(!pendingDeleteId){ closeDeleteModal(); return; }
+  var t=translations[language];
+  var deletingCurrentEdit=String(pendingDeleteId)===String(editingId);
+
+  records=records.filter(function(record){
+    return String(record.id)!==String(pendingDeleteId);
+  });
+
+  saveRecords();
+  renderRecords();
+  announce(t.deletedAnnounce);
+  closeDeleteModal();
+
+  if(deletingCurrentEdit){ exitEditMode(); }
+},false);
+
+el("hsaiExportButton").addEventListener("click",function(){
+  var t=translations[language];
+  if(records.length===0){ announce(t.exportEmpty); return; }
+
+  var header=[t.colDate,t.colType,t.colSugar,t.colStatus];
+  var rows=[header.join(",")];
+
+  var sorted=records.slice().sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+
+  for(var i=0;i<sorted.length;i++){
+    var r=sorted[i];
+    var mgdlValue=Number(r.value);
+    var status=getStatus(mgdlValue,r.type);
+    var line=[r.date,typeLabel(r.type),formatValue(mgdlValue),t[status]].map(function(field){
+      var safe=String(field).replace(/"/g,'""');
+      if(safe.indexOf(",")>-1){ return '"'+safe+'"'; }
+      return safe;
+    }).join(",");
+    rows.push(line);
+  }
+
+  var csvContent=rows.join("\r\n");
+  var blob=new Blob(["\uFEFF"+csvContent],{type:"text/csv;charset=utf-8;"});
+  var url=URL.createObjectURL(blob);
+  var link=document.createElement("a");
+  link.href=url;
+  link.download="blood-sugar-readings.csv";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+},false);
+
+function renderSummary(){
+  var box=el("hsaiSummary");
+  if(records.length===0){ box.style.display="none"; return; }
+
+  var total=0;
+  var highest=Number(records[0].value);
+  var lowest=Number(records[0].value);
+
+  for(var i=0;i<records.length;i++){
+    var value=Number(records[i].value);
+    total+=value;
+    if(value>highest){ highest=value; }
+    if(value<lowest){ lowest=value; }
+  }
+
+  var average=total/records.length;
+  var t=translations[language];
+
+  box.innerHTML=
+    '<div class="hsaiSummaryTitle">'+t.summary+'</div>'+
+    '<div class="hsaiSummaryGrid">'+
+      '<div class="hsaiSummaryBox"><div class="hsaiSummaryLabel">'+t.average+'</div><div class="hsaiSummaryValue">'+formatValue(average)+'</div></div>'+
+      '<div class="hsaiSummaryBox"><div class="hsaiSummaryLabel">'+t.highest+'</div><div class="hsaiSummaryValue">'+formatValue(highest)+'</div></div>'+
+      '<div class="hsaiSummaryBox"><div class="hsaiSummaryLabel">'+t.lowest+'</div><div class="hsaiSummaryValue">'+formatValue(lowest)+'</div></div>'+
+      '<div class="hsaiSummaryBox"><div class="hsaiSummaryLabel">'+t.total+'</div><div class="hsaiSummaryValue">'+records.length+'</div></div>'+
+    '</div>';
+
+  box.style.display="block";
+}
+
+loadRecords();
+el("hsaiDate").value=today();
+changeLanguage("en");
+
+})();
+</script>
+
+</body>
+</html>
