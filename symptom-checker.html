@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Assistant AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#0077ff;
+    --primary-dark:#0058c2;
+    --secondary:#00b894;
+    --danger:#ff3b30;
+    --bg:#f4f8fb;
+    --card:#ffffff;
+    --ink:#0f2438;
+    --muted:#5b7086;
+    --line:#e3ecf3;
+    --shadow: 0 10px 30px rgba(15,36,56,0.08);
+    --radius:16px;
+  }
+  body.dark{
+    --bg:#0b1220;
+    --card:#111b2c;
+    --ink:#eaf2fb;
+    --muted:#93a6bd;
+    --line:#1e2c3f;
+    --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    transition:background .3s ease, color .3s ease;
+    -webkit-font-smoothing:antialiased;
+  }
+  body.lang-bn, body.lang-bn input, body.lang-bn textarea, body.lang-bn button, body.lang-bn select{ font-family:'Noto Sans Bengali','Inter',sans-serif; }
+  body.lang-hi, body.lang-hi input, body.lang-hi textarea, body.lang-hi button, body.lang-hi select{ font-family:'Noto Sans Devanagari','Inter',sans-serif; }
+
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px 60px;}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:22px;}
+  .lang-select{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:var(--shadow);}
+  .lang-select button{
+    border:none;background:transparent;padding:7px 12px;border-radius:999px;
+    font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:.2s;
+  }
+  .lang-select button.active{background:var(--primary);color:#fff;}
+  .icon-btn{
+    width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--card);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);
+    font-size:17px;
+  }
+
+  .hero{
+    background:linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-radius:22px;padding:28px 24px 24px;color:#fff;position:relative;overflow:hidden;
+    box-shadow:0 16px 40px rgba(0,119,255,0.28);
+  }
+  .hero h1{font-family:'Poppins',sans-serif;font-size:26px;margin:0 0 4px;font-weight:800;letter-spacing:-0.2px;display:flex;align-items:center;gap:10px;}
+  .hero p.tag{margin:0;opacity:.92;font-size:14.5px;font-weight:500;}
+  .pulse-line{width:100%;height:34px;margin-top:16px;opacity:.9;}
+  .pulse-path{stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray: 320; stroke-dashoffset: 320; animation: draw 2.6s ease-in-out infinite;}
+  @keyframes draw{ 0%{stroke-dashoffset:320;} 55%{stroke-dashoffset:0;} 100%{stroke-dashoffset:-320;} }
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+  .chip{background:rgba(255,255,255,0.16);border:1px solid rgba(255,255,255,0.3);padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:600;}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px;margin-top:18px;box-shadow:var(--shadow);
+  }
+  .card h2{font-family:'Poppins',sans-serif;font-size:16.5px;margin:0 0 14px;font-weight:700;display:flex;align-items:center;gap:8px;}
+  label.field-label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px;}
+
+  .input-row{display:flex;gap:10px;align-items:flex-end;}
+  textarea#symptomInput{
+    flex:1;min-height:92px;resize:vertical;border:1.5px solid var(--line);border-radius:12px;
+    padding:14px;font-size:15px;font-family:inherit;color:var(--ink);background:var(--bg);outline:none;transition:.2s;
+  }
+  textarea#symptomInput:focus{border-color:var(--primary);}
+  .mic-btn{
+    width:46px;height:46px;flex:0 0 46px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);
+    cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:.2s;
+  }
+  .mic-btn.listening{background:var(--danger);color:#fff;border-color:var(--danger);animation:pulseGlow 1.2s infinite;}
+  @keyframes pulseGlow{0%{box-shadow:0 0 0 0 rgba(255,59,48,.5);}70%{box-shadow:0 0 0 10px rgba(255,59,48,0);}100%{box-shadow:0 0 0 0 rgba(255,59,48,0);}}
+  .example-text{font-size:12.5px;color:var(--muted);margin-top:8px;}
+
+  .analyze-btn{
+    margin-top:14px;width:100%;padding:14px;border:none;border-radius:12px;
+    background:var(--secondary);color:#fff;font-size:15.5px;font-weight:700;cursor:pointer;
+    box-shadow:0 10px 22px rgba(0,184,148,0.32);transition:transform .15s ease;
+    font-family:'Poppins',sans-serif;
+  }
+  .analyze-btn:active{transform:scale(0.98);}
+  .analyze-btn:disabled{opacity:.6;cursor:not-allowed;}
+
+  #resultsSection{display:none;}
+  .disease-row{margin-bottom:14px;}
+  .disease-row:last-child{margin-bottom:0;}
+  .disease-top{display:flex;justify-content:space-between;font-size:14.5px;font-weight:600;margin-bottom:6px;}
+  .disease-top .pct{color:var(--primary);font-variant-numeric:tabular-nums;}
+  .bar-track{height:9px;background:var(--line);border-radius:999px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg, var(--secondary), var(--primary));width:0%;transition:width .8s cubic-bezier(.2,.9,.25,1);}
+
+  .rec-list{list-style:none;margin:0;padding:0;}
+  .rec-list li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;padding:8px 0;border-bottom:1px dashed var(--line);}
+  .rec-list li:last-child{border-bottom:none;}
+  .rec-list li .tick{color:var(--secondary);font-weight:800;flex:0 0 auto;}
+
+  .emergency-banner{
+    display:none;background:var(--danger);color:#fff;border-radius:14px;padding:18px;margin-top:18px;
+    box-shadow:0 12px 26px rgba(255,59,48,0.35);
+  }
+  .emergency-banner.show{display:block;}
+  .emergency-banner h3{margin:0 0 8px;font-family:'Poppins',sans-serif;font-size:16px;display:flex;gap:8px;align-items:center;}
+  .emergency-banner p{margin:4px 0;font-size:14px;line-height:1.5;}
+  .emergency-banner a.hosp-link{
+    display:inline-block;margin-top:10px;background:#fff;color:var(--danger);font-weight:700;
+    padding:9px 16px;border-radius:10px;text-decoration:none;font-size:13.5px;
+  }
+
+  .health-score-wrap{display:flex;align-items:center;gap:16px;}
+  .score-ring{width:64px;height:64px;flex:0 0 64px;position:relative;}
+  .score-ring svg{transform:rotate(-90deg);}
+  .score-ring .score-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;font-family:'Poppins',sans-serif;}
+  .score-text{font-size:13.5px;color:var(--muted);line-height:1.5;}
+
+  .med-box{font-size:13.5px;color:var(--muted);background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:12px;margin-top:6px;}
+
+  .action-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+  .ghost-btn{
+    flex:1;min-width:140px;padding:11px;border-radius:10px;border:1.5px solid var(--line);background:transparent;
+    color:var(--ink);font-weight:600;font-size:13.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .ghost-btn:hover{border-color:var(--primary);color:var(--primary);}
+
+  .disclaimer{
+    font-size:12.5px;color:var(--muted);text-align:center;margin-top:26px;line-height:1.6;padding:0 8px;
+  }
+  .disclaimer strong{color:var(--danger);}
+
+  @media print{
+    .lang-select,.icon-btn,.mic-btn,.analyze-btn,.action-row,#symptomInput,.input-row{display:none !important;}
+    body{background:#fff;}
+    .hero{box-shadow:none;}
+  }
+
+  [data-i18n]{}
+  .hidden{display:none !important;}
+</style>
+</head>
+<body class="lang-en">
+
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="lang-select" role="group" aria-label="Language selector">
+      <button class="active" data-lang="en">English</button>
+      <button data-lang="bn">বাংলা</button>
+      <button data-lang="hi">हिन्दी</button>
+    </div>
+    <button class="icon-btn" id="darkToggle" title="Toggle dark mode">🌙</button>
+  </div>
+
+  <div class="hero">
+    <h1>🩺 <span data-i18n="title">Health Assistant AI</span></h1>
+    <p class="tag" data-i18n="subtitle">Your smart AI health companion</p>
+    <svg class="pulse-line" viewBox="0 0 300 34" preserveAspectRatio="none">
+      <path class="pulse-path" d="M0,17 L60,17 L75,4 L90,30 L105,17 L120,17 L130,10 L140,24 L150,17 L300,17"/>
+    </svg>
+    <div class="chips">
+      <span class="chip" data-i18n="chip1">🔍 Symptom Checker</span>
+      <span class="chip" data-i18n="chip2">🌍 3 Languages</span>
+      <span class="chip" data-i18n="chip3">🎤 Voice Input</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="inputHeading">✍️ Write your symptoms</h2>
+    <label class="field-label" data-i18n="inputLabel">Separate symptoms with a comma</label>
+    <div class="input-row">
+      <textarea id="symptomInput" placeholder="e.g. fever, cough, headache" data-i18n-ph="placeholder"></textarea>
+      <button class="mic-btn" id="micBtn" title="Voice input">🎤</button>
+    </div>
+    <p class="example-text" data-i18n="exampleText">Example: fever, cough, headache · জ্বর, কাশি · बुखार, खांसी — the assistant recognizes all three languages as the same symptom.</p>
+    <button class="analyze-btn" id="analyzeBtn" data-i18n="analyzeBtn">Analyze Symptoms</button>
+  </div>
+
+  <div class="emergency-banner" id="emergencyBanner">
+    <h3>🚨 <span data-i18n="emergencyTitle">Emergency warning</span></h3>
+    <p data-i18n="emergencyBody">Your description includes signs that need urgent medical attention. Please go to the nearest hospital or call emergency services right away. Do not rely on this tool for emergency care.</p>
+    <a href="#" class="hosp-link" id="hospLink" target="_blank" data-i18n="hospLinkText">📍 Find nearest hospital</a>
+  </div>
+
+  <div id="resultsSection">
+    <div class="card">
+      <h2 data-i18n="possibleHeading">✔ Possible conditions</h2>
+      <div id="diseaseList"></div>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="healthScoreHeading">📊 Health score</h2>
+      <div class="health-score-wrap">
+        <div class="score-ring">
+          <svg width="64" height="64" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="27" fill="none" stroke="var(--line)" stroke-width="7"/>
+            <circle cx="32" cy="32" r="27" fill="none" stroke="var(--secondary)" stroke-width="7"
+              stroke-linecap="round" stroke-dasharray="169.6" stroke-dashoffset="169.6" id="scoreArc"/>
+          </svg>
+          <div class="score-num" id="scoreNum">--</div>
+        </div>
+        <div class="score-text" id="scoreText" data-i18n="scoreDefaultText">A rough indicator based on symptom severity — not a medical measurement.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="recHeading">💡 Recommendation</h2>
+      <ul class="rec-list" id="recList"></ul>
+    </div>
+
+    <div class="card">
+      <h2 data-i18n="medHeading">💊 Medicine information</h2>
+      <div class="med-box" data-i18n="medBody">This section shares general, non-prescriptive information only (e.g. paracetamol is commonly used for fever). It is not a prescription — please confirm dosage and suitability with a pharmacist or doctor before taking anything.</div>
+    </div>
+
+    <div class="action-row">
+      <button class="ghost-btn" id="hospBtn" data-i18n="nearbyHospBtn">📍 Nearby hospital</button>
+      <button class="ghost-btn" id="pdfBtn" data-i18n="pdfBtn">📄 Download PDF</button>
+    </div>
+  </div>
+
+  <p class="disclaimer" data-i18n="disclaimer">⚠ Educational purpose only. <strong>This is not a medical diagnosis.</strong> Always consult a qualified doctor for any health concern.</p>
+
+</div>
+
+<script>
+(function(){
+
+  var I18N = {
+    en:{
+      title:"Health Assistant AI",
+      subtitle:"Your smart AI health companion",
+      chip1:"🔍 Symptom Checker", chip2:"🌍 3 Languages", chip3:"🎤 Voice Input",
+      inputHeading:"✍️ Write your symptoms",
+      inputLabel:"Separate symptoms with a comma",
+      placeholder:"e.g. fever, cough, headache",
+      exampleText:"Example: fever, cough, headache \u00b7 \u099c\u09cd\u09ac\u09b0, \u0995\u09be\u09b6\u09bf \u00b7 \u092c\u0941\u0916\u093e\u0930, \u0916\u093e\u0902\u0938\u0940 \u2014 the assistant recognizes all three languages as the same symptom.",
+      analyzeBtn:"Analyze Symptoms",
+      emptyWarning:"Please write at least one symptom first.",
+      emergencyTitle:"Emergency warning",
+      emergencyBody:"Your description includes signs that need urgent medical attention. Please go to the nearest hospital or call emergency services right away. Do not rely on this tool for emergency care.",
+      hospLinkText:"📍 Find nearest hospital",
+      possibleHeading:"✔ Possible conditions",
+      matchWord:"Match",
+      healthScoreHeading:"📊 Health score",
+      scoreDefaultText:"A rough indicator based on symptom severity — not a medical measurement.",
+      recHeading:"💡 Recommendation",
+      medHeading:"💊 Medicine information",
+      medBody:"This section shares general, non-prescriptive information only (e.g. paracetamol is commonly used for fever). It is not a prescription — please confirm dosage and suitability with a pharmacist or doctor before taking anything.",
+      nearbyHospBtn:"📍 Nearby hospital",
+      pdfBtn:"📄 Download PDF",
+      disclaimer:"⚠ Educational purpose only. <strong>This is not a medical diagnosis.</strong> Always consult a qualified doctor for any health concern.",
+      recDefault:["Drink plenty of water","Take enough rest","Monitor your temperature","Eat light, nutritious food","See a doctor if symptoms get worse or last more than 3 days"],
+      noMatch:"No close match found for these symptoms. This doesn't mean nothing is wrong — please consider speaking with a doctor, especially if symptoms persist or worsen."
+    },
+    bn:{
+      title:"\u09b9\u09c7\u09b2\u09a5 \u0985\u09cd\u09af\u09be\u09b8\u09bf\u09b8\u09cd\u099f\u09cd\u09af\u09be\u09a8\u09cd\u099f AI",
+      subtitle:"\u0986\u09aa\u09a8\u09be\u09b0 \u09b8\u09cd\u09ae\u09be\u09b0\u09cd\u099f AI \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09b8\u09b9\u09be\u09af\u09bc\u0995",
+      chip1:"🔍 \u09b2\u0995\u09cd\u09b7\u09a3 \u09aa\u09b0\u09c0\u0995\u09cd\u09b7\u0995", chip2:"🌍 \u09e9 \u09ad\u09be\u09b7\u09be", chip3:"🎤 \u09ad\u09df\u09c7\u09b8 \u0987\u09a8\u09aa\u09c1\u099f",
+      inputHeading:"✍️ \u0986\u09aa\u09a8\u09be\u09b0 \u09b2\u0995\u09cd\u09b7\u09a3 \u09b2\u09bf\u0996\u09c1\u09a8",
+      inputLabel:"\u0995\u09ae\u09be \u09a6\u09bf\u09df\u09c7 \u09b2\u0995\u09cd\u09b7\u09a3\u0997\u09c1\u09b2\u09cb \u0986\u09b2\u09be\u09a6\u09be \u0995\u09b0\u09c1\u09a8",
+      placeholder:"\u09af\u09c7\u09ae\u09a8: \u099c\u09cd\u09ac\u09b0, \u0995\u09be\u09b6\u09bf, \u09ae\u09be\u09a5\u09be\u09ac\u09cd\u09af\u09a5\u09be",
+      exampleText:"\u0989\u09a6\u09be\u09b9\u09b0\u09a3: \u099c\u09cd\u09ac\u09b0, \u0995\u09be\u09b6\u09bf, \u09ae\u09be\u09a5\u09be\u09ac\u09cd\u09af\u09a5\u09be \u00b7 fever, cough \u00b7 \u092c\u0941\u0916\u093e\u0930, \u0916\u093e\u0902\u0938\u0940 \u2014 AI \u09a4\u09bf\u09a8 \u09ad\u09be\u09b7\u09be\u09a4\u09c7\u0987 \u098f\u0995\u0987 \u09b2\u0995\u09cd\u09b7\u09a3 \u09b9\u09bf\u09b8\u09c7\u09ac\u09c7 \u099a\u09bf\u09a8\u09ac\u09c7\u0964",
+      analyzeBtn:"\u09b2\u0995\u09cd\u09b7\u09a3 \u09ac\u09bf\u09b6\u09cd\u09b2\u09c7\u09b7\u09a3 \u0995\u09b0\u09c1\u09a8",
+      emptyWarning:"\u0985\u09a8\u09c1\u0997\u09cd\u09b0\u09b9 \u0995\u09b0\u09c7 \u0985\u09a8\u09a4\u09a4 \u098f\u0995\u099f\u09bf \u09b2\u0995\u09cd\u09b7\u09a3 \u09b2\u09bf\u0996\u09c1\u09a8\u0964",
+      emergencyTitle:"\u099c\u09b0\u09c1\u09b0\u09bf \u09b8\u09a4\u09b0\u09cd\u0995\u09a4\u09be",
+      emergencyBody:"\u0986\u09aa\u09a8\u09be\u09b0 \u09ac\u09b0\u09cd\u09a3\u09a8\u09be\u09df \u098f\u09ae\u09a8 \u0995\u09bf\u099b\u09c1 \u0986\u099b\u09c7 \u09af\u09be\u09b0 \u099c\u09a8\u09cd\u09af \u09a6\u09cd\u09b0\u09c1\u09a4 \u099a\u09bf\u0995\u09bf\u09ce\u09b8\u09be \u09aa\u09cd\u09b0\u09df\u09cb\u099c\u09a8\u0964 \u0985\u09a8\u09c1\u0997\u09cd\u09b0\u09b9 \u0995\u09b0\u09c7 \u0985\u09ac\u09bf\u09b2\u09ae\u09cd\u09ac\u09c7 \u09a8\u09bf\u0995\u099f\u09b8\u09cd\u09a5 \u09b9\u09be\u09b8\u09aa\u09be\u09a4\u09be\u09b2\u09c7 \u09af\u09be\u09a8 \u0985\u09a5\u09ac\u09be \u099c\u09b0\u09c1\u09b0\u09bf \u09b8\u09c7\u09ac\u09be\u09df \u0995\u09b2 \u0995\u09b0\u09c1\u09a8\u0964 \u098f\u0987 \u099f\u09c1\u09b2\u09c7\u09b0 \u0989\u09aa\u09b0 \u09a8\u09bf\u09b0\u09cd\u09ad\u09b0 \u0995\u09b0\u09ac\u09c7\u09a8 \u09a8\u09be\u0964",
+      hospLinkText:"📍 \u09a8\u09bf\u0995\u099f\u09b8\u09cd\u09a5 \u09b9\u09be\u09b8\u09aa\u09be\u09a4\u09be\u09b2 \u0996\u09c1\u0981\u099c\u09c1\u09a8",
+      possibleHeading:"✔ \u09b8\u09ae\u09cd\u09ad\u09be\u09ac\u09cd\u09af \u0985\u09ac\u09b8\u09cd\u09a5\u09be",
+      matchWord:"\u09ae\u09bf\u09b2",
+      healthScoreHeading:"📊 \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09b8\u09cd\u0995\u09cb\u09b0",
+      scoreDefaultText:"\u09b2\u0995\u09cd\u09b7\u09a3\u09c7\u09b0 \u09a4\u09c0\u09ac\u09cd\u09b0\u09a4\u09be\u09b0 \u0989\u09aa\u09b0 \u09ad\u09bf\u09a4\u09cd\u09a4\u09bf \u0995\u09b0\u09c7 \u098f\u0995\u099f\u09bf \u0986\u09a8\u09c1\u09ae\u09be\u09a8\u09bf\u0995 \u09a8\u09bf\u09b0\u09cd\u09a6\u09c7\u09b6\u0995 \u2014 \u098f\u099f\u09bf \u0995\u09cb\u09a8\u09cb \u099a\u09bf\u0995\u09bf\u09ce\u09b8\u09be\u0997\u09a4 \u09aa\u09b0\u09bf\u09ae\u09be\u09aa \u09a8\u09df\u0964",
+      recHeading:"💡 \u09aa\u09b0\u09be\u09ae\u09b0\u09cd\u09b6",
+      medHeading:"💊 \u0993\u09b7\u09c1\u09a7 \u09b8\u0982\u0995\u09cd\u09b0\u09be\u09a8\u09cd\u09a4 \u09a4\u09a5\u09cd\u09af",
+      medBody:"\u098f\u0987 \u0985\u0982\u09b6\u09c7 \u09b6\u09c1\u09a7\u09c1 \u09b8\u09be\u09a7\u09be\u09b0\u09a3 \u09a4\u09a5\u09cd\u09af \u09a6\u09c7\u0993\u09df\u09be \u09b9\u099a\u09cd\u099b\u09c7 (\u09af\u09c7\u09ae\u09a8, \u099c\u09cd\u09ac\u09b0\u09c7\u09b0 \u099c\u09a8\u09cd\u09af \u09b8\u09be\u09a7\u09be\u09b0\u09a3\u09a4 \u09aa\u09cd\u09af\u09be\u09b0\u09be\u09b8\u09bf\u099f\u09be\u09ae\u09b2 \u09ac\u09cd\u09af\u09ac\u09b9\u09c3\u09a4 \u09b9\u09df)\u0964 \u098f\u099f\u09bf \u0995\u09cb\u09a8\u09cb \u09aa\u09cd\u09b0\u09c7\u09b8\u0995\u09cd\u09b0\u09bf\u09aa\u09b6\u09a8 \u09a8\u09df \u2014 \u0993\u09b7\u09c1\u09a7 \u0996\u09be\u0993\u09df\u09be\u09b0 \u0986\u0997\u09c7 \u09ab\u09be\u09b0\u09cd\u09ae\u09be\u09b8\u09bf\u09b8\u09cd\u099f \u09ac\u09be \u09a1\u09be\u0995\u09cd\u09a4\u09be\u09b0\u09c7\u09b0 \u09b8\u0999\u09cd\u0997\u09c7 \u09aa\u09b0\u09be\u09ae\u09b0\u09cd\u09b6 \u0995\u09b0\u09c1\u09a8\u0964",
+      nearbyHospBtn:"📍 \u09a8\u09bf\u0995\u099f\u09b8\u09cd\u09a5 \u09b9\u09be\u09b8\u09aa\u09be\u09a4\u09be\u09b2",
+      pdfBtn:"📄 PDF \u09a1\u09be\u0989\u09a8\u09b2\u09cb\u09a1",
+      disclaimer:"⚠ \u09b6\u09c1\u09a7\u09c1\u09ae\u09be\u09a4\u09cd\u09b0 \u09b6\u09bf\u0995\u09cd\u09b7\u09be\u09ae\u09c2\u09b2\u0995 \u0989\u09a6\u09cd\u09a6\u09c7\u09b6\u09cd\u09af\u09c7\u0964 <strong>\u098f\u099f\u09bf \u0995\u09cb\u09a8\u09cb \u099a\u09bf\u0995\u09bf\u09ce\u09b8\u09be \u09a8\u09bf\u09b0\u09cd\u09a3\u09df \u09a8\u09df\u0964</strong> \u09af\u09c7\u0995\u09cb\u09a8\u09cb \u09b8\u09cd\u09ac\u09be\u09b8\u09cd\u09a5\u09cd\u09af \u09b8\u09ae\u09b8\u09cd\u09af\u09be\u09df \u09b8\u09ac\u09b8\u09ae\u09df \u098f\u0995\u099c\u09a8 \u09af\u09cb\u0997\u09cd\u09af \u09a1\u09be\u0995\u09cd\u09a4\u09be\u09b0\u09c7\u09b0 \u09aa\u09b0\u09be\u09ae\u09b0\u09cd\u09b6 \u09a8\u09bf\u09a8\u0964",
+      recDefault:["\u09aa\u09b0\u09cd\u09af\u09be\u09aa\u09cd\u09a4 \u09aa\u09be\u09a8\u09bf \u09aa\u09be\u09a8 \u0995\u09b0\u09c1\u09a8","\u09aa\u09b0\u09cd\u09af\u09be\u09aa\u09cd\u09a4 \u09ac\u09bf\u09b6\u09cd\u09b0\u09be\u09ae \u09a8\u09bf\u09a8","\u0986\u09aa\u09a8\u09be\u09b0 \u09a4\u09be\u09aa\u09ae\u09be\u09a4\u09cd\u09b0\u09be \u09aa\u09b0\u09cd\u09af\u09ac\u09c7\u0995\u09cd\u09b7\u09a3 \u0995\u09b0\u09c1\u09a8","\u09b9\u09be\u09b2\u0995\u09be \u0993 \u09aa\u09c1\u09b7\u09cd\u099f\u09bf\u0995\u09b0 \u0996\u09be\u09ac\u09be\u09b0 \u0996\u09be\u09a8","\u09b2\u0995\u09cd\u09b7\u09a3 \u09ac\u09be\u09dc\u09b2\u09c7 \u09ac\u09be \u09e9 \u09a6\u09bf\u09a8\u09c7\u09b0 \u09ac\u09c7\u09b6\u09bf \u09a5\u09be\u0995\u09b2\u09c7 \u09a1\u09be\u0995\u09cd\u09a4\u09be\u09b0 \u09a6\u09c7\u0996\u09be\u09a8"],
+      noMatch:"\u098f\u0987 \u09b2\u0995\u09cd\u09b7\u09a3\u0997\u09c1\u09b2\u09cb\u09b0 \u09b8\u0999\u09cd\u0997\u09c7 \u09b8\u09c1\u09a8\u09bf\u09b0\u09cd\u09a6\u09bf\u09b7\u09cd\u099f \u0995\u09cb\u09a8\u09cb \u09ae\u09bf\u09b2 \u09aa\u09be\u0993\u09df\u09be \u09af\u09be\u09df\u09a8\u09bf\u0964 \u098f\u09b0 \u09ae\u09be\u09a8\u09c7 \u098f\u0987 \u09a8\u09df \u09af\u09c7 \u09b8\u09ac \u09a0\u09bf\u0995 \u0986\u099b\u09c7 \u2014 \u09b2\u0995\u09cd\u09b7\u09a3 \u09a5\u09c7\u0995\u09c7 \u0997\u09c7\u09b2\u09c7 \u09ac\u09be \u09ac\u09be\u09dc\u09b2\u09c7 \u09a1\u09be\u0995\u09cd\u09a4\u09be\u09b0\u09c7\u09b0 \u09b8\u0999\u09cd\u0997\u09c7 \u0995\u09a5\u09be \u09ac\u09b2\u09c1\u09a8\u0964"
+    },
+    hi:{
+      title:"\u0939\u0947\u0932\u094d\u0925 \u0905\u0938\u093f\u0938\u094d\u091f\u0947\u0902\u091f AI",
+      subtitle:"\u0906\u092a\u0915\u093e \u0938\u094d\u092e\u093e\u0930\u094d\u091f AI \u0939\u0947\u0932\u094d\u0925 \u0938\u093e\u0925\u0940",
+      chip1:"🔍 \u0932\u0915\u094d\u0937\u0923 \u091c\u093e\u0902\u091a", chip2:"🌍 3 \u092d\u093e\u0937\u093e\u090f\u0902", chip3:"🎤 \u0935\u0949\u0907\u0938 \u0907\u0928\u092a\u0941\u091f",
+      inputHeading:"✍️ \u0905\u092a\u0928\u0947 \u0932\u0915\u094d\u0937\u0923 \u0932\u093f\u0916\u0947\u0902",
+      inputLabel:"\u0932\u0915\u094d\u0937\u0923\u094b\u0902 \u0915\u094b \u0915\u0949\u092e\u093e \u0938\u0947 \u0905\u0932\u0917 \u0915\u0930\u0947\u0902",
+      placeholder:"\u091c\u0948\u0938\u0947: \u092c\u0941\u0916\u093e\u0930, \u0916\u093e\u0902\u0938\u0940, \u0938\u093f\u0930\u0926\u0930\u094d\u0926",
+      exampleText:"\u0909\u0926\u093e\u0939\u0930\u0923: \u092c\u0941\u0916\u093e\u0930, \u0916\u093e\u0902\u0938\u0940, \u0938\u093f\u0930\u0926\u0930\u094d\u0926 \u00b7 fever, cough \u00b7 \u099c\u09cd\u09ac\u09b0, \u0995\u09be\u09b6\u09bf \u2014 AI \u0924\u0940\u0928\u094b\u0902 \u092d\u093e\u0937\u093e\u0913\u0902 \u092e\u0947\u0902 \u090f\u0915 \u0939\u0940 \u0932\u0915\u094d\u0937\u0923 \u0915\u0947 \u0930\u0942\u092a \u092e\u0947\u0902 \u092a\u0939\u091a\u093e\u0928\u0924\u093e \u0939\u0948\u0964",
+      analyzeBtn:"\u0932\u0915\u094d\u0937\u0923 \u091c\u093e\u0901\u091a\u0947\u0902",
+      emptyWarning:"\u0915\u0943\u092a\u092f\u093e \u0915\u092e \u0938\u0947 \u0915\u092e \u090f\u0915 \u0932\u0915\u094d\u0937\u0923 \u0932\u093f\u0916\u0947\u0902\u0964",
+      emergencyTitle:"\u0906\u092a\u093e\u0924\u0915\u093e\u0932\u0940\u0928 \u091a\u0947\u0924\u093e\u0935\u0928\u0940",
+      emergencyBody:"\u0906\u092a\u0915\u0947 \u0935\u093f\u0935\u0930\u0923 \u092e\u0947\u0902 \u090f\u0938\u0947 \u0938\u0902\u0915\u0947\u0924 \u0939\u0948\u0902 \u091c\u093f\u0928\u0915\u0947 \u0932\u093f\u090f \u0924\u0941\u0930\u0902\u0924 \u091a\u093f\u0915\u093f\u0924\u094d\u0938\u093e \u0938\u0939\u093e\u092f\u0924\u093e \u0906\u0935\u0936\u094d\u092f\u0915 \u0939\u0948\u0964 \u0915\u0943\u092a\u092f\u093e \u0924\u0941\u0930\u0902\u0924 \u0928\u091c\u093c\u0926\u0940\u0915\u0940 \u0905\u0938\u094d\u092a\u0924\u093e\u0932 \u091c\u093e\u090f\u0902 \u092f\u093e \u0906\u092a\u093e\u0924\u0915\u093e\u0932\u0940\u0928 \u0938\u0947\u0935\u093e \u0915\u094b \u0915\u0949\u0932 \u0915\u0930\u0947\u0902\u0964 \u0907\u0938 \u091f\u0942\u0932 \u092a\u0930 \u0928\u093f\u0930\u094d\u092d\u0930 \u0928 \u0930\u0939\u0947\u0902\u0964",
+      hospLinkText:"📍 \u0928\u091c\u093c\u0926\u0940\u0915\u0940 \u0905\u0938\u094d\u092a\u0924\u093e\u0932 \u0916\u094b\u091c\u0947\u0902",
+      possibleHeading:"✔ \u0938\u0902\u092d\u093e\u0935\u093f\u0924 \u0938\u094d\u0925\u093f\u0924\u093f\u092f\u093e\u0902",
+      matchWord:"\u092e\u093f\u0932\u093e\u0928",
+      healthScoreHeading:"📊 \u0939\u0947\u0932\u094d\u0925 \u0938\u094d\u0915\u094b\u0930",
+      scoreDefaultText:"\u0932\u0915\u094d\u0937\u0923\u094b\u0902 \u0915\u0940 \u0917\u0902\u092d\u0940\u0930\u0924\u093e \u092a\u0930 \u0906\u0927\u093e\u0930\u093f\u0924 \u090f\u0915 \u0905\u0928\u0941\u092e\u093e\u0928\u093f\u0924 \u0938\u0902\u0915\u0947\u0924\u0915 \u2014 \u092f\u0939 \u0915\u094b\u0908 \u091a\u093f\u0915\u093f\u0924\u094d\u0938\u0940\u092f \u092e\u093e\u092a\u0928 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964",
+      recHeading:"💡 \u0938\u0932\u093e\u0939",
+      medHeading:"💊 \u0926\u0935\u093e \u091c\u093e\u0928\u0915\u093e\u0930\u0940",
+      medBody:"\u092f\u0939 \u092d\u093e\u0917 \u0915\u0947\u0935\u0932 \u0938\u093e\u092e\u093e\u0928\u094d\u092f \u091c\u093e\u0928\u0915\u093e\u0930\u0940 \u0926\u0947\u0924\u093e \u0939\u0948 (\u091c\u0948\u0938\u0947, \u092c\u0941\u0916\u093e\u0930 \u0915\u0947 \u0932\u093f\u090f \u0906\u092e\u0924\u094c\u0930 \u092a\u0930 \u092a\u0948\u0930\u093e\u0938\u093f\u091f\u093e\u092e\u094b\u0932 \u0907\u0938\u094d\u0924\u0947\u092e\u093e\u0932 \u0939\u094b\u0924\u093e \u0939\u0948)\u0964 \u092f\u0939 \u0915\u094b\u0908 \u092a\u0930\u094d\u091a\u093e \u0928\u0939\u0940\u0902 \u0939\u0948 \u2014 \u0915\u0941\u091b \u092d\u0940 \u0932\u0947\u0928\u0947 \u0938\u0947 \u092a\u0939\u0932\u0947 \u092b\u093e\u0930\u094d\u092e\u093e\u0938\u093f\u0938\u094d\u091f \u092f\u093e \u0921\u0949\u0915\u094d\u091f\u0930 \u0938\u0947 \u092a\u0941\u0937\u094d\u091f\u093f \u0915\u0930\u0947\u0902\u0964",
+      nearbyHospBtn:"📍 \u0928\u091c\u093c\u0926\u0940\u0915\u0940 \u0905\u0938\u094d\u092a\u0924\u093e\u0932",
+      pdfBtn:"📄 PDF \u0921\u093e\u0909\u0928\u0932\u094b\u0921 \u0915\u0930\u0947\u0902",
+      disclaimer:"⚠ \u0915\u0947\u0935\u0932 \u0936\u0948\u0915\u094d\u0937\u093f\u0915 \u0909\u0926\u094d\u0926\u0947\u0936\u094d\u092f \u0915\u0947 \u0932\u093f\u090f\u0964 <strong>\u092f\u0939 \u0915\u094b\u0908 \u091a\u093f\u0915\u093f\u0924\u094d\u0938\u093e \u0928\u093f\u0926\u093e\u0928 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964</strong> \u0915\u093f\u0938\u0940 \u092d\u0940 \u0938\u094d\u0935\u093e\u0938\u094d\u0925\u094d\u092f \u0938\u092e\u0938\u094d\u092f\u093e \u0915\u0947 \u0932\u093f\u090f \u0939\u092e\u0947\u0936\u093e \u0915\u093f\u0938\u0940 \u092f\u094b\u0917\u094d\u092f \u0921\u0949\u0915\u094d\u091f\u0930 \u0938\u0947 \u0938\u0932\u093e\u0939 \u0932\u0947\u0902\u0964",
+      recDefault:["\u092a\u0930\u094d\u092f\u093e\u092a\u094d\u0924 \u092a\u093e\u0928\u0940 \u092a\u093f\u090f\u0902","\u092a\u0930\u094d\u092f\u093e\u092a\u094d\u0924 \u0906\u0930\u093e\u092e \u0915\u0930\u0947\u0902","\u0905\u092a\u0928\u093e \u0924\u093e\u092a\u092e\u093e\u0928 \u091c\u093e\u0902\u091a\u0924\u0947 \u0930\u0939\u0947\u0902","\u0939\u0932\u094d\u0915\u093e \u0935 \u092a\u094c\u0937\u094d\u091f\u093f\u0915 \u092d\u094b\u091c\u0928 \u0915\u0930\u0947\u0902","\u0932\u0915\u094d\u0937\u0923 \u092c\u0922\u093c\u0947\u0902 \u092f\u093e 3 \u0926\u093f\u0928 \u0938\u0947 \u091c\u094d\u092f\u093e\u0926\u093e \u0930\u0939\u0947\u0902 \u0924\u094b \u0921\u0949\u0915\u094d\u091f\u0930 \u0938\u0947 \u092e\u093f\u0932\u0947\u0902"],
+      noMatch:"\u0907\u0928 \u0932\u0915\u094d\u0937\u0923\u094b\u0902 \u0938\u0947 \u0915\u094b\u0908 \u0938\u094d\u092a\u0937\u094d\u091f \u092e\u093f\u0932\u093e\u0928 \u0928\u0939\u0940\u0902 \u092e\u093f\u0932\u093e\u0964 \u0907\u0938\u0915\u093e \u092e\u0924\u0932\u092c \u092f\u0939 \u0928\u0939\u0940\u0902 \u0915\u093f \u0938\u092c \u0920\u0940\u0915 \u0939\u0948 \u2014 \u0932\u0915\u094d\u0937\u0923 \u092c\u0928\u0947 \u0930\u0939\u0928\u0947 \u092f\u093e \u092c\u0922\u093c\u0928\u0947 \u092a\u0930 \u0921\u0949\u0915\u094d\u091f\u0930 \u0938\u0947 \u092c\u093e\u0924 \u0915\u0930\u0947\u0902\u0964"
+    }
+  };
+
+  var currentLang = 'en';
+
+  var SYNONYMS = {
+    fever:{en:["fever","high temperature"], bn:["\u099c\u09cd\u09ac\u09b0"], hi:["\u092c\u0941\u0916\u093e\u0930","\u091c\u094d\u0935\u0930"]},
+    cough:{en:["cough"], bn:["\u0995\u09be\u09b6\u09bf"], hi:["\u0916\u093e\u0902\u0938\u0940","\u0916\u093e\u0901\u0938\u0940"]},
+    headache:{en:["headache"], bn:["\u09ae\u09be\u09a5\u09be\u09ac\u09cd\u09af\u09a5\u09be","\u09ae\u09be\u09a5\u09be \u09ac\u09cd\u09af\u09a5\u09be"], hi:["\u0938\u093f\u0930\u0926\u0930\u094d\u0926","\u0938\u0930 \u0926\u0930\u094d\u0926"]},
+    sore_throat:{en:["sore throat","throat pain"], bn:["\u0997\u09b2\u09be \u09ac\u09cd\u09af\u09a5\u09be"], hi:["\u0917\u0932\u0947 \u092e\u0947\u0902 \u0916\u0930\u093e\u0936","\u0917\u0932\u093e \u0926\u0930\u094d\u0926"]},
+    runny_nose:{en:["runny nose","cold"], bn:["\u09b8\u09b0\u09cd\u09a6\u09bf","\u09a8\u09be\u0995 \u09a6\u09bf\u09df\u09c7 \u09aa\u09be\u09a8\u09bf"], hi:["\u0928\u093e\u0915 \u092c\u0939\u0928\u093e","\u091c\u0941\u0915\u093e\u092e"]},
+    body_ache:{en:["body ache","muscle pain"], bn:["\u09b6\u09b0\u09c0\u09b0 \u09ac\u09cd\u09af\u09a5\u09be","\u0997\u09be \u09ac\u09cd\u09af\u09a5\u09be"], hi:["\u092c\u0926\u0928 \u0926\u0930\u094d\u0926","\u0936\u0930\u0940\u0930 \u092e\u0947\u0902 \u0926\u0930\u094d\u0926"]},
+    fatigue:{en:["fatigue","tiredness","weakness"], bn:["\u0995\u09cd\u09b2\u09be\u09a8\u09cd\u09a4\u09bf","\u09a6\u09c1\u09b0\u09cd\u09ac\u09b2\u09a4\u09be"], hi:["\u0925\u0915\u093e\u0928","\u0915\u092e\u091c\u094b\u0930\u0940"]},
+    loss_of_taste_smell:{en:["loss of taste","loss of smell"], bn:["\u09b8\u09cd\u09ac\u09be\u09a6 \u099a\u09b2\u09c7 \u09af\u09be\u0993\u09df\u09be","\u0997\u09a8\u09cd\u09a7 \u09a8\u09be \u09aa\u09be\u0993\u09df\u09be"], hi:["\u0938\u094d\u0935\u093e\u0926 \u0928 \u0906\u0928\u093e","\u0917\u0902\u0927 \u0928 \u0906\u0928\u093e"]},
+    nausea:{en:["nausea","vomiting"], bn:["\u09ac\u09ae\u09bf \u09ac\u09ae\u09bf \u09ad\u09be\u09ac","\u09ac\u09ae\u09bf"], hi:["\u091c\u0940 \u092e\u093f\u091a\u0932\u093e\u0928\u093e","\u0909\u0932\u094d\u091f\u0940"]},
+    diarrhea:{en:["diarrhea","loose motion"], bn:["\u09a1\u09be\u09df\u09b0\u09bf\u09df\u09be","\u09aa\u09be\u09a4\u09b2\u09be \u09aa\u09be\u09df\u0996\u09be\u09a8\u09be"], hi:["\u0926\u0938\u094d\u0924","\u092a\u0924\u0932\u0947 \u0926\u0938\u094d\u0924"]},
+    abdominal_pain:{en:["stomach pain","abdominal pain"], bn:["\u09aa\u09c7\u099f \u09ac\u09cd\u09af\u09a5\u09be"], hi:["\u092a\u0947\u091f \u0926\u0930\u094d\u0926"]},
+    rash:{en:["rash","skin rash"], bn:["\u09b0\u09cd\u09af\u09be\u09b6","\u099a\u09c1\u09b2\u0995\u09be\u09a8\u09bf"], hi:["\u091a\u0915\u0924\u094d\u0924\u0947","\u0916\u0941\u091c\u0932\u0940"]},
+    joint_pain:{en:["joint pain"], bn:["\u0997\u09be\u0981\u099f\u09c7 \u09ac\u09cd\u09af\u09a5\u09be","\u099c\u09df\u09c7\u09a8\u09cd\u099f \u09aa\u09c7\u0987\u09a8"], hi:["\u091c\u094b\u0921\u093c\u094b\u0902 \u092e\u0947\u0902 \u0926\u0930\u094d\u0926"]},
+    eye_pain:{en:["eye pain","pain behind eyes"], bn:["\u099a\u09cb\u0996 \u09ac\u09cd\u09af\u09a5\u09be"], hi:["\u0906\u0902\u0916\u094b\u0902 \u092e\u0947\u0902 \u0926\u0930\u094d\u0926"]},
+    chills:{en:["chills","shivering"], bn:["\u09a0\u09be\u09a8\u09cd\u09a1\u09be \u09b2\u09be\u0997\u09be","\u0995\u09be\u0981\u09aa\u09c1\u09a8\u09bf"], hi:["\u0920\u0902\u0921 \u0932\u0917\u0928\u093e","\u0915\u0902\u092a\u0915\u0902\u092a\u0940"]},
+    sneezing:{en:["sneezing"], bn:["\u09b9\u09be\u0981\u099a\u09bf"], hi:["\u091b\u0940\u0902\u0915"]},
+    chest_pain:{en:["chest pain"], bn:["\u09ac\u09c1\u0995\u09c7 \u09ac\u09cd\u09af\u09a5\u09be","\u09ac\u09c1\u0995 \u09ac\u09cd\u09af\u09a5\u09be"], hi:["\u0938\u0940\u0928\u0947 \u092e\u0947\u0902 \u0926\u0930\u094d\u0926","\u091b\u093e\u0924\u0940 \u092e\u0947\u0902 \u0926\u0930\u094d\u0926"]},
+    breathing_difficulty:{en:["difficulty breathing","shortness of breath","breathless"], bn:["\u09b6\u09cd\u09ac\u09be\u09b8\u0995\u09b7\u09cd\u099f","\u09b6\u09cd\u09ac\u09be\u09b8 \u09a8\u09bf\u09a4\u09c7 \u0995\u09b7\u09cd\u099f"], hi:["\u0938\u093e\u0902\u0938 \u0932\u0947\u0928\u0947 \u092e\u0947\u0902 \u0924\u0915\u0932\u0940\u092b","\u0938\u093e\u0902\u0938 \u092b\u0942\u0932\u0928\u093e"]},
+    blood_vomit:{en:["blood vomiting","vomiting blood"], bn:["\u09b0\u0995\u09cd\u09a4 \u09ac\u09ae\u09bf"], hi:["\u0916\u0942\u0928 \u0915\u0940 \u0909\u0932\u094d\u091f\u0940"]},
+    unconscious:{en:["unconscious","fainting"], bn:["\u0985\u099a\u09c7\u09a4\u09a8","\u099c\u09cd\u099e\u09be\u09a8 \u09b9\u09be\u09b0\u09be\u09a8\u09cb"], hi:["\u092c\u0947\u0939\u094b\u0936","\u092c\u0947\u0939\u094b\u0936\u0940"]},
+    severe_bleeding:{en:["severe bleeding","heavy bleeding"], bn:["\u09a4\u09c0\u09ac\u09cd\u09b0 \u09b0\u0995\u09cd\u09a4\u09aa\u09be\u09a4","\u09aa\u09cd\u09b0\u099a\u09c1\u09b0 \u09b0\u0995\u09cd\u09a4\u09aa\u09be\u09a4"], hi:["\u0924\u0947\u091c\u093c \u0916\u0942\u0928 \u092c\u0939\u0928\u093e","\u0905\u0924\u094d\u092f\u0927\u093f\u0915 \u0930\u0915\u094d\u0924\u0938\u094d\u0930\u093e\u0935"]},
+    confusion:{en:["confusion","disoriented"], bn:["\u09ac\u09bf\u09ad\u09cd\u09b0\u09be\u09a8\u09cd\u09a4\u09bf","\u0997\u09c1\u09b2\u09bf\u09df\u09c7 \u09ab\u09c7\u09b2\u09be"], hi:["\u092d\u094d\u0930\u092e","\u092c\u0947\u0938\u0941\u0927"]},
+    high_fever_3days:{en:["high fever for more than 3 days","fever more than 3 days"], bn:["\u09e9 \u09a6\u09bf\u09a8\u09c7\u09b0 \u09ac\u09c7\u09b6\u09bf \u099c\u09cd\u09ac\u09b0","\u09a4\u09bf\u09a8 \u09a6\u09bf\u09a8\u09c7\u09b0 \u09ac\u09c7\u09b6\u09bf \u099c\u09cd\u09ac\u09b0"], hi:["3 \u0926\u093f\u0928 \u0938\u0947 \u091c\u094d\u092f\u093e\u0926\u093e \u0924\u0947\u091c\u093c \u092c\u0941\u0916\u093e\u0930","\u0924\u0940\u0928 \u0926\u093f\u0928 \u0938\u0947 \u092c\u0941\u0916\u093e\u0930"]}
+  };
+
+  var EMERGENCY_KEYS = ["chest_pain","breathing_difficulty","blood_vomit","unconscious","severe_bleeding","confusion","high_fever_3days"];
+
+  var DISEASES = [
+    {id:"flu", name:{en:"Flu",bn:"\u09ab\u09cd\u09b2\u09c1",hi:"\u092b\u094d\u0932\u0942"},
+      symptoms:["fever","body_ache","fatigue","headache","chills","cough","sore_throat"]},
+    {id:"covid", name:{en:"COVID-19",bn:"\u0995\u09cb\u09ad\u09bf\u09a1-\u09e7\u09ef",hi:"\u0915\u094b\u0935\u093f\u0921-19"},
+      symptoms:["fever","cough","fatigue","loss_of_taste_smell","sore_throat","breathing_difficulty","body_ache"]},
+    {id:"cold", name:{en:"Common Cold",bn:"\u09b8\u09be\u09a7\u09be\u09b0\u09a3 \u09b8\u09b0\u09cd\u09a6\u09bf",hi:"\u0938\u093e\u092e\u093e\u0928\u094d\u092f \u091c\u0941\u0915\u093e\u092e"},
+      symptoms:["runny_nose","sneezing","sore_throat","cough","headache"]},
+    {id:"viral_fever", name:{en:"Viral Fever",bn:"\u09ad\u09be\u0987\u09b0\u09be\u09b2 \u099c\u09cd\u09ac\u09b0",hi:"\u0935\u093e\u092f\u0930\u0932 \u092c\u0941\u0916\u093e\u0930"},
+      symptoms:["fever","headache","body_ache","fatigue","chills"]},
+    {id:"dengue", name:{en:"Dengue (possible)",bn:"\u09a1\u09c7\u0999\u09cd\u0997\u09c1 (\u09b8\u09ae\u09cd\u09ad\u09be\u09ac\u09cd\u09af)",hi:"\u0921\u0947\u0902\u0917\u0942 (\u0938\u0902\u092d\u093e\u0935\u093f\u0924)"},
+      symptoms:["fever","headache","eye_pain","joint_pain","rash","nausea","fatigue"]},
+    {id:"gastro", name:{en:"Gastroenteritis",bn:"\u09aa\u09c7\u099f\u09c7\u09b0 \u09b8\u0982\u0995\u09cd\u09b0\u09ae\u09a3",hi:"\u0906\u0902\u0924\u094d\u0930\u0936\u094b\u0925"},
+      symptoms:["nausea","diarrhea","abdominal_pain","fever","fatigue"]},
+    {id:"migraine", name:{en:"Migraine",bn:"\u09ae\u09be\u0987\u0997\u09cd\u09b0\u09c7\u09a8",hi:"\u092e\u093e\u0907\u0917\u094d\u0930\u0947\u0928"},
+      symptoms:["headache","nausea","eye_pain","fatigue"]},
+    {id:"allergy", name:{en:"Allergic Reaction",bn:"\u0985\u09cd\u09af\u09be\u09b2\u09be\u09b0\u09cd\u099c\u09bf",hi:"\u090f\u0932\u0930\u094d\u091c\u0940"},
+      symptoms:["rash","sneezing","runny_nose","eye_pain"]}
+  ];
+
+  function normalize(str){
+    return str.toLowerCase().replace(/[\uff0c,\u06d4\u0964]/g,",").trim();
+  }
+
+  function extractSymptoms(text){
+    var norm = " " + normalize(text) + " ";
+    var found = new Set();
+    Object.keys(SYNONYMS).forEach(function(key){
+      var allTerms = [].concat(SYNONYMS[key].en, SYNONYMS[key].bn, SYNONYMS[key].hi);
+      for(var i=0;i<allTerms.length;i++){
+        var term = allTerms[i];
+        if(norm.indexOf(term.toLowerCase())!==-1){ found.add(key); break; }
+      }
+    });
+    return found;
+  }
+
+  function analyze(){
+    var t = I18N[currentLang];
+    var raw = document.getElementById('symptomInput').value.trim();
+    if(!raw){ alert(t.emptyWarning); return; }
+
+    var symptomSet = extractSymptoms(raw);
+    var emergencyHit = EMERGENCY_KEYS.some(function(k){ return symptomSet.has(k); });
+
+    var scored = DISEASES.map(function(d){
+      var matchCount = 0;
+      d.symptoms.forEach(function(s){ if(symptomSet.has(s)) matchCount++; });
+      var pct = Math.round((matchCount / d.symptoms.length) * 100);
+      return {d:d, matchCount:matchCount, pct:pct};
+    }).filter(function(x){ return x.matchCount>0; })
+      .sort(function(a,b){ return (b.pct - a.pct) || (b.matchCount - a.matchCount); })
+      .slice(0,4);
+
+    renderResults(scored, symptomSet, emergencyHit);
+  }
+
+  function renderResults(scored, symptomSet, emergencyHit){
+    var t = I18N[currentLang];
+    var resultsSection = document.getElementById('resultsSection');
+    var diseaseList = document.getElementById('diseaseList');
+    var emergencyBanner = document.getElementById('emergencyBanner');
+
+    diseaseList.innerHTML = '';
+    if(scored.length===0){
+      var p = document.createElement('p');
+      p.style.cssText = "font-size:14px;color:var(--muted);margin:0;";
+      p.textContent = t.noMatch;
+      diseaseList.appendChild(p);
+    } else {
+      scored.forEach(function(item){
+        var row = document.createElement('div');
+        row.className = 'disease-row';
+
+        var top = document.createElement('div');
+        top.className = 'disease-top';
+        var nameSpan = document.createElement('span');
+        nameSpan.textContent = item.d.name[currentLang];
+        var pctSpan = document.createElement('span');
+        pctSpan.className = 'pct';
+        pctSpan.textContent = t.matchWord + ' ' + item.pct + '%';
+        top.appendChild(nameSpan);
+        top.appendChild(pctSpan);
+
+        var track = document.createElement('div');
+        track.className = 'bar-track';
+        var fill = document.createElement('div');
+        fill.className = 'bar-fill';
+        fill.style.width = '0%';
+        track.appendChild(fill);
+
+        row.appendChild(top);
+        row.appendChild(track);
+        diseaseList.appendChild(row);
+        requestAnimationFrame(function(){ fill.style.width = item.pct + '%'; });
+      });
+    }
+
+    var recList = document.getElementById('recList');
+    recList.innerHTML = '';
+    t.recDefault.forEach(function(r){
+      var li = document.createElement('li');
+      var tick = document.createElement('span');
+      tick.className = 'tick';
+      tick.textContent = '\u2714';
+      var txt = document.createElement('span');
+      txt.textContent = r;
+      li.appendChild(tick);
+      li.appendChild(txt);
+      recList.appendChild(li);
+    });
+
+    var severityWeight = emergencyHit ? 15 : Math.max(30, 100 - symptomSet.size*10);
+    var score = Math.max(5, Math.min(100, severityWeight));
+    document.getElementById('scoreNum').textContent = score;
+    var circumference = 169.6;
+    var offset = circumference - (circumference * score/100);
+    var arc = document.getElementById('scoreArc');
+    arc.style.strokeDashoffset = offset;
+    arc.style.stroke = score < 40 ? 'var(--danger)' : (score < 70 ? '#f5a623' : 'var(--secondary)');
+    arc.style.transition = 'stroke-dashoffset .9s ease';
+
+    if(emergencyHit){
+      emergencyBanner.classList.add('show');
+      setHospLink();
+    } else {
+      emergencyBanner.classList.remove('show');
+    }
+
+    resultsSection.style.display = 'block';
+    resultsSection.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  function setHospLink(){
+    var link = document.getElementById('hospLink');
+    if(navigator.geolocation){
+      navigator.geolocation.getCurrentPosition(function(pos){
+        var latitude = pos.coords.latitude, longitude = pos.coords.longitude;
+        link.href = "https://www.google.com/maps/search/hospital/@" + latitude + "," + longitude + ",14z";
+      }, function(){
+        link.href = "https://www.google.com/maps/search/hospital+near+me";
+      });
+    } else {
+      link.href = "https://www.google.com/maps/search/hospital+near+me";
+    }
+  }
+
+  function setLanguage(lang){
+    currentLang = lang;
+    var t = I18N[lang];
+    document.body.className = document.body.className.replace(/lang-\w+/,'').trim();
+    document.body.classList.add('lang-'+lang);
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      if(t[key]!==undefined) el.innerHTML = t[key];
+    });
+    document.getElementById('symptomInput').placeholder = t.placeholder;
+    document.querySelectorAll('.lang-select button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-lang')===lang);
+    });
+    if(document.getElementById('resultsSection').style.display==='block'){
+      analyze();
+    }
+  }
+
+  document.querySelectorAll('.lang-select button').forEach(function(btn){
+    btn.addEventListener('click', function(){ setLanguage(btn.getAttribute('data-lang')); });
+  });
+
+  document.getElementById('darkToggle').addEventListener('click', function(){
+    document.body.classList.toggle('dark');
+    this.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+  });
+
+  var micBtn = document.getElementById('micBtn');
+  var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var recognition = null;
+  if(SpeechRecognition){
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.onresult = function(e){
+      var transcript = e.results[0][0].transcript;
+      var box = document.getElementById('symptomInput');
+      box.value = box.value ? (box.value + ', ' + transcript) : transcript;
+    };
+    recognition.onend = function(){ micBtn.classList.remove('listening'); };
+    recognition.onerror = function(){ micBtn.classList.remove('listening'); };
+  } else {
+    micBtn.style.display = 'none';
+  }
+  micBtn.addEventListener('click', function(){
+    if(!recognition) return;
+    var langMap = {en:'en-US', bn:'bn-BD', hi:'hi-IN'};
+    recognition.lang = langMap[currentLang] || 'en-US';
+    micBtn.classList.add('listening');
+    recognition.start();
+  });
+
+  document.getElementById('analyzeBtn').addEventListener('click', analyze);
+  document.getElementById('hospBtn').addEventListener('click', function(){
+    setHospLink();
+    document.getElementById('hospLink').click();
+  });
+  document.getElementById('pdfBtn').addEventListener('click', function(){
+    window.print();
+  });
+
+  setLanguage('en');
+
+})();
+</script>
+</body>
+</html>
