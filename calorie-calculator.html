@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Calorie Calculator</title>
+<style>
+html, body { margin:0; padding:0; background:transparent; }
+
+.ai-calculator{
+  max-width:780px;
+  margin:12px auto;
+  background:#fff;
+  border:1px solid #e5e5e5;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 5px 20px rgba(0,0,0,.08);
+  font-family:Arial,Helvetica,sans-serif;
+  color:#222;
+}
+
+.ai-calculator *{
+  box-sizing:border-box;
+}
+
+.ai-cal-header{
+  background:linear-gradient(135deg,#ff6b00,#e95400);
+  color:#fff;
+  padding:24px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.ai-cal-head-left{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.ai-cal-icon{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:rgba(255,255,255,.18);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  font-weight:bold;
+}
+
+.ai-cal-title{
+  font-size:25px;
+  font-weight:800;
+  line-height:1.25;
+}
+
+.ai-cal-subtitle{
+  font-size:14px;
+  margin-top:3px;
+}
+
+.ai-cal-languages{
+  display:flex;
+  gap:7px;
+  flex-shrink:0;
+}
+
+.ai-cal-lang{
+  border:1px solid #fff;
+  background:transparent;
+  color:#fff;
+  border-radius:22px;
+  padding:7px 13px;
+  cursor:pointer;
+  font-weight:700;
+  font-size:13px;
+  white-space:nowrap;
+}
+
+.ai-cal-lang.active{
+  background:#fff;
+  color:#e95400;
+}
+
+.ai-cal-disclaimer{
+  padding:16px 22px;
+  background:#fff4e8;
+  color:#97450e;
+  border-bottom:1px solid #efd1bb;
+  font-size:14px;
+  line-height:1.65;
+}
+
+.ai-cal-form{
+  padding:26px 22px;
+}
+
+.ai-cal-field{
+  margin-bottom:18px;
+}
+
+.ai-cal-field label{
+  display:block;
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:7px;
+}
+
+.ai-cal-field input,
+.ai-cal-field select{
+  width:100%;
+  height:50px;
+  border:1px solid #d3d3d3;
+  border-radius:9px;
+  padding:10px 13px;
+  background:#fff;
+  color:#222;
+  font-size:15px;
+  outline:none;
+}
+
+.ai-cal-field input:focus,
+.ai-cal-field select:focus{
+  border-color:#ed620c;
+  box-shadow:0 0 0 3px rgba(237,98,12,.12);
+}
+
+.ai-cal-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.ai-cal-button{
+  width:100%;
+  height:51px;
+  border:0;
+  border-radius:9px;
+  background:linear-gradient(135deg,#ff6b00,#dc4d00);
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.ai-cal-result{
+  display:none;
+  margin:0 22px 25px;
+  padding:20px;
+  background:#fff7ef;
+  border:1px solid #efc8a9;
+  border-radius:12px;
+}
+
+.ai-cal-result h2{
+  margin:0 0 17px;
+  font-size:21px;
+  color:#a5490b;
+}
+
+.ai-cal-result-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.ai-cal-result-box{
+  background:#fff;
+  border:1px solid #ead8ca;
+  border-radius:9px;
+  padding:14px;
+}
+
+.ai-cal-result-label{
+  color:#666;
+  font-size:13px;
+  margin-bottom:5px;
+}
+
+.ai-cal-result-value{
+  color:#e35707;
+  font-size:20px;
+  font-weight:800;
+}
+
+.ai-cal-unit{
+  display:block;
+  color:#777;
+  font-size:11px;
+  font-weight:400;
+  margin-top:2px;
+}
+
+.ai-cal-note{
+  margin-top:14px;
+  padding:12px;
+  background:#fff;
+  border-radius:8px;
+  color:#555;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.ai-cal-brand{
+  text-align:center;
+  padding:20px 20px;
+  background:#fafafa;
+  border-top:1px solid #eee;
+}
+
+.ai-cal-brand-name{
+  font-size:16px;
+  font-weight:800;
+}
+
+.ai-cal-brand-tag{
+  color:#777;
+  font-size:12px;
+}
+
+.ai-cal-brand-site{
+  color:#666;
+  font-size:12px;
+  margin-top:8px;
+}
+
+.ai-cal-brand-site a{
+  color:#df5708;
+  font-weight:700;
+  text-decoration:none;
+}
+
+@media(max-width:600px){
+
+  .ai-cal-header{
+    flex-direction:column;
+    align-items:stretch;
+    padding:20px 15px;
+  }
+
+  .ai-cal-title{
+    font-size:21px;
+  }
+
+  .ai-cal-languages{
+    justify-content:center;
+  }
+
+  .ai-cal-lang{
+    flex:1;
+  }
+
+  .ai-cal-form{
+    padding:22px 15px;
+  }
+
+  .ai-cal-grid{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+
+  .ai-cal-result{
+    margin-left:15px;
+    margin-right:15px;
+  }
+
+  .ai-cal-result-grid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="ai-calculator" id="aiCal">
+
+  <div class="ai-cal-header">
+
+    <div class="ai-cal-head-left">
+
+      <div class="ai-cal-icon">AI</div>
+
+      <div>
+        <div class="ai-cal-title" id="calTitle">
+          AI Calorie Calculator
+        </div>
+
+        <div class="ai-cal-subtitle" id="calSubtitle">
+          Know your daily calorie needs
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ai-cal-languages">
+
+      <button type="button"
+              class="ai-cal-lang active"
+              data-language="en">
+        EN
+      </button>
+
+      <button type="button"
+              class="ai-cal-lang"
+              data-language="bn"
+              id="bnButton">
+        বাংলা
+      </button>
+
+      <button type="button"
+              class="ai-cal-lang"
+              data-language="hi"
+              id="hiButton">
+        हिंदी
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="ai-cal-disclaimer" id="calDisclaimer">
+    This gives a general estimate using the Mifflin-St Jeor formula.
+    It is not medical advice - consult a doctor or dietitian for a
+    personal plan, especially if you have a health condition.
+  </div>
+
+
+  <div class="ai-cal-form">
+
+    <div class="ai-cal-field">
+
+      <label id="genderLabel">
+        Gender
+      </label>
+
+      <select id="gender">
+
+        <option value="male" id="maleOption">
+          Male
+        </option>
+
+        <option value="female" id="femaleOption">
+          Female
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="ai-cal-grid">
+
+      <div class="ai-cal-field">
+
+        <label id="ageLabel">
+          Age (years)
+        </label>
+
+        <input
+          type="number"
+          id="age"
+          min="1"
+          max="120"
+          placeholder="Example: 28"
+        />
+
+      </div>
+
+
+      <div class="ai-cal-field">
+
+        <label id="weightLabel">
+          Weight (kg)
+        </label>
+
+        <input
+          type="number"
+          id="weight"
+          min="1"
+          max="400"
+          step="0.1"
+          placeholder="Example: 65"
+        />
+
+      </div>
+
+    </div>
+
+
+    <div class="ai-cal-field">
+
+      <label id="heightLabel">
+        Height (cm)
+      </label>
+
+      <input
+        type="number"
+        id="height"
+        min="50"
+        max="272"
+        step="0.1"
+        placeholder="Example: 170"
+      />
+
+    </div>
+
+
+    <div class="ai-cal-field">
+
+      <label id="activityLabel">
+        Activity Level
+      </label>
+
+      <select id="activity">
+
+        <option value="1.2" id="activity1">
+          Sedentary (little exercise)
+        </option>
+
+        <option value="1.375" id="activity2">
+          Light exercise (1-3 days/week)
+        </option>
+
+        <option value="1.55" id="activity3">
+          Moderate exercise (3-5 days/week)
+        </option>
+
+        <option value="1.725" id="activity4">
+          Heavy exercise (6-7 days/week)
+        </option>
+
+        <option value="1.9" id="activity5">
+          Athlete / very active
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="ai-cal-button"
+      id="calculate">
+      Calculate Calories
+    </button>
+
+  </div>
+
+
+  <div class="ai-cal-result" id="result"></div>
+
+
+  <div class="ai-cal-brand">
+
+    <div class="ai-cal-brand-name">
+      HEALTH ASSISTENT AI
+    </div>
+
+    <div class="ai-cal-brand-tag">
+      Your Smart AI Health Companion
+    </div>
+
+    <div class="ai-cal-brand-site">
+
+      Website:
+      <a href="https://www.healthassistentai.com"
+         target="_blank"
+         rel="noopener">
+        healthassistentai.com
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+(function(){
+
+"use strict";
+
+
+/*
+=========================================================
+IMPORTANT
+
+Bengali and Hindi text are stored with JavaScript Unicode
+escape codes. This prevents Blogger from converting the
+characters into broken HTML entities.
+=========================================================
+*/
+
+
+var LANG = {
+
+  en: {
+
+    button: "EN",
+
+    title: "AI Calorie Calculator",
+
+    subtitle: "Know your daily calorie needs",
+
+    disclaimer:
+    "This gives a general estimate using the Mifflin-St Jeor formula. It is not medical advice - consult a doctor or dietitian for a personal plan, especially if you have a health condition.",
+
+    gender: "Gender",
+    male: "Male",
+    female: "Female",
+
+    age: "Age (years)",
+    agePh: "Example: 28",
+
+    weight: "Weight (kg)",
+    weightPh: "Example: 65",
+
+    height: "Height (cm)",
+    heightPh: "Example: 170",
+
+    activity: "Activity Level",
+
+    a1: "Sedentary (little exercise)",
+    a2: "Light exercise (1-3 days/week)",
+    a3: "Moderate exercise (3-5 days/week)",
+    a4: "Heavy exercise (6-7 days/week)",
+    a5: "Athlete / very active",
+
+    calculate: "Calculate Calories",
+
+    result: "Your Daily Calorie Estimate",
+
+    bmr: "Basal Metabolic Rate (BMR)",
+    maintenance: "Maintenance Calories",
+    loss: "Weight Loss Calories",
+    gain: "Weight Gain Calories",
+
+    unit: "kcal/day",
+
+    note:
+    "These are general estimates, not medical advice. Individual calorie needs can vary. Consult a qualified doctor or dietitian for a personalized plan.",
+
+    errorAge: "Please enter a valid age.",
+    errorWeight: "Please enter a valid weight.",
+    errorHeight: "Please enter a valid height."
+
+  },
+
+
+  bn: {
+
+    button:
+    "\u09ac\u09be\u0982\u09b2\u09be",
+
+    title:
+    "\u098f\u0986\u0987 \u0995\u09cd\u09af\u09be\u09b2\u09cb\u09b0\u09bf \u0995\u09cd\u09af\u09be\u09b2\u0995\u09c1\u09b2\u09c7\u099f\u09b0",
+
+    subtitle:
+    "\u0986\u09aa\u09a8\u09be\u09b0 \u09a6\u09c8\u09a8\u09bf\u0995 \u0995\u09cd\u09af\u09be\u09b2\u09cb\u09b0\u09bf\u09b0 \u09aa\u09cd\u09b0\u09af\u09bc\u09cb\u099c\u09a8 \u099c\u09be\u09a8\u09c1\u09a8",
+
+    disclaimer:
+    "\u098f\u099f\u09bf Mifflin-St Jeor \u09b8\u09c2\u09a4\u09cd\u09b0\u09c7\u09b0 \u09ad\u09bf\u09a4\u09cd\u09a4\u09bf\u09a4\u09c7 \u098f\u0995\u099f\u09bf \u09b8\u09be\u09a7\u09be\u09b0\u09a3 \u0985\u09a8\u09c1\u09ae\u09be\u09a8\u0964 \u098f\u099f\u09bf \u099a\u09bf\u0995\u09bf\u09ce\u09b8\u09be\u09b0 \u09aa\u09b0\u09be\u09ae\u09b0\u09cd\u09b6 \u09a8\u09af\u09bc\u0964 \u09ac\u09cd\u09af\u0995\u09cd\u09a4\u09bf\u0997\u09a4 \u09aa\u09b0\u09bf\u0995\u09b2\u09cd\u09aa\u09a8\u09be\u09b0 \u099c\u09a8\u09cd\u09af \u09a1\u09be\u0995\u09cd\u09a4\u09be\u09b0 \u09ac\u09be \u09a1\u09be\u09af\u09bc\u09c7\u099f\u09bf\u09b6\u09bf\u09af\u09bc\u09be\u09a8\u09c7\u09b0 \u09aa\u09b0\u09be\u09ae\u09b0\u09cd\u09b6 \u09a8\u09bf\u09a8\u0964",
+
+    gender:
+    "\u09b2\u09bf\u0999\u09cd\u0997",
+
+    male:
+    "\u09aa\u09c1\u09b0\u09c1\u09b7",
+
+    female:
+    "\u09ae\u09b9\u09bf\u09b2\u09be",
+
+    age:
+    "\u09ac\u09af\u09bc\u09b8 (\u09ac\u099b\u09b0)",
+
+    agePh:
+    "\u0989\u09a6\u09be\u09b9\u09b0\u09a3: 28",
+
+    weight:
+    "\u0993\u099c\u09a8 (\u0995\u09c7\u099c\u09bf)",
+
+    weightPh:
+    "\u0989\u09a6\u09be\u09b9\u09b0\u09a3: 65",
+
+    height:
+    "\u0989\u099a\u09cd\u099a\u09a4\u09be (\u09b8\u09c7\u09ae\u09bf)",
+
+    heightPh:
+    "\u0989\u09a6\u09be\u09b9\u09b0\u09a3: 170",
+
+    activity:
+    "\u09b6\u09be\u09b0\u09c0\u09b0\u09bf\u0995 \u09b8\u0995\u09cd\u09b0\u09bf\u09af\u09bc\u09a4\u09be\u09b0 \u09ae\u09be\u09a4\u09cd\u09b0\u09be",
+
+    a1:
+    "\u0995\u09ae \u09b8\u0995\u09cd\u09b0\u09bf\u09af\u09bc",
+
+    a2:
+    "\u09b9\u09be\u09b2\u0995\u09be \u09ac\u09cd\u09af\u09be\u09af\u09bc\u09be\u09ae (1-3 \u09a6\u09bf\u09a8/\u09b8\u09aa\u09cd\u09a4\u09be\u09b9)",
+
+    a3:
+    "\u09ae\u09be\u099d\u09be\u09b0\u09bf \u09ac\u09cd\u09af\u09be\u09af\u09bc\u09be\u09ae (3-5 \u09a6\u09bf\u09a8/\u09b8\u09aa\u09cd\u09a4\u09be\u09b9)",
+
+    a4:
+    "\u09ac\u09c7\u09b6\u09bf \u09ac\u09cd\u09af\u09be\u09af\u09bc\u09be\u09ae (6-7 \u09a6\u09bf\u09a8/\u09b8\u09aa\u09cd\u09a4\u09be\u09b9)",
+
+    a5:
+    "\u0985\u09a5\u09cd\u09b2\u09c7\u099f / \u0985\u09a4\u09cd\u09af\u09a8\u09cd\u09a4 \u09b8\u0995\u09cd\u09b0\u09bf\u09af\u09bc",
+
+    calculate:
+    "\u0995\u09cd\u09af\u09be\u09b2\u09cb\u09b0\u09bf \u09b9\u09bf\u09b8\u09be\u09ac \u0995\u09b0\u09c1\u09a8",
+
+    result:
+    "\u0986\u09aa\u09a8\u09be\u09b0 \u09a6\u09c8\u09a8\u09bf\u0995 \u0995\u09cd\u09af\u09be\u09b2\u09cb\u09b0\u09bf\u09b0 \u0985\u09a8\u09c1\u09ae\u09be\u09a8",
+
+    bmr:
+    "\u09ac\u09c7\u09b8\u09be\u09b2 \u09ae\u09c7\u099f\u09be\u09ac\u09b2\u09bf\u0995 \u09b0\u09c7\u099f (BMR)",
+
+    maintenance:
+    "\u0993\u099c\u09a8 \u09ac\u099c\u09be\u09af\u09bc \u09b0\u09be\u0996\u09be\u09b0 \u0995\u09cd\u09af\u09be\u09b2\u09cb\u09b0\u09bf",
+
+    loss:
+    "\u0993\u099c\u09a8 \u0995\u09ae\u09be\u09a8\u09cb\u09b0 \u0995\u09cd\u09af\u09be\u09b2\u09cb\u09b0\u09bf",
+
+    gain:
+    "\u0993\u099c\u09a8 \u09ac\u09be\u09a1\u09bc\u09be\u09a8\u09cb\u09b0 \u0995\u09cd\u09af\u09be\u09b2\u09cb\u09b0\u09bf",
+
+    unit:
+    "\u0995\u09bf\u09b2\u09cb\u0995\u09cd\u09af\u09be\u09b2\u09b0\u09bf/\u09a6\u09bf\u09a8",
+
+    note:
+    "\u098f\u0997\u09c1\u09b2\u09bf \u09b8\u09be\u09a7\u09be\u09b0\u09a3 \u0985\u09a8\u09c1\u09ae\u09be\u09a8\u0964 \u09ac\u09cd\u09af\u0995\u09cd\u09a4\u09bf\u09ad\u09c7\u09a6\u09c7 \u0995\u09cd\u09af\u09be\u09b2\u09cb\u09b0\u09bf\u09b0 \u09aa\u09cd\u09b0\u09af\u09bc\u09cb\u099c\u09a8 \u09ad\u09bf\u09a8\u09cd\u09a8 \u09b9\u09a4\u09c7 \u09aa\u09be\u09b0\u09c7\u0964",
+
+    errorAge:
+    "\u09b8\u09a0\u09bf\u0995 \u09ac\u09af\u09bc\u09b8 \u09b2\u09bf\u0996\u09c1\u09a8\u0964",
+
+    errorWeight:
+    "\u09b8\u09a0\u09bf\u0995 \u0993\u099c\u09a8 \u09b2\u09bf\u0996\u09c1\u09a8\u0964",
+
+    errorHeight:
+    "\u09b8\u09a0\u09bf\u0995 \u0989\u099a\u09cd\u099a\u09a4\u09be \u09b2\u09bf\u0996\u09c1\u09a8\u0964"
+
+  },
+
+
+  hi: {
+
+    button:
+    "\u0939\u093f\u0902\u0926\u0940",
+
+    title:
+    "\u090f\u0906\u0908 \u0915\u0948\u0932\u094b\u0930\u0940 \u0915\u0948\u0932\u0915\u0941\u0932\u0947\u091f\u0930",
+
+    subtitle:
+    "\u0905\u092a\u0928\u0940 \u0926\u0948\u0928\u093f\u0915 \u0915\u0948\u0932\u094b\u0930\u0940 \u0915\u0940 \u091c\u0930\u0942\u0930\u0924 \u091c\u093e\u0928\u0947\u0902",
+
+    disclaimer:
+    "\u092f\u0939 Mifflin-St Jeor \u0938\u0942\u0924\u094d\u0930 \u0915\u0947 \u0906\u0927\u093e\u0930 \u092a\u0930 \u090f\u0915 \u0938\u093e\u092e\u093e\u0928\u094d\u092f \u0905\u0928\u0941\u092e\u093e\u0928 \u0939\u0948\u0964 \u092f\u0939 \u091a\u093f\u0915\u093f\u0924\u094d\u0938\u093e \u0938\u0932\u093e\u0939 \u0928\u0939\u0940\u0902 \u0939\u0948\u0964 \u0935\u094d\u092f\u0915\u094d\u0924\u093f\u0917\u0924 \u092f\u094b\u091c\u0928\u093e \u0915\u0947 \u0932\u093f\u090f \u0921\u0949\u0915\u094d\u091f\u0930 \u092f\u093e \u0921\u093e\u092f\u091f\u0940\u0936\u093f\u092f\u0928 \u0938\u0947 \u0938\u0932\u093e\u0939 \u0932\u0947\u0902\u0964",
+
+    gender:
+    "\u0932\u093f\u0902\u0917",
+
+    male:
+    "\u092a\u0941\u0930\u0941\u0937",
+
+    female:
+    "\u092e\u0939\u093f\u0932\u093e",
+
+    age:
+    "\u0909\u092e\u094d\u0930 (\u0935\u0930\u094d\u0937)",
+
+    agePh:
+    "\u0909\u0926\u093e\u0939\u0930\u0923: 28",
+
+    weight:
+    "\u0935\u091c\u0928 (\u0915\u093f\u0932\u094b)",
+
+    weightPh:
+    "\u0909\u0926\u093e\u0939\u0930\u0923: 65",
+
+    height:
+    "\u0915\u0926 (\u0938\u0947\u092e\u0940)",
+
+    heightPh:
+    "\u0909\u0926\u093e\u0939\u0930\u0923: 170",
+
+    activity:
+    "\u0936\u093e\u0930\u0940\u0930\u093f\u0915 \u0917\u0924\u093f\u0935\u093f\u0927\u093f \u0915\u093e \u0938\u094d\u0924\u0930",
+
+    a1:
+    "\u0915\u092e \u0938\u0915\u094d\u0930\u093f\u092f",
+
+    a2:
+    "\u0939\u0932\u094d\u0915\u093e \u0935\u094d\u092f\u093e\u092f\u093e\u092e (1-3 \u0926\u093f\u0928/\u0938\u092a\u094d\u0924\u093e\u0939)",
+
+    a3:
+    "\u092e\u0927\u094d\u092f\u092e \u0935\u094d\u092f\u093e\u092f\u093e\u092e (3-5 \u0926\u093f\u0928/\u0938\u092a\u094d\u0924\u093e\u0939)",
+
+    a4:
+    "\u0905\u0927\u093f\u0915 \u0935\u094d\u092f\u093e\u092f\u093e\u092e (6-7 \u0926\u093f\u0928/\u0938\u092a\u094d\u0924\u093e\u0939)",
+
+    a5:
+    "\u090f\u0925\u0932\u0940\u091f / \u092c\u0939\u0941\u0924 \u0938\u0915\u094d\u0930\u093f\u092f",
+
+    calculate:
+    "\u0915\u0948\u0932\u094b\u0930\u0940 \u0915\u0940 \u0917\u0923\u0928\u093e \u0915\u0930\u0947\u0902",
+
+    result:
+    "\u0906\u092a\u0915\u0940 \u0926\u0948\u0928\u093f\u0915 \u0915\u0948\u0932\u094b\u0930\u0940 \u0915\u093e \u0905\u0928\u0941\u092e\u093e\u0928",
+
+    bmr:
+    "\u092c\u0947\u0938\u0932 \u092e\u0947\u091f\u093e\u092c\u094b\u0932\u093f\u0915 \u0930\u0947\u091f (BMR)",
+
+    maintenance:
+    "\u0935\u091c\u0928 \u092c\u0930\u0915\u0930\u093e\u0930 \u0930\u0916\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0915\u0948\u0932\u094b\u0930\u0940",
+
+    loss:
+    "\u0935\u091c\u0928 \u0915\u092e \u0915\u0930\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0915\u0948\u0932\u094b\u0930\u0940",
+
+    gain:
+    "\u0935\u091c\u0928 \u092c\u0922\u093c\u093e\u0928\u0947 \u0915\u0947 \u0932\u093f\u090f \u0915\u0948\u0932\u094b\u0930\u0940",
+
+    unit:
+    "\u0915\u093f\u0932\u094b\u0915\u0948\u0932\u094b\u0930\u0940/\u0926\u093f\u0928",
+
+    note:
+    "\u092f\u0947 \u0938\u093e\u092e\u093e\u0928\u094d\u092f \u0905\u0928\u0941\u092e\u093e\u0928 \u0939\u0948\u0902\u0964 \u0935\u094d\u092f\u0915\u094d\u0924\u093f \u0915\u0947 \u0905\u0928\u0941\u0938\u093e\u0930 \u0915\u0948\u0932\u094b\u0930\u0940 \u0915\u0940 \u091c\u0930\u0942\u0930\u0924 \u0905\u0932\u0917 \u0939\u094b \u0938\u0915\u0924\u0940 \u0939\u0948\u0964",
+
+    errorAge:
+    "\u0915\u0943\u092a\u092f\u093e \u0938\u0939\u0940 \u0909\u092e\u094d\u0930 \u0926\u0930\u094d\u091c \u0915\u0930\u0947\u0902\u0964",
+
+    errorWeight:
+    "\u0915\u0943\u092a\u092f\u093e \u0938\u0939\u0940 \u0935\u091c\u0928 \u0926\u0930\u094d\u091c \u0915\u0930\u0947\u0902\u0964",
+
+    errorHeight:
+    "\u0915\u0943\u092a\u092f\u093e \u0938\u0939\u0940 \u0915\u0926 \u0926\u0930\u094d\u091c \u0915\u0930\u0947\u0902\u0964"
+
+  }
+
+};
+
+
+var currentLang = "en";
+
+
+function $(id){
+  return document.getElementById(id);
+}
+
+
+/* Fix language button text using Unicode */
+
+$("bnButton").textContent = LANG.bn.button;
+$("hiButton").textContent = LANG.hi.button;
+
+
+function setLanguage(lang){
+
+  if(!LANG[lang]){
+    lang = "en";
+  }
+
+  currentLang = lang;
+
+  var t = LANG[lang];
+
+  $("calTitle").textContent = t.title;
+  $("calSubtitle").textContent = t.subtitle;
+  $("calDisclaimer").textContent = t.disclaimer;
+
+  $("genderLabel").textContent = t.gender;
+  $("maleOption").textContent = t.male;
+  $("femaleOption").textContent = t.female;
+
+  $("ageLabel").textContent = t.age;
+  $("age").placeholder = t.agePh;
+
+  $("weightLabel").textContent = t.weight;
+  $("weight").placeholder = t.weightPh;
+
+  $("heightLabel").textContent = t.height;
+  $("height").placeholder = t.heightPh;
+
+  $("activityLabel").textContent = t.activity;
+
+  $("activity1").textContent = t.a1;
+  $("activity2").textContent = t.a2;
+  $("activity3").textContent = t.a3;
+  $("activity4").textContent = t.a4;
+  $("activity5").textContent = t.a5;
+
+  $("calculate").textContent = t.calculate;
+
+
+  var buttons =
+    document.querySelectorAll(
+      "#aiCal .ai-cal-lang"
+    );
+
+  for(var i=0;i<buttons.length;i++){
+
+    if(
+      buttons[i].getAttribute("data-language") === lang
+    ){
+      buttons[i].classList.add("active");
+    }else{
+      buttons[i].classList.remove("active");
+    }
+
+  }
+
+
+  if($("result").style.display === "block"){
+    calculateCalories(false);
+  }
+
+}
+
+
+function calculateCalories(scrollToResult){
+
+  var t = LANG[currentLang];
+
+  var gender = $("gender").value;
+
+  var age = parseFloat($("age").value);
+
+  var weight = parseFloat($("weight").value);
+
+  var height = parseFloat($("height").value);
+
+  var activity = parseFloat($("activity").value);
+
+
+  if(!isFinite(age) || age < 1 || age > 120){
+    alert(t.errorAge);
+    return;
+  }
+
+  if(!isFinite(weight) || weight <= 0 || weight > 400){
+    alert(t.errorWeight);
+    return;
+  }
+
+  if(!isFinite(height) || height < 50 || height > 272){
+    alert(t.errorHeight);
+    return;
+  }
+
+
+  var bmr;
+
+
+  if(gender === "male"){
+
+    bmr =
+      (10 * weight) +
+      (6.25 * height) -
+      (5 * age) +
+      5;
+
+  }else{
+
+    bmr =
+      (10 * weight) +
+      (6.25 * height) -
+      (5 * age) -
+      161;
+
+  }
+
+
+  var maintenance =
+    bmr * activity;
+
+
+  var weightLoss =
+    Math.max(maintenance - 500,0);
+
+
+  var weightGain =
+    maintenance + 300;
+
+
+  function fmt(number){
+
+    return Math.round(number)
+      .toLocaleString("en-US");
+
+  }
+
+
+  $("result").innerHTML =
+
+    "<h2>" +
+    t.result +
+    "</h2>" +
+
+    '<div class="ai-cal-result-grid">' +
+
+      '<div class="ai-cal-result-box">' +
+        '<div class="ai-cal-result-label">' +
+          t.bmr +
+        '</div>' +
+        '<div class="ai-cal-result-value">' +
+          fmt(bmr) +
+          '<span class="ai-cal-unit">' +
+            t.unit +
+          '</span>' +
+        '</div>' +
+      '</div>' +
+
+
+      '<div class="ai-cal-result-box">' +
+        '<div class="ai-cal-result-label">' +
+          t.maintenance +
+        '</div>' +
+        '<div class="ai-cal-result-value">' +
+          fmt(maintenance) +
+          '<span class="ai-cal-unit">' +
+            t.unit +
+          '</span>' +
+        '</div>' +
+      '</div>' +
+
+
+      '<div class="ai-cal-result-box">' +
+        '<div class="ai-cal-result-label">' +
+          t.loss +
+        '</div>' +
+        '<div class="ai-cal-result-value">' +
+          fmt(weightLoss) +
+          '<span class="ai-cal-unit">' +
+            t.unit +
+          '</span>' +
+        '</div>' +
+      '</div>' +
+
+
+      '<div class="ai-cal-result-box">' +
+        '<div class="ai-cal-result-label">' +
+          t.gain +
+        '</div>' +
+        '<div class="ai-cal-result-value">' +
+          fmt(weightGain) +
+          '<span class="ai-cal-unit">' +
+            t.unit +
+          '</span>' +
+        '</div>' +
+      '</div>' +
+
+    '</div>' +
+
+    '<div class="ai-cal-note">' +
+      t.note +
+    '</div>';
+
+
+  $("result").style.display = "block";
+
+
+  if(scrollToResult){
+
+    $("result").scrollIntoView({
+      behavior:"smooth",
+      block:"nearest"
+    });
+
+  }
+
+}
+
+
+/* Language buttons */
+
+var languageButtons =
+  document.querySelectorAll(
+    "#aiCal .ai-cal-lang"
+  );
+
+
+for(var i=0;i<languageButtons.length;i++){
+
+  languageButtons[i].addEventListener(
+    "click",
+    function(){
+
+      setLanguage(
+        this.getAttribute("data-language")
+      );
+
+    }
+  );
+
+}
+
+
+/* Calculate button */
+
+$("calculate").addEventListener(
+  "click",
+  function(){
+    calculateCalories(true);
+  }
+);
+
+
+/* Enter key */
+
+$("age").addEventListener(
+  "keydown",
+  function(e){
+    if(e.key === "Enter"){
+      calculateCalories(true);
+    }
+  }
+);
+
+$("weight").addEventListener(
+  "keydown",
+  function(e){
+    if(e.key === "Enter"){
+      calculateCalories(true);
+    }
+  }
+);
+
+$("height").addEventListener(
+  "keydown",
+  function(e){
+    if(e.key === "Enter"){
+      calculateCalories(true);
+    }
+  }
+);
+
+
+/* English is always the default */
+
+setLanguage("en");
+
+
+})();
+</script>
+</body>
+</html>
