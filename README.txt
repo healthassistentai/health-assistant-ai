@@ -1,56 +1,66 @@
-AMP WEB STORY — UPLOAD INSTRUCTIONS
-=====================================
+AMP WEB STORY — PACKAGE README
+================================
 
-Story Title: How to Live a Healthy Life: Complete Beginner's Guide
-Slug: healthy-lifestyle-tips
+Title:
+Different Fruits and Their Nutritional Benefits for Better Health: A Complete Guide to Vitamins, Minerals, and Wellness
+
+Slug:
+different-fruits-and-their-nutritional-benefits
 
 Canonical URL:
-https://www.healthassistentai.com/2026/06/healthy-lifestyle-tips.html
+https://www.healthassistentai.com/2026/06/different-fruits-and-their-nutritional-benefits.html
 
 Blog Post URL:
-https://www.healthassistentai.com/2026/06/healthy-lifestyle-tips.html
+https://www.healthassistentai.com/2026/06/different-fruits-and-their-nutritional-benefits.html
 
 GitHub File URL (view code only):
-https://github.com/healthassistentai/health-assistant-ai/blob/main/healthy-lifestyle-tips.html
+https://github.com/healthassistentai/health-assistant-ai/blob/main/different-fruits-and-their-nutritional-benefits.html
 
-Live Story URL (the real published link):
-https://healthassistentai.github.io/health-assistant-ai/healthy-lifestyle-tips.html
+Live Story URL (real published link):
+https://healthassistentai.github.io/health-assistant-ai/different-fruits-and-their-nutritional-benefits.html
 
-Number of Slides: 6
+Number of Slides:
+6
 
 UPLOAD INSTRUCTIONS
 --------------------
-1. Upload the WHOLE "healthy-lifestyle-tips" folder (this folder) to the
-   repository root, alongside the other story folders. Do not rename it.
-2. Upload "healthy-lifestyle-tips.html" to the REPOSITORY ROOT — the same
-   level as this folder, NOT inside it.
-3. Do not rename any files inside this folder (poster.jpg,
-   publisher-logo.jpg, slide-1.jpg ... slide-6.jpg).
-4. Do not overwrite any other story's folder or HTML file.
-5. Push to the "main" branch of:
+1. Upload the ENTIRE "different-fruits-and-their-nutritional-benefits" folder
+   (containing poster.jpg, publisher-logo.jpg, slide-1.jpg ... slide-6.jpg)
+   to the ROOT of the "main" branch of:
    https://github.com/healthassistentai/health-assistant-ai
-6. After a minute or two, confirm the story is live at:
-   https://healthassistentai.github.io/health-assistant-ai/healthy-lifestyle-tips.html
 
-VALIDATION NOTE
-----------------
-No live AMP validator was available in this environment — only a structural
-check was performed (file existence, unique page IDs, slide count = page
-count, correct image dimensions, no JS/onclick, correct URL placement).
-Please verify at https://validator.ampproject.org/ before publishing.
+2. Upload "different-fruits-and-their-nutritional-benefits.html" to the ROOT
+   of the same repository — NOT inside the folder above.
 
-ASSET NOTES
-------------
-- Slide 2 (Regular Physical Activity) and Slide 4 (Adequate Sleep) title
-  cards were extracted from your combined collage image; their photos were
-  reused from your other Canva exports (jogging photo from the Diet slide,
-  and your standalone sleeping/water-glass photo) since no dedicated photo
-  for those two steps was provided.
-- All source Canva exports were low-resolution (roughly 100–300px wide), so
-  titles/subtitles were rebuilt as sharp live text instead of upscaling
-  blurry baked-in text. Photos were placed at a moderate size on a soft
-  gradient background rather than being stretched full-bleed, to avoid
-  visible blur.
-- publisher-logo.jpg was built from your uploaded HEALTHAI_30880_.webp file
-  (the fixed blogger.googleusercontent.com URL returned HTTP 403 and could
-  not be fetched).
+3. Do NOT rename any file or folder. Do NOT nest the folder inside another
+   folder of the same name. Do NOT overwrite any other story's files.
+
+4. After GitHub Pages rebuilds (usually within a minute or two), confirm the
+   story loads at the Live Story URL above.
+
+5. Before publishing / submitting to Search Console, run the page through
+   https://validator.ampproject.org to confirm it passes live AMP validation
+   (see validation note below).
+
+NOTES
+-----
+- Publisher logo: The fixed logo source URL provided in the brief
+  (blogger.googleusercontent.com) could not be fetched from this environment
+  (network access to that domain is not available here, and the image
+  couldn't be retrieved as binary via the fetch tool available). Per the
+  "never fake a logo" rule, publisher-logo.jpg was instead built from the
+  HEALTH AI icon mark cropped out of the logo file you uploaded
+  (HEALTHAI_30880_.webp), padded to a 1:1 square and upscaled to 320x320px
+  (meets the >=96x96, 1:1 AMP requirement). Please double check it matches
+  your brand logo before publishing, or swap in an official square icon.
+
+- poster.jpg was built from slide 1 (720x960px, 3:4 ratio, meets the
+  >=640x853px minimum) with padding added top/bottom so no text was cropped.
+  Note: official AMP guidance recommends the poster NOT have story text
+  burned into it — this brief's rule 7 asked for it to be built from slide 1
+  regardless, so text is present. Consider a text-free cover image later if
+  you want to fully match platform recommendations.
+
+- All 6 slide images were resized to 720x1280 (9:16) using letterboxing
+  (padded top/bottom with a color sampled from each image's own background)
+  so no text was cropped or distorted.
