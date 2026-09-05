@@ -1,46 +1,62 @@
-Story Title: Protect Your Family from Malnutrition During Disasters
-Slug: malnutrition-protection-during-natural-disasters
-Mode: Static Story
+HEALTH ASSISTANT AI — AMP Web Story
+=====================================
 
-Canonical URL: https://www.healthassistentai.com/2026/09/malnutrition-protection-during-natural-disasters.html
-Blog Post URL: https://www.healthassistentai.com/2026/09/malnutrition-protection-during-natural-disasters.html
-GitHub File URL: https://github.com/healthassistentai/health-assistant-ai/blob/main/malnutrition-protection-during-natural-disasters/malnutrition-protection-during-natural-disasters.html
-Live Story URL: https://healthassistentai.github.io/health-assistant-ai/malnutrition-protection-during-natural-disasters/malnutrition-protection-during-natural-disasters.html
+Title: HEALTH ASSISTENT AI – AI Health Assistant, BMI Calculator, BP Tracker, Sugar Tracker & Health Tips
+Slug: ai-health-assistant-bmi-bp-sugar-tracker
+Mode: Animated Story
 
-Number of Slides: 6
-Source: slides were cropped from the single 6-panel collage image (all_photo.png)
-supplied by the user, then letterboxed onto a 720x1280 (9:16) canvas with no
-cropping of text/content and no distortion.
+Canonical URL:
+https://www.healthassistentai.com/2026/06/ai-health-assistant-bmi-bp-sugar-tracker.html
+
+Blog Post URL (same as canonical):
+https://www.healthassistentai.com/2026/06/ai-health-assistant-bmi-bp-sugar-tracker.html
+
+GitHub File URL (view code only):
+https://github.com/healthassistentai/health-assistant-ai/blob/main/ai-health-assistant-bmi-bp-sugar-tracker/ai-health-assistant-bmi-bp-sugar-tracker.html
+
+Live Story URL (real published link):
+https://healthassistentai.github.io/health-assistant-ai/ai-health-assistant-bmi-bp-sugar-tracker/ai-health-assistant-bmi-bp-sugar-tracker.html
+
+Number of Slides: 24
+(Adapted from the default 6-page arc. You supplied 6 full sub-topics —
+AI Health Assistant, BMI, Blood Pressure, Blood Sugar, Wellness Tips, and
+Lifestyle & Nutrition — each with its own heading, stat, symptoms, causes,
+prevention tips, and CTA. Cramming all of that onto one page per topic would
+be unreadable on a phone, so each topic was split into its own 4-page
+mini-arc: Stat → Symptoms → Causes → Prevention/CTA, for 6 × 4 = 24 pages
+total. The publisher logo only appears twice as an animated element — on
+page 1 (opening) and the final page (closing) — as a bookend, matching the
+original template's intent.)
 
 Files in this folder:
-- malnutrition-protection-during-natural-disasters.html  (the AMP story page)
-- poster.jpg            (720x960, 3:4 poster, required by AMP)
-- publisher-logo.jpg    (300x300 square logo, required by AMP)
-- slide-1.jpg ... slide-6.jpg  (the 6 story slides, in order)
-- README.txt            (this file)
+- ai-health-assistant-bmi-bp-sugar-tracker.html  (the AMP story)
+- bg-1.jpg ... bg-6.jpg   (background images, one per topic, reused across
+  that topic's 4 pages)
+- poster.jpg              (3:4 cover, 720x960, cropped from bg-1)
+- publisher-logo.jpg       (300x300 square logo)
+- README.txt               (this file)
 
 Upload instructions:
-1. Upload this ENTIRE folder ("malnutrition-protection-during-natural-disasters/")
-   as one unit into the health-assistant-ai GitHub repo (branch: main), at the
-   repo root, so the final path is:
-   health-assistant-ai/malnutrition-protection-during-natural-disasters/malnutrition-protection-during-natural-disasters.html
-2. Do not rename any files inside this folder.
-3. Do not place these files inside any other story's folder, and do not create
-   a nested duplicate folder (e.g. avoid .../malnutrition-protection-during-natural-disasters/malnutrition-protection-during-natural-disasters/).
-4. Do not overwrite any other story folder already in the repo.
-5. After upload, verify the Live Story URL above loads correctly, then run it
-   through https://validator.ampproject.org before public promotion.
+- Upload this ENTIRE folder ("ai-health-assistant-bmi-bp-sugar-tracker/") as
+  one unit to the repo root (branch: main).
+- Do not rename any file inside it.
+- Do not overwrite or merge with other story folders already in the repo.
 
-Validation note: No live AMP validator was run in this environment. A structural
-self-check was performed (see below) but this is not a substitute for the
-official validator.
+Validation status:
+No live AMP validator was run in this environment. A structural
+self-check was done (unique page IDs, all animate-in-after references
+resolve to real elements, all asset paths are flat filenames in the same
+folder, image dimensions correct). Please verify at
+https://validator.ampproject.org before publishing.
 
-Self-check performed before packaging:
-- All referenced files (6 slides, poster.jpg, publisher-logo.jpg) exist in this
-  folder and are referenced with flat filenames only (no folder prefixes).
-- Slide count (6) matches page count (6, page-1 through page-6).
-- No duplicate amp-story-page ids.
-- No duplicate filenames.
-- Static Mode has no animate-in-after chains, so there is nothing to validate there.
-- Canonical URL, Blog Post URL, GitHub File URL, and Live Story URL were each
-  checked character-by-character against the actual slug/file path.
+Notes on source images:
+The 6 background images were cropped from a single collage you supplied.
+Each original panel had a "HEALTH AI" logo watermark baked into the top-left
+corner — per your instruction, that watermark strip was cropped off and the
+image was re-composed to fill the 720x1280 frame (sharp foreground content,
+centered, with a blurred/extended version of the same image filling the
+letterbox area — no stretching/distortion of the real content). Some
+decorative icon graphics that were part of the original artwork itself
+(e.g., the body/stat icon ring on the AI Assistant image, the wellness icon
+row on the Wellness image) were left in place, since you only asked for the
+logo strip to be removed.
