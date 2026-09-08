@@ -1,51 +1,67 @@
-AMP Web Story — README
-=======================
+AMP WEB STORY — README
+======================
 
-Title:            Daily Scientific Hygiene Habits: Complete Guide
-Slug:              daily-scientific-hygiene-habits
-Mode:              Animated Story
-Canonical URL:     https://www.healthassistentai.com/2026/08/daily-scientific-hygiene-habits.html
-Blog Post URL:     https://www.healthassistentai.com/2026/08/daily-scientific-hygiene-habits.html
-GitHub File URL:   https://github.com/healthassistentai/healthassistant-ai/blob/main/daily-scientific-hygiene-habits/daily-scientific-hygiene-habits.html
-Live Story URL:    https://healthassistentai.github.io/healthassistant-ai/daily-scientific-hygiene-habits/daily-scientific-hygiene-habits.html
-Number of Slides:  6 (one habit per page: Handwashing, Brushing, Nail Cleaning, Face Washing, Hair Washing, Flossing)
+Story Title : Report Analysis: The Ultimate Guide to Understanding Business
+              Reports and Making Better Decisions
+Slug        : report-analysis-guide
+Mode        : Animated Story (real HTML text/icons animate in per element)
 
-STRUCTURE NOTE
---------------
-The default 6-page arc (Opening / Problem / Symptoms / Causes / Prevention / Conclusion)
-is meant for a SINGLE topic spread across 6 pages. Your input instead gave 6 separate
-full habits, each with its own heading, stat, symptoms, causes, tips, and CTA line — and
-you supplied exactly 6 background images (one per habit). So this build adapts the arc
-to: 1 page per habit, with every element (heading, stat, "Watch for" / "Why it happens" /
-"Do this" bullet groups, tagline, and a "Read Full Guide" button) animating in on its own
-within that single page. Page count stayed at 6, matching your image count.
+Canonical URL   : https://www.healthassistentai.com/2026/06/report-analysis-guide.html
+Blog Post URL   : https://www.healthassistentai.com/2026/06/report-analysis-guide.html
+GitHub File URL : https://github.com/healthassistentai/healthassistant-ai/blob/main/report-analysis-guide/report-analysis-guide.html
+Live Story URL  : https://healthassistentai.github.io/healthassistant-ai/report-analysis-guide/report-analysis-guide.html
 
-FILES IN THIS FOLDER
----------------------
-daily-scientific-hygiene-habits.html   – the AMP story itself
-poster.jpg                              – 720x960 (3:4) poster, required by AMP
-publisher-logo.jpg                      – 300x300 square version of your logo (AMP requires
-                                           a square publisher logo; your source file is a
-                                           wide banner, so it's centered on a white square)
-logo-banner.png                         – the full wide logo banner, used inside the story
-                                           on page 1 and page 6 (large) and small on pages 2-5
-bg-1.jpg … bg-6.jpg                      – background images, 720x1280, one per page
+Number of Slides : 6
+  Page 1 — Understanding Business Reports
+  Page 2 — Analyze Reports Smarter with AI
+  Page 3 — Discover Hidden Insights in Your Data
+  Page 4 — Measure Business Performance
+  Page 5 — Protect Your Business Data
+  Page 6 — Make Better Decisions With Better Analysis
 
-IMPORTANT ABOUT THE BACKGROUND PHOTOS
---------------------------------------
-Your 6 uploaded photos all had a "HEALTH AI" logo (and a small "Grok" AI-generation
-watermark) baked into the bottom ~20% of each image. Animated Story Mode requires
-backgrounds to be completely text/logo-free so the logo can animate as its own separate
-HTML element instead. I removed that baked-in band from every photo and filled the gap
-with a softly blurred, darkened extension of the same photo (a letterbox-style pad) so
-no content was stretched, distorted, or cropped from the sides. The real logo (from your
-attached logo file) is layered back in as its own animated HTML element on top.
+Each page contains (per your instruction, "1 page per topic"):
+  heading -> statistic -> Symptoms (4 pts) -> Causes (4 pts) ->
+  Prevention Tips (4 pts) -> CTA button, all animating in sequence
+  (fade-in / fly-in-bottom, chained with animate-in-after).
+
+FILES IN THIS FOLDER (upload the whole folder as one unit — do not
+rename anything, do not overwrite other stories):
+  report-analysis-guide.html   — the AMP story
+  README.txt                   — this file
+  poster.jpg                   — 720x960 (3:4) poster, from page 1 art
+  publisher-logo.jpg           — 300x300 square logo (Health AI icon)
+  bg-1.jpg ... bg-6.jpg        — 720x1280 (9:16) background images, one per page
 
 UPLOAD INSTRUCTIONS
---------------------
-1. Upload this ENTIRE "daily-scientific-hygiene-habits" folder as one unit to the repo
-   root (healthassistentai/healthassistant-ai, branch main). Do not rename any file.
-2. Do not overwrite or merge this folder with any other story's folder.
-3. Confirm the Live Story URL above resolves once GitHub Pages rebuilds.
-4. Run the page through https://validator.ampproject.org before/after publishing
-   (see validation note below).
+  1. Upload this entire `report-analysis-guide/` folder as-is to the repo
+     at github.com/healthassistentai/healthassistant-ai (branch: main),
+     so the HTML and its images stay side by side in one folder.
+  2. Do not create a nested duplicate folder and do not rename any file —
+     the HTML references all images as flat filenames in the same folder.
+  3. Once live, the story will be reachable at the Live Story URL above.
+
+VALIDATION
+  No live AMP validator available here — I did a structural check only
+  (unique page IDs, all animate-in-after references resolve to a real
+  element on the same page, all referenced image files exist in the
+  folder, no external CSS/JS, no onclick). Please verify at
+  https://validator.ampproject.org before publishing.
+
+NOTES / WARNINGS
+  - Your 6 background images arrived as one combined collage
+    (ppt.png) with the "HEALTH AI" logo baked into the top of each
+    panel. I split it into 6 panels, cropped off the baked-in logo
+    strip, and cover-fit each to 720x1280 so the backgrounds are
+    text-free per the Animated Mode rule (the logo now appears only
+    as the separate HTML logo element, not burned into the art).
+  - Your logo file (HEALTHAI_30880_.webp) is a wide horizontal
+    lockup (icon + wordmark), not square. I cropped just the icon
+    mark and placed it on a white square canvas at 300x300 so it
+    meets the AMP square publisher-logo requirement. If you'd
+    rather use the full wordmark or a different crop, send an
+    updated logo file and I'll swap it in.
+  - No separate topic-specific icons were provided, so bullet
+    markers use simple generic dots (inline CSS, not baked into
+    the images) rather than invented brand icons.
+  - All 6 CTAs link to the same Blog Post URL, since only one
+    blog URL was provided for this post.
