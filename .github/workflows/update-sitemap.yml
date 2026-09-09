@@ -1,0 +1,69 @@
+name: Update sitemap
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sitemap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate sitemap
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from datetime import date
+          import html
+
+          base = "https://healthassistentai.github.io/health-assistant-ai/"
+          exclude = {
+              "google2f86039370aba664.html",
+              "disqus-amp.html"
+          }
+
+          pages = sorted(
+              p.name for p in Path(".").glob("*.html")
+              if p.name not in exclude
+          )
+
+          urls = [base] + [base + p for p in pages]
+          today = date.today().isoformat()
+
+          lines = [
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+          ]
+
+          for url in urls:
+              lines += [
+                  "  <url>",
+                  f"    <loc>{html.escape(url, quote=False)}</loc>",
+                  f"    <lastmod>{today}</lastmod>",
+                  "  </url>"
+              ]
+
+          lines.append("</urlset>")
+
+          Path("sitemap.xml").write_text(
+              "\n".join(lines) + "\n",
+              encoding="utf-8"
+          )
+          PY
+
+      - name: Commit updated sitemap
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          git diff --cached --quiet || git commit -m "Update sitemap"
+          git push
