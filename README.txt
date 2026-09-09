@@ -1,56 +1,65 @@
-AMP WEB STORY — README
-=======================
+AMP Web Story — Package README
+================================
 
-Title: Phone Addiction in Children: Signs, Effects & Fixes
-Slug: phone-addiction-in-children
+Story Title: Robotic Physiotherapy: A New Era in Rehabilitation
+Slug: robotic-technology-physiotherapy-rehabilitation
 Mode: Animated Story
+Number of Slides: 6
 
-Canonical URL:
-https://www.healthassistentai.com/2026/08/phone-addiction-in-children-symptoms-solutions.html
+Canonical URL: https://www.healthassistentai.com/2026/09/robotic-technology-physiotherapy-rehabilitation.html
+Blog Post URL: https://www.healthassistentai.com/2026/09/robotic-technology-physiotherapy-rehabilitation.html
 
-Blog Post URL:
-https://www.healthassistentai.com/2026/08/phone-addiction-in-children-symptoms-solutions.html
-
-GitHub File URL (code view only):
-https://github.com/healthassistentai/healthassistant-ai/blob/main/phone-addiction-in-children/phone-addiction-in-children.html
+GitHub File URL (view code only):
+https://github.com/healthassistentai/healthassistant-ai/blob/main/robotic-technology-physiotherapy-rehabilitation/robotic-technology-physiotherapy-rehabilitation.html
 
 Live Story URL (real published link):
-https://healthassistentai.github.io/healthassistant-ai/phone-addiction-in-children/phone-addiction-in-children.html
+https://healthassistentai.github.io/healthassistant-ai/robotic-technology-physiotherapy-rehabilitation/robotic-technology-physiotherapy-rehabilitation.html
 
-Slide Count: 6
-1. Opening
-2. Early Warning Signs
-3. Relationships & Social Isolation (merged from original 7-topic content)
-4. Sleep Disruption
-5. Academic & Cognitive Effects
-6. The Path to Balance (Conclusion)
+Why Animated Mode was used:
+The originally supplied image was a single 6-panel collage photo with a
+"HEALTH AI" logo baked into each panel, and no headings/stats/bullet
+copy baked into the images. That does not qualify as Static-Mode-ready
+art (which requires the full text already baked into each finished
+slide). The 6 panels were cropped out of the collage, the logo bar was
+removed from each, and each clean photo was resized (cover-fit, no
+distortion) to 720x1280 for use as a text-free Animated Story background.
+All heading / statistic / symptom / cause / prevention-tip / CTA copy
+came verbatim from the content you supplied — none of it was invented.
 
-Note on content: Original supplied text covered 7 topics. "Relationships"
-and "Social Isolation & Anxiety" were merged into a single page 3 to fit
-the confirmed 6-page structure. No statistics or copy were invented or
-dropped — all merged-page content comes directly from the two original
-topic sections.
+Files in this folder:
+- robotic-technology-physiotherapy-rehabilitation.html  (the AMP story)
+- poster.jpg              (720x960, 3:4 poster, required by AMP)
+- publisher-logo.jpg      (300x300 square, built from your uploaded
+                            HEALTH AI logo, padded onto a white square
+                            since the source file was a wide rectangle,
+                            not square)
+- bg-1.jpg ... bg-6.jpg   (text-free, logo-free background photos,
+                            cropped from your collage, one per page,
+                            in slide order 1-6)
 
-Background images: cropped from the single collage file you supplied
-(post.png). The baked-in "HEALTH AI" watermark corner was removed from
-each panel (color-fill patch) since Animated Mode requires text/logo-free
-backgrounds — the logo is instead added as a separate HTML/AMP element on
-pages 1 and 6.
-
-Logo: publisher-logo.jpg is a cropped, squared (300x300) version of your
-uploaded banner logo (icon mark only, wordmark removed) since AMP requires
-a square publisher logo, minimum 96x96.
+Slide order / topics:
+1. Precision Hand Rehabilitation
+2. Pediatric Robotic Mobility Support
+3. Advanced Lower Limb Exoskeleton Training
+4. Full-Body Robotic Exoskeleton Systems
+5. VR-Enhanced Robotic Upper Limb Therapy
+6. High-Precision Robotic Actuators
 
 AMP Validation Status:
-No live AMP validator available here — I did a structural check only
-(unique page IDs, all referenced files present, all animate-in-after
-references resolve to real same-page IDs, no duplicate filenames).
-Please verify at https://validator.ampproject.org before publishing.
+No live AMP validator was run in this environment. A structural
+self-check was performed instead (unique page IDs, unique element IDs,
+every animate-in-after reference resolves to a real id on the same
+page, all image src files present as flat filenames in this same
+folder, all amp-story-page / amp-story-grid-layer / amp-story tags
+balanced). Please verify at https://validator.ampproject.org before
+publishing.
 
-UPLOAD INSTRUCTIONS
---------------------
-1. Upload this entire "phone-addiction-in-children" folder as ONE unit
-   to your GitHub repo (healthassistentai/healthassistant-ai, branch main).
-2. Do not rename any file inside this folder.
-3. Do not overwrite other story folders — this is self-contained.
-4. Confirm the Live Story URL above resolves after GitHub Pages rebuilds.
+Upload instructions:
+Upload this ENTIRE folder
+("robotic-technology-physiotherapy-rehabilitation/") as one unit into
+the repo at:
+https://github.com/healthassistentai/healthassistant-ai (branch: main)
+
+Do not rename any file inside this folder, and do not overwrite any
+other story's folder. Once uploaded, the story will be live at the
+Live Story URL listed above.
