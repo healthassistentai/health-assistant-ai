@@ -1,65 +1,58 @@
-AMP Web Story — Package README
-================================
+AMP WEB STORY — README
+=======================
 
-Story Title: Robotic Physiotherapy: A New Era in Rehabilitation
-Slug: robotic-technology-physiotherapy-rehabilitation
+Title: Fitness Gym Workout Guide: Start Right, Train Smart
+Slug: fitness-gym-workout-guide
 Mode: Animated Story
-Number of Slides: 6
 
-Canonical URL: https://www.healthassistentai.com/2026/09/robotic-technology-physiotherapy-rehabilitation.html
-Blog Post URL: https://www.healthassistentai.com/2026/09/robotic-technology-physiotherapy-rehabilitation.html
+Canonical URL:
+  https://www.healthassistentai.com/2026/09/fitness-gym-workout-guide.html
 
-GitHub File URL (view code only):
-https://github.com/healthassistentai/healthassistant-ai/blob/main/robotic-technology-physiotherapy-rehabilitation/robotic-technology-physiotherapy-rehabilitation.html
+Blog Post URL:
+  https://www.healthassistentai.com/2026/09/fitness-gym-workout-guide.html
+
+GitHub File URL (for viewing code only):
+  https://github.com/healthassistentai/healthassistant-ai/blob/main/fitness-gym-workout-guide/fitness-gym-workout-guide.html
 
 Live Story URL (real published link):
-https://healthassistentai.github.io/healthassistant-ai/robotic-technology-physiotherapy-rehabilitation/robotic-technology-physiotherapy-rehabilitation.html
+  https://healthassistentai.github.io/healthassistant-ai/fitness-gym-workout-guide/fitness-gym-workout-guide.html
 
-Why Animated Mode was used:
-The originally supplied image was a single 6-panel collage photo with a
-"HEALTH AI" logo baked into each panel, and no headings/stats/bullet
-copy baked into the images. That does not qualify as Static-Mode-ready
-art (which requires the full text already baked into each finished
-slide). The 6 panels were cropped out of the collage, the logo bar was
-removed from each, and each clean photo was resized (cover-fit, no
-distortion) to 720x1280 for use as a text-free Animated Story background.
-All heading / statistic / symptom / cause / prevention-tip / CTA copy
-came verbatim from the content you supplied — none of it was invented.
+Number of Slides: 6
 
-Files in this folder:
-- robotic-technology-physiotherapy-rehabilitation.html  (the AMP story)
-- poster.jpg              (720x960, 3:4 poster, required by AMP)
-- publisher-logo.jpg      (300x300 square, built from your uploaded
-                            HEALTH AI logo, padded onto a white square
-                            since the source file was a wide rectangle,
-                            not square)
-- bg-1.jpg ... bg-6.jpg   (text-free, logo-free background photos,
-                            cropped from your collage, one per page,
-                            in slide order 1-6)
+Page order:
+  1. Strength Training (opening)
+  2. Squats
+  3. Treadmill Running (cardio)
+  4. Push-Ups
+  5. Stretching
+  6. Hydration & Recovery (conclusion, CTA)
 
-Slide order / topics:
-1. Precision Hand Rehabilitation
-2. Pediatric Robotic Mobility Support
-3. Advanced Lower Limb Exoskeleton Training
-4. Full-Body Robotic Exoskeleton Systems
-5. VR-Enhanced Robotic Upper Limb Therapy
-6. High-Precision Robotic Actuators
+Content note: per your instruction, each page is condensed to
+heading + statistic + one top prevention tip (not all symptom/
+cause/prevention bullets), to keep each 9:16 frame readable.
 
-AMP Validation Status:
+Background note: the 6 background images were split from a single
+provided collage image. Each background already has the "HEALTH AI"
+logo baked into its corner (kept as-is, per your instruction) in
+addition to the separate animated logo element used on pages 1 and 6.
+
+UPLOAD INSTRUCTIONS
+--------------------
+1. Upload this ENTIRE "fitness-gym-workout-guide" folder as one unit
+   to the repo root of healthassistentai/healthassistant-ai (branch: main).
+2. Do not rename any file inside this folder.
+3. Do not place these files in any other folder, and do not nest a
+   duplicate "fitness-gym-workout-guide" folder inside itself.
+4. Do not overwrite files belonging to any other story.
+5. After upload, confirm the Live Story URL above loads correctly,
+   then verify at https://validator.ampproject.org before
+   publishing/promoting.
+
+VALIDATION STATUS
+------------------
 No live AMP validator was run in this environment. A structural
-self-check was performed instead (unique page IDs, unique element IDs,
-every animate-in-after reference resolves to a real id on the same
-page, all image src files present as flat filenames in this same
-folder, all amp-story-page / amp-story-grid-layer / amp-story tags
-balanced). Please verify at https://validator.ampproject.org before
-publishing.
-
-Upload instructions:
-Upload this ENTIRE folder
-("robotic-technology-physiotherapy-rehabilitation/") as one unit into
-the repo at:
-https://github.com/healthassistentai/healthassistant-ai (branch: main)
-
-Do not rename any file inside this folder, and do not overwrite any
-other story's folder. Once uploaded, the story will be live at the
-Live Story URL listed above.
+self-check was performed instead (unique page/element IDs, all
+animate-in-after references point to real elements on the same
+page, all asset paths resolve within this folder, slide count
+matches background image count). Please verify at
+validator.ampproject.org before publishing.
