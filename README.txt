@@ -1,23 +1,24 @@
-STORY: Different Fruits and Their Nutritional Benefits for Better Health
-SLUG: different-fruits-and-their-nutritional-benefits
+STORY: Health is the Greatest Wealth of Human Life: A Complete Guide to Healthy Living, Wellness, and Modern Lifestyle Balance
+SLUG: health-greatest-wealth-human-life-healthy-living-wellness-guide
 MODE: Animated Story
 
 Canonical URL:
-https://www.healthassistentai.com/2026/06/different-fruits-and-their-nutritional-benefits.html
+https://www.healthassistentai.com/2026/06/health-greatest-wealth-human-life-healthy-living-wellness-guide.html
 
 Blog Post URL (source article):
-https://www.healthassistentai.com/2026/06/different-fruits-and-their-nutritional-benefits.html
+https://www.healthassistentai.com/2026/06/health-greatest-wealth-human-life-healthy-living-wellness-guide.html
 
 GitHub File URL (view code only):
-https://github.com/healthassistentai/healthassistant-ai/blob/main/different-fruits-and-their-nutritional-benefits/different-fruits-and-their-nutritional-benefits.html
+https://github.com/healthassistentai/healthassistant-ai/blob/main/health-greatest-wealth-human-life-healthy-living-wellness-guide/health-greatest-wealth-human-life-healthy-living-wellness-guide.html
 
 Live Story URL (real published link):
-https://healthassistentai.github.io/healthassistant-ai/different-fruits-and-their-nutritional-benefits/different-fruits-and-their-nutritional-benefits.html
+https://healthassistentai.github.io/healthassistant-ai/health-greatest-wealth-human-life-healthy-living-wellness-guide/health-greatest-wealth-human-life-healthy-living-wellness-guide.html
 
 Number of Slides: 26 amp-story-page elements
   - 1 opening page
-  - 4 pages each for 6 fruits (intro/stat, symptoms, causes, prevention+tagline)
-    Order: Mixed Fruits, Oranges, Blueberries, Bananas, Apples, Strawberries
+  - 4 pages each for 6 wellness pillars (intro/stat, symptoms, causes, prevention+tagline)
+    Order: Active Lifestyle, Healthy Food, Quality Sleep, Mental Wellness,
+    Heart Health, Life Balance
   - 1 conclusion page with the CTA button ("Read Full Guide")
 
 NOTE ON BACKGROUND IMAGES:
@@ -38,7 +39,7 @@ usage). Please verify at https://validator.ampproject.org/ before
 publishing.
 
 UPLOAD INSTRUCTIONS:
-1. Upload this ENTIRE folder ("different-fruits-and-their-nutritional-benefits/")
+1. Upload this ENTIRE folder ("health-greatest-wealth-human-life-healthy-living-wellness-guide/")
    as one unit to the GitHub repo root (main branch).
 2. Do not rename any file inside this folder.
 3. Do not place these files in a different or nested folder — the HTML
