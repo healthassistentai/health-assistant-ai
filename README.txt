@@ -1,58 +1,77 @@
 AMP Web Story — Package README
 ================================
 
-Title: Benefits of Drinking Coconut Water Daily: The Natural Secret to a Healthy, Fresh, and Disease-Free Life for Better Hydration, Strong Immunity, Heart Health, Weight Management, and Overall Wellness
-Slug: benefits-of-drinking-coconut-water-daily-health-benefits
+Title: Iron and Vitamin B12 Rich Foods: A Complete Guide to Boost Energy, Improve Blood Health, and Strengthen Immunity
+Slug: iron-vitamin-b12-rich-foods-complete-guide-energy-health-immunity
 Mode: Animated Story (real HTML text/icons animate in per element)
 
 Canonical URL:
-https://www.healthassistentai.com/2026/06/benefits-of-drinking-coconut-water-daily-health-benefits.html
+https://www.healthassistentai.com/2026/06/iron-vitamin-b12-rich-foods-complete-guide-energy-health-immunity.html
 
 Blog Post URL (same as canonical):
-https://www.healthassistentai.com/2026/06/benefits-of-drinking-coconut-water-daily-health-benefits.html
+https://www.healthassistentai.com/2026/06/iron-vitamin-b12-rich-foods-complete-guide-energy-health-immunity.html
 
 GitHub File URL (view code only):
-https://github.com/healthassistentai/healthassistant-ai/blob/main/benefits-of-drinking-coconut-water-daily-health-benefits/benefits-of-drinking-coconut-water-daily-health-benefits.html
+https://github.com/healthassistentai/healthassistant-ai/blob/main/iron-vitamin-b12-rich-foods-complete-guide-energy-health-immunity/iron-vitamin-b12-rich-foods-complete-guide-energy-health-immunity.html
 
 Live Story URL (real published link once uploaded):
-https://healthassistentai.github.io/healthassistant-ai/benefits-of-drinking-coconut-water-daily-health-benefits/benefits-of-drinking-coconut-water-daily-health-benefits.html
+https://healthassistentai.github.io/healthassistant-ai/iron-vitamin-b12-rich-foods-complete-guide-energy-health-immunity/iron-vitamin-b12-rich-foods-complete-guide-energy-health-immunity.html
 
 Slide / page count: 6 amp-story-page elements (matches the default arc)
 Publisher: Goutam Dandapath
 
-*** IMPORTANT — ONE OF YOUR 6 UPLOADED IMAGES WAS A DUPLICATE ***
---------------------------------------------------------------------
-The files "..._5_.png" and "..._4_.png" you uploaded are byte-for-byte
-identical (same photo of a woman drinking coconut water outdoors), so
-only 5 distinct background images were actually available for 6 pages.
+ABOUT THE BACKGROUND IMAGES — PLEASE READ
+--------------------------------------------
+Your source arrived as ONE wide strip (2033x528) containing 7 food
+photo panels, and every panel had TWO things baked in: a category
+label in black text ("Legumes and Beans (Iron)", "Seafood (B12 focus)",
+etc.) and the "HEALTH AI" logo, both sitting in a header strip above
+each photo. Those header strips were cropped off every panel so the
+backgrounds are text/logo-free, as Animated Mode requires. The
+"Nuts, Dried Fruits, and Molasses" panel had a TWO-LINE label, so that
+one needed a deeper crop than the rest.
 
-Rather than showing the exact same photo twice back-to-back (pages 1
-and 2), the images were assigned by content fit instead of upload
-order:
-  Page 1 (Better Hydration)     -> woman drinking coconut water outdoors
-  Page 2 (Strong Immunity)      -> whole coconuts + ginger + lemon + honey
-  Page 3 (Heart Health)         -> water + walnuts + blueberries on a
-                                    heart-shaped slate board
-  Page 4 (Weight Management)    -> coconut + fruit basket, with a yoga
-                                    mat and measuring tape in the background
-  Page 5 (Overall Wellness)     -> same photo as Page 1 (woman drinking
-                                    coconut water) — reused because it was
-                                    the most generic/fitting option left,
-                                    and only 5 unique images existed for
-                                    6 slots. A tight close-up crop of this
-                                    photo was tried first but looked
-                                    inappropriately framed, so the full,
-                                    normally-framed photo was used as-is
-                                    instead of a bad crop.
-  Page 6 (Daily Routine)        -> glass of water + spoon + coconut on a
-                                    wood table
-If you'd rather have 6 fully distinct images, send one more background
-image (or a non-duplicate replacement for one of the two identical
-files) and this can be rebuilt with Pages 1 and 5 showing different art.
+Resolution note — how the frame was filled:
+Each individual panel is only about 508px wide and 200-480px tall, and
+most are wide landscape shots. Cropping those to a 9:16 portrait frame
+would have used only a ~140px-wide sliver and looked very blurry when
+stretched to 720x1280 (that's what went wrong on your chronic-disease
+story). So instead, each page is built as: the real photo placed sharp
+and full-width across the upper part of the frame, over a softly
+blurred, zoomed copy of the same photo filling the rest of the 9:16
+canvas. Nothing is stretched or distorted, the food stays sharp, and
+your animated text box sits over the soft lower area where it reads
+cleanly. If you'd prefer edge-to-edge full-bleed photos instead, send
+the 6 images as separate full-size portrait files and it can be rebuilt
+that way.
+
+One thing I could NOT remove — Page 5 (Fortified Foods): the photo
+itself contains a nutritional yeast product packet, and the AI-generated
+packaging has garbled nonsense text on it ("AUTITIEGAL YEAST T624S").
+That text is part of the photographed product, not an overlay label, so
+cropping it out would have removed the fortified-food subject entirely.
+It's small and sits in the upper right. If it bothers you, send a
+replacement photo for that page.
+
+WHICH PANEL WENT ON WHICH PAGE
+---------------------------------
+  Page 1 (Introduction)            -> nuts, dried fruits & molasses
+                                      (varied iron-rich spread)
+  Page 2 (Animal Proteins)         -> beef, salmon, chicken, clams, eggs
+  Page 3 (Legumes and Beans)       -> lentils, chickpeas, kidney & black beans
+  Page 4 (Leafy Greens and Seeds)  -> spinach, kale, pumpkin & sesame seeds
+  Page 5 (Fortified Foods)         -> oats, fortified milk, bread,
+                                      nutritional yeast
+  Page 6 (Seafood)                 -> oysters, mackerel, mussels on ice
+Your strip had 7 panels but the story has 6 pages, so one panel (the
+second "Seafood (B12 focus)" panel showing oats/bread/milk/trail mix)
+was not used — the oyster/mackerel/mussel panel was the stronger fit
+for your Seafood page, and the oats/bread panel overlapped with the
+Fortified Foods panel.
 
 PAGE STRUCTURE
 ----------------
-Each of your 6 topics is one page, in this order:
+Each of your 6 pages contains:
   Heading -> Stat -> "Watch for" (symptoms, staggered fade-in) ->
   "Why it happens" (causes, staggered fade-in) -> "Try this"
   (prevention tips, staggered fade-in) -> CTA button (fly-in-bottom)
@@ -60,25 +79,17 @@ Background image animate-in direction cycles zoom-in / fly-in-left /
 fly-in-right across the 6 pages. The opening logo appears on Page 1,
 and the closing logo appears on Page 6 alongside the final CTA.
 
-ABOUT THE BACKGROUND IMAGES
-------------------------------
-Each of your 6 source photos had a solid white header band across the
-top with the "HEALTH AI" logo centered in it (a different style than
-your earlier corner-logo or collage requests, but the same underlying
-issue). That header band was cropped off each photo before resizing to
-720x1280, keeping backgrounds text/logo-free as Animated Mode requires.
-
-CTA note: your CTA text for Page 6 was "Shop Pure Coconut Water Now" —
-since there's no separate shop/product link provided, the button uses
-your exact wording but still links to the Blog Post URL, per the fixed
-CTA-linking rule (Blog Post URL, never an invented shop link).
+CTA note: your Page 1 CTA text says "Swipe Up to Explore Essential
+Foods!" — in this build it's a normal tappable button linking to the
+Blog Post URL (AMP Stories no longer use a swipe-up gesture for links).
+Your exact wording was kept as the button label.
 
 FILES IN THIS FOLDER
 -----------------------
-benefits-of-drinking-coconut-water-daily-health-benefits.html
-poster.jpg              (720x960, 3:4, from page 1's photo)
+iron-vitamin-b12-rich-foods-complete-guide-energy-health-immunity.html
+poster.jpg              (720x960, 3:4, from page 1's image)
 publisher-logo.jpg       (300x300 square, cropped from your logo's icon glyph)
-bg-1.jpg ... bg-6.jpg    (text-free backgrounds, 720x1280, per the notes above)
+bg-1.jpg ... bg-6.jpg    (text-free backgrounds, 720x1280, one per page)
 
 UPLOAD INSTRUCTIONS
 -----------------------
@@ -97,8 +108,8 @@ No live AMP validator was reachable from this environment (the
 validator's script host, cdn.ampproject.org, is outside this sandbox's
 allowed network domains). What WAS done instead — a structural self-check:
   - All 6 amp-story-page ids are unique
-  - All 72 element ids in the document are unique
-  - All 66 animate-in-after references resolve to a real id on the
+  - All 55 element ids in the document are unique
+  - All 49 animate-in-after references resolve to a real id on the
     same page
   - All referenced image files exist in this folder, flat, unprefixed
   - No JavaScript, onclick, or non-AMP tags/attributes were used
