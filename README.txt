@@ -1,100 +1,99 @@
 AMP Web Story — Package README
 ================================
 
-Title: Anti Inflammatory Foods: A Complete Guide to Reducing Chronic Inflammation Naturally and Improving Overall Health
-Slug: anti-inflammatory-foods-to-reduce-chronic-inflammation
+Title: Best Foods During Pregnancy: The Ultimate Nutrition Guide for a Healthy Pregnancy, Mother, and Baby
+Slug: best-foods-during-pregnancy-ultimate-nutrition-guide
 Mode: Animated Story (real HTML text/icons animate in per element)
 
 Canonical URL:
-https://www.healthassistentai.com/2026/06/anti-inflammatory-foods-to-reduce-chronic-inflammation.html
+https://www.healthassistentai.com/2026/06/best-foods-during-pregnancy-ultimate-nutrition-guide.html
 
 Blog Post URL (same as canonical):
-https://www.healthassistentai.com/2026/06/anti-inflammatory-foods-to-reduce-chronic-inflammation.html
+https://www.healthassistentai.com/2026/06/best-foods-during-pregnancy-ultimate-nutrition-guide.html
 
 GitHub File URL (view code only):
-https://github.com/healthassistentai/healthassistant-ai/blob/main/anti-inflammatory-foods-to-reduce-chronic-inflammation/anti-inflammatory-foods-to-reduce-chronic-inflammation.html
+https://github.com/healthassistentai/healthassistant-ai/blob/main/best-foods-during-pregnancy-ultimate-nutrition-guide/best-foods-during-pregnancy-ultimate-nutrition-guide.html
 
 Live Story URL (real published link once uploaded):
-https://healthassistentai.github.io/healthassistant-ai/anti-inflammatory-foods-to-reduce-chronic-inflammation/anti-inflammatory-foods-to-reduce-chronic-inflammation.html
+https://healthassistentai.github.io/healthassistant-ai/best-foods-during-pregnancy-ultimate-nutrition-guide/best-foods-during-pregnancy-ultimate-nutrition-guide.html
 
-Slide / page count: 6 amp-story-page elements (matches the default arc —
-your 6 images map one-to-one onto 6 pages)
+Slide / page count: 6 amp-story-page elements (matches the default arc)
 Publisher: Goutam Dandapath
 
-PAGE STRUCTURE
-----------------
-Every page here carries all three sections (unlike the dengue story,
-where most were blank), so each page shows:
-  Heading -> Statistic -> Symptoms (4) -> Causes (4) ->
-  Prevention tips (4) -> CTA button
-That's 12 bullets per page, 72 across the story, all animating in one
-after another in a single unbroken chain per page.
+PAGE STRUCTURE — A NEW SHAPE FOR THIS TOPIC
+-----------------------------------------------
+Your copy for this story wasn't in the "Symptoms / Causes / Prevention"
+shape from earlier stories — each panel instead had: Heading, Statistic,
+a single "Symptom/Nutrient Focus" sentence, 3 "Key Points" bullets, and
+a single "Prevention/Benefit Tip" sentence. So each page here animates
+in that order: Heading -> Statistic -> Focus sentence -> 3 Key Points
+(staggered) -> Tip (in a highlighted box) -> CTA button. Every word is
+your exact copy; nothing was reshaped into bullets that weren't already
+bullets, and nothing was invented to fill a template shape that didn't
+fit.
 
-  Page 1 — Berries            (berries bowl)
-  Page 2 — Omega-3            (salmon & avocado)
-  Page 3 — Cruciferous Veg    (vegetable assortment)
-  Page 4 — Nuts & Seeds       (nuts, seeds, avocado)
-  Page 5 — Turmeric/Ginger    (spices & olive oil)
-  Page 6 — Whole Grains       (quinoa bowl)
-Image order matched your written panel order exactly — no re-pairing
-was needed.
+  Page 1 — Leafy Greens (Folate & Iron)
+  Page 2 — Broccoli & Cruciferous Veggies
+  Page 3 — Dairy & Calcium Sources
+  Page 4 — Salmon & Healthy Omega-3s
+  Page 5 — Lean Red Meat & Lentils (Iron)
+  Page 6 — Nuts, Seeds, Protein & Fiber
 
-Section labels: on Page 1 your copy labelled these "Symptom Bullet
-points (of chronic inflammation)" and "Cause points (contributing to
-inflammation)". On screen those read "Symptoms of chronic inflammation"
-and "Contributing causes" so they fit the narrow label style; pages 2-6
-use the plain "Symptoms" / "Causes" / "Prevention tips". Every bullet
-item itself is your exact wording, unchanged.
+ABOUT THE BACKGROUND IMAGES — PLEASE READ
+----------------------------------------------
+Your source was one 768x1376 sheet laid out as a 3x3 grid (9 cells),
+but it only actually contained 6 distinct photos for your 6 topics —
+here's exactly how the 9 cells broke down:
 
-Two small trims for line length, items otherwise verbatim:
-  - Page 6 prevention tip 1: your text ended with the parenthetical
-    "(white bread, pasta)" after "refined ones" — that trailing
-    example was dropped so the line doesn't wrap to three lines on a
-    phone. It now reads "Choose whole grains (quinoa, brown rice, oats)
-    over refined ones".
-  - CTA labels: your CTA sentences ended with a period; the buttons
-    drop the trailing period (button labels don't take end punctuation).
-    Wording is otherwise exactly yours.
+  - Top-left + top-middle cells: ONE continuous photo of leafy greens
+    flowing into broccoli (same wooden counter, no hard seam) — split
+    across two cells by the grid. The left half was used for Leafy
+    Greens (Page 1) and the right half for Broccoli (Page 2).
+  - Top-right cell: yogurt bowl, labelled "Calcium" -> Dairy (Page 3).
+  - Middle-left + middle-middle cells: ONE continuous salmon-on-a-plate
+    photo, again split across two cells by the grid -> used together
+    as Salmon (Page 4).
+  - Middle-right cell: beef + lentils, labelled "Iron" -> Iron (Page 5).
+  - Bottom-left cell: the SAME beef + lentils photo repeated a second
+    time (also labelled "Iron") — this duplicate was not used.
+  - Bottom-middle cell: peppers/citrus/kiwi, labelled "Vitamin C
+    Sources" — none of your 6 topics is specifically "Vitamin C", so
+    this extra cell was not used either.
+  - Bottom-right cell: nuts, chickpeas & black beans, labelled "Protein
+    and Fiber" -> Nuts, Seeds, Protein & Fiber (Page 6).
 
-TIMING NOTE
---------------
-Because each page animates 12 bullets sequentially, the pages are set
-to auto-advance after 13 seconds rather than the usual 8-9, so the full
-chain finishes before the page turns. Viewers can still tap to advance
-early at any time. If you'd rather the story move faster, the fix is to
-shorten the bullet lists rather than the timer — otherwise the last
-tips would never be seen on auto-play.
+So 2 of the 9 generated cells (the second "Iron" and "Vitamin C
+Sources") were extras that didn't match any of your 6 named topics and
+were left out — nothing was substituted or invented in their place. If
+you actually wanted a 7th or 8th page for those, let me know.
 
-ABOUT THE BACKGROUND IMAGES
-------------------------------
-Your 6 images arrived as ONE sheet (768x1376) holding two rows of three
-portrait panels, each with the "HEALTH AI" logo in a header strip above
-the photo. Those header strips were cropped off every panel, so the
-backgrounds are logo-free as Animated Mode requires — the real logo is
-added back as its own animated HTML layer on pages 1 and 6.
+Every cell also had the "HEALTH AI" logo in a header band, and several
+had a black text caption baked in at the bottom ("Calcium", "Iron",
+"Protein and Fiber") — both were cropped off so the backgrounds are
+text/logo-free as Animated Mode requires.
 
-Good news on quality this time: unlike your last two stories, these
-panels are already portrait and very close to 9:16 (roughly 245x446 and
-245x516), so each one fills the frame edge-to-edge as a normal
-full-bleed background — no blurred-backdrop padding was needed, and
-nothing is stretched or distorted. The one trade-off is that each panel
-is only ~245px wide in the source, so enlarging to 720px wide leaves
-them slightly soft on a high-resolution phone. They read fine as
-backgrounds behind the text box, but if you want them crisp, send the
-6 photos as separate full-size files instead of one combined sheet.
+Resolution note: the Leafy Greens and Broccoli cells were already a
+good portrait shape and needed only a light crop, so those two
+backgrounds (pages 1-2) are sharp, full-bleed, no padding. The Dairy,
+Salmon, Iron, and Nuts cells are smaller/wider than a 9:16 frame, so
+those four pages (3, 4, 5, 6) use the same technique as your last two
+stories: the real photo sharp and full-width across the upper part of
+the frame, over a softly blurred zoomed copy filling the rest of the
+canvas — nothing stretched or distorted. The salmon photo also had a
+faint seam line down the middle from where the grid split it; a very
+light blur was applied to smooth that seam before use.
 
 FILES IN THIS FOLDER
 -----------------------
-anti-inflammatory-foods-to-reduce-chronic-inflammation.html
+best-foods-during-pregnancy-ultimate-nutrition-guide.html
 poster.jpg              (720x960, 3:4, from page 1's photo)
 publisher-logo.jpg       (300x300 square, cropped from your logo's icon glyph)
-bg-1.jpg ... bg-6.jpg    (logo-free backgrounds, 720x1280, one per page)
+bg-1.jpg ... bg-6.jpg    (text-free backgrounds, 720x1280, one per page)
 
 UPLOAD INSTRUCTIONS
 -----------------------
 1. Upload this ENTIRE folder (all files together) as one unit into the
-   repo at: healthassistentai/healthassistant-ai (branch: main), so the
-   HTML and its images stay in the same folder.
+   repo at: healthassistentai/healthassistant-ai (branch: main).
 2. Do not rename any file.
 3. Do not overwrite any other story's folder in the repo.
 4. Push as ONE fresh commit rather than re-running a failed job, to
@@ -108,25 +107,22 @@ No live AMP validator was reachable from this environment (the
 validator's script host, cdn.ampproject.org, is outside this sandbox's
 allowed network domains). What WAS done instead — a structural self-check:
   - All 6 amp-story-page ids are unique
-  - All 90 element ids in the document are unique
-  - All 84 animate-in-after references resolve to a real id, and each
+  - All 48 element ids in the document are unique
+  - All 42 animate-in-after references resolve to a real id, and each
     one points to an element on its OWN page (no cross-page chains)
-  - Each page carries exactly 12 bullet items, as expected
   - All referenced image files exist in this folder, flat, unprefixed
   - No JavaScript, onclick, or non-AMP tags/attributes were used
-  - amp-custom CSS is ~1.9KB (well under the 75KB AMP limit)
+  - amp-custom CSS is ~2.3KB (well under the 75KB AMP limit)
   - Required amp-story attributes present: title, publisher,
     publisher-logo-src, poster-portrait-src
 Please still run this file through https://validator.ampproject.org
 before publishing.
 
-CONTENT ACCURACY NOTE
-------------------------
-Your copy contains specific numeric health claims (20-30% reduction in
-inflammatory markers, CRP lowered 15-20%, IL-6 reduced up to 30%,
-curcumin absorption increased 2000%, curcumin being comparable to
-pharmaceutical drugs "without the side effects"). These were used
-exactly as you wrote them — nothing was added, softened, or verified
-here. Since a few of these are strong claims, it's worth making sure
-the linked blog post cites its sources, particularly the
-drug-comparison line.
+CONTENT NOTE
+---------------
+This story gives specific nutrition guidance for pregnancy (safe fish
+choices, calcium/iron targets, food-safety tips). All wording is
+exactly what you provided; nothing was added or altered. Since this is
+health guidance for a sensitive population, it's worth double-checking
+the linked blog post presents this as general information and not
+personalized medical advice.
