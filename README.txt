@@ -1,90 +1,75 @@
 AMP Web Story — Package README
 ================================
 
-Title: Chronic Disease Management Guide – A Complete Modern, Evidence-Based and Scientific Approach to Effective Long-Term Disease Control and Health Improvement
-Slug: chronic-disease-management-guide
+Title: Natural Remedies to Lower High Blood Pressure: Complete Guide | HEALTH ASSISTENT AI
+Slug: natural-remedies-to-lower-high-blood-pressure
 Mode: Animated Story (real HTML text/icons animate in per element)
 
 Canonical URL:
-https://www.healthassistentai.com/2026/06/chronic-disease-management-guide.html
+https://www.healthassistentai.com/2026/06/natural-remedies-to-lower-high-blood-pressure.html
 
 Blog Post URL (same as canonical):
-https://www.healthassistentai.com/2026/06/chronic-disease-management-guide.html
+https://www.healthassistentai.com/2026/06/natural-remedies-to-lower-high-blood-pressure.html
 
 GitHub File URL (view code only):
-https://github.com/healthassistentai/healthassistant-ai/blob/main/chronic-disease-management-guide/chronic-disease-management-guide.html
+https://github.com/healthassistentai/healthassistant-ai/blob/main/natural-remedies-to-lower-high-blood-pressure/natural-remedies-to-lower-high-blood-pressure.html
 
 Live Story URL (real published link once uploaded):
-https://healthassistentai.github.io/healthassistant-ai/chronic-disease-management-guide/chronic-disease-management-guide.html
+https://healthassistentai.github.io/healthassistant-ai/natural-remedies-to-lower-high-blood-pressure/natural-remedies-to-lower-high-blood-pressure.html
 
-Slide / page count: 6 amp-story-page elements (matches the default arc)
+Slide / page count: 6 amp-story-page elements (matches the default arc —
+your 6 topic blocks map one-to-one onto 6 pages)
 Publisher: Goutam Dandapath
-
-*** IMPORTANT — READ THIS BEFORE PUBLISHING ***
----------------------------------------------------
-You sent one wide strip image containing 6 panels. Unlike your earlier
-requests, 4 of these 6 panels were NOT usable as Animated Mode
-backgrounds as-is: they are dense UI-mockup illustrations with real
-text baked into the artwork itself — e.g. panel 2 had multiple
-"HEALTH AI" logos plus dashboard labels like "Vab Results" and "521";
-panel 3 had a large screen reading "Evidence-Based Plans"; panel 4 had
-another dashboard screen. These can't be cropped off like a corner
-logo without destroying the images.
-
-You told me to handle it myself and keep it to 6 pages with image +
-text animation, so here is exactly what was done — please check this
-matches what you want before uploading:
-
-  - Panel 1 (circuit-tree illustration) was clean. It was used AS-IS
-    for Page 1, and reused with two different crops (roots close-up,
-    trunk close-up) for Page 2 and Page 3. So pages 1, 2, and 3 all
-    come from the same one source illustration, just framed
-    differently — they are not three different images.
-  - Panel 5 (a 3-in-1 collage of a food plate / yoga group / joggers)
-    had small checkmark and speech-bubble icons baked in throughout.
-    The food-plate region was tightly cropped for Page 4, and the
-    joggers region for Page 5, cropped as tightly as possible to
-    exclude the icons. A couple of pages still have a tiny, mostly
-    invisible sliver of an icon edge at the crop boundary — not fully
-    guaranteed 100% icon-free, just minimized as much as the source
-    allowed.
-  - Panel 6 (hiker + city skyline) was clean once the bottom
-    tablet/chart graphic was cropped off. Used as-is for Page 6.
-  - Panels 2, 3, and 4 (the UI-mockup ones) were NOT used at all.
-
-Because several of these crops come from a small sub-region of an
-already-small 338x528px source panel, backgrounds 3, 4, and 5 in
-particular are noticeably softer / less sharp than a normal full-size
-photo would be once stretched to 720x1280. If that's not acceptable
-for a published story, send 6 separate plain/text-free background
-images (or higher-resolution versions of panels 1, 5, and 6) and this
-can be rebuilt with sharper, more varied art.
 
 PAGE STRUCTURE
 ----------------
 Each of your 6 topics is one page, in this order:
-  Heading -> Stat -> "Watch for" (3 symptoms, staggered fade-in) ->
-  "Why it happens" (3 causes, staggered fade-in) -> "Try this"
-  (3 prevention tips, staggered fade-in) -> CTA button (fly-in-bottom)
+  Heading -> Stat -> "Watch for" (2-3 symptoms, staggered fade-in) ->
+  "Why it happens" (2-3 causes, staggered fade-in) -> "Try this"
+  (2 prevention tips, staggered fade-in) -> CTA button (fly-in-bottom)
 Background image animate-in direction cycles zoom-in / fly-in-left /
 fly-in-right across the 6 pages. The opening logo appears on Page 1,
 and the closing logo appears on Page 6 alongside the final CTA.
 
+Pages, in order: What is High Blood Pressure? -> DASH Diet -> Stress
+Reduction -> Regular Exercise -> Sleep Quality -> Monitoring &
+Hydration (same order as your collage image and your written topic
+list — no re-pairing needed).
+
+ABOUT THE BACKGROUND IMAGES
+------------------------------
+Your 6 background images arrived as one 2-column x 3-row collage, each
+cell with the "HEALTH AI" wordmark baked into the top-right corner.
+Each cell was split out and the baked-in logo band was cropped off
+before resizing to 720x1280, keeping backgrounds text/logo-free as
+Animated Mode requires. All 6 cells were clean illustration/photography
+otherwise (no dashboard mockups or UI text like a previous batch had),
+so no substitutions were needed this time.
+
+Note on Page 6's background: it's a real photo of a blood pressure
+monitor, which naturally shows a sample reading ("118/76") on its own
+digital display as part of the physical device being photographed —
+this is not a designed heading/stat overlay, so it doesn't conflict
+with the animated HTML text layered on top.
+
 FILES IN THIS FOLDER
 -----------------------
-chronic-disease-management-guide.html  (the AMP story itself)
+natural-remedies-to-lower-high-blood-pressure.html  (the AMP story itself)
 poster.jpg              (720x960, 3:4, from page 1's photo)
 publisher-logo.jpg       (300x300 square, cropped from your logo's icon glyph)
-bg-1.jpg ... bg-6.jpg    (backgrounds, 720x1280, per the notes above)
+bg-1.jpg ... bg-6.jpg    (text-free backgrounds, 720x1280, one per page)
 
 UPLOAD INSTRUCTIONS
 -----------------------
 1. Upload this ENTIRE folder (all files together) as one unit into the
-   repo at: healthassistentai/healthassistant-ai (branch: main).
-2. Do not rename any file.
+   repo at: healthassistentai/healthassistant-ai (branch: main), so the
+   HTML and its images stay in the same folder — do not separate them
+   or nest them inside another folder.
+2. Do not rename any file — the HTML references image filenames exactly
+   as they are (bg-1.jpg ... bg-6.jpg, poster.jpg, publisher-logo.jpg).
 3. Do not overwrite any other story's folder in the repo.
-4. Push as ONE fresh commit rather than re-running a failed job, to
-   avoid the duplicate "github-pages" artifact issue you hit before.
+4. Push as ONE fresh commit (don't just re-run a failed job) to avoid
+   the duplicate "github-pages" artifact issue you hit before.
 5. Once live, open the Live Story URL above and confirm it matches this
    file path exactly, character for character.
 
@@ -94,13 +79,15 @@ No live AMP validator was reachable from this environment (the
 validator's script host, cdn.ampproject.org, is outside this sandbox's
 allowed network domains). What WAS done instead — a structural self-check:
   - All 6 amp-story-page ids are unique
-  - All 72 element ids in the document are unique
-  - All 66 animate-in-after references resolve to a real id on the
+  - All 56 element ids in the document are unique
+  - All 50 animate-in-after references resolve to a real id on the
     same page
-  - All referenced image files exist in this folder, flat, unprefixed
+  - All referenced image files (bg-1..6.jpg, poster.jpg,
+    publisher-logo.jpg) exist in this folder, flat, unprefixed
   - No JavaScript, onclick, or non-AMP tags/attributes were used
   - amp-custom CSS is ~2KB (well under the 75KB AMP limit)
   - Required amp-story attributes present: title, publisher,
     publisher-logo-src, poster-portrait-src
 Please still run this file through https://validator.ampproject.org
-before publishing.
+(or the AMP browser extension) before publishing, per standard AMP
+practice.
