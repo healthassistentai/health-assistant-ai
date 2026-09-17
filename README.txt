@@ -1,86 +1,81 @@
 AMP Web Story — Package README
 ================================
 
-Title: What Is Nutrition? Definition, Importance, Types, Benefits, and Essential Principles of Good Nutrition for a Healthy Life
-Slug: what-is-nutrition-definition-importance-types-benefits
+Title: Everything You Need to Know About Infectious Diseases: Causes, Symptoms, Common Types, Prevention, and Latest Treatment Methods
+Slug: everything-you-need-to-know-about-infectious-diseases
 Mode: Animated Story (real HTML text/icons animate in per element)
 
 Canonical URL:
-https://www.healthassistentai.com/2026/06/what-is-nutrition-definition-importance-types-benefits.html
+https://www.healthassistentai.com/2026/06/everything-you-need-to-know-about-infectious-diseases.html
 
 Blog Post URL (same as canonical):
-https://www.healthassistentai.com/2026/06/what-is-nutrition-definition-importance-types-benefits.html
+https://www.healthassistentai.com/2026/06/everything-you-need-to-know-about-infectious-diseases.html
 
 GitHub File URL (view code only):
-https://github.com/healthassistentai/healthassistant-ai/blob/main/what-is-nutrition-definition-importance-types-benefits/what-is-nutrition-definition-importance-types-benefits.html
+https://github.com/healthassistentai/healthassistant-ai/blob/main/everything-you-need-to-know-about-infectious-diseases/everything-you-need-to-know-about-infectious-diseases.html
 
 Live Story URL (real published link once uploaded):
-https://healthassistentai.github.io/healthassistant-ai/what-is-nutrition-definition-importance-types-benefits/what-is-nutrition-definition-importance-types-benefits.html
+https://healthassistentai.github.io/healthassistant-ai/everything-you-need-to-know-about-infectious-diseases/everything-you-need-to-know-about-infectious-diseases.html
 
-Slide / page count: 6 amp-story-page elements (matches the default arc)
+Slide / page count: 6 amp-story-page elements (matches the default arc —
+your 6 images map one-to-one onto 6 pages)
 Publisher: Goutam Dandapath
 
 PAGE STRUCTURE
 ----------------
-Each page: Heading -> Statistic -> Symptoms (staggered fade-in) ->
-Causes (staggered fade-in) -> Prevention Tips (staggered fade-in) ->
-CTA button (fly-in-bottom). Every page carries all three sections at 3
-items each (9 bullets per page). Your own note on Page 1 said the
-"symptom" framing didn't quite fit that panel since it's presenting a
-solution rather than a problem, but asked to keep it "for symmetry" —
-so it's included exactly as you wrote it, under the same "Symptoms"
-label as the other pages.
+Your copy used different section labels on different pages (not always
+"Symptoms/Causes/Prevention"), so each page keeps its own real labels
+exactly as you wrote them:
 
-  Page 1 — Whole Foods (fruits & vegetables)
-  Page 2 — Gut Health (digestion)
-  Page 3 — Balanced Meal (plate method)
-  Page 4 — Active Lifestyle
-  Page 5 — Vitality & Health (radiant portrait)
-  Page 6 — Building Healthy Habits for Life (family meal)
+  Page 1 — Bullet Points / Cause / Prevention
+  Page 2 — Symptoms / Causes / Prevention
+  Page 3 — Types / Causes / Prevention
+  Page 4 — Prevention Tips / Causes to Avoid
+  Page 5 — Treatment / an "Important:" callout / Prevention
+  Page 6 — Key Points / Prevention
+
+Your "•"-separated inline lists (e.g. "Viruses • Bacteria • Fungi •
+Parasites") were split into individual animated bullet items — the
+words themselves are unchanged, just given one line each so they can
+animate in one at a time.
+
+Page 5's "Important: Antibiotics do not treat viral infections." line
+wasn't a bullet list in your copy, so it isn't rendered as one — it's a
+single highlighted callout box (amber border, "Important:" label) that
+fades in between the Treatment list and the Prevention list, in the
+same order you wrote it.
+
+Every page: Heading -> Statistic -> [sections in the order above,
+staggered fade-in] -> CTA button (fly-in-bottom). Background image
+animate-in direction cycles zoom-in / fly-in-left / fly-in-right
+across the 6 pages. Opening logo on Page 1, closing logo on Page 6.
 
 TIMING NOTE
 --------------
-Each page animates 9 bullets in sequence, so pages auto-advance after
-11 seconds (rather than the usual 8-9s) so the full chain finishes
-before the page turns. Viewers can still tap to advance early anytime.
+Bullet counts vary per page (8 to 12 items, including the callout).
+All pages use a 12-second auto-advance so even the busiest page (Page 3,
+12 items) finishes animating before the page turns; viewers can still
+tap to advance early at any time.
 
-ABOUT THE BACKGROUND IMAGES — PLEASE READ
-----------------------------------------------
-Your source was one tall sheet (768x1376) with a "NUTRITION" title bar
-at the very top and 6 horizontal panels stacked below it, each in its
-own bordered frame with a "HEALTH AI" logo in the top-right corner.
-Two different techniques were used per panel to remove the logo,
-depending on what was safe to do without damaging the artwork:
+ABOUT THE BACKGROUND IMAGES
+------------------------------
+Your 6 background images arrived as one 3-column x 2-row collage, each
+cell with the "HEALTH AI" wordmark baked into the top-left corner (the
+same pattern as several of your earlier requests). Each cell was split
+out and the logo band cropped off before resizing to 720x1280, so the
+backgrounds are logo-free as Animated Mode requires — the real logo is
+added back as its own animated HTML layer on pages 1 and 6.
 
-  - Panels 1 (produce) and 6 (family meal): the top strip was cropped
-    off entirely. Both panels are dense with content across the full
-    width up top, so there was no clean way to isolate just the logo —
-    a full top-band crop was the safer choice. No faces or key subjects
-    sit right at the very top edge in either panel, so nothing
-    important was lost.
-  - Panels 2 (gut/digestion), 3 (balanced plate), 4 (active lifestyle),
-    and 5 (radiant portrait): only a small rectangle behind the logo
-    was painted over with a color sampled from that panel's own plain
-    background right next to it (dark navy, light blue, white, and
-    soft blue-green respectively). This kept the full artwork intact,
-    including the runners'/cyclist's heads in Panel 4, which would
-    otherwise have been cropped off.
-
-Panel/border framing note: each panel also had its own thin decorative
-border, which was cropped off along with the logo so only the clean
-photo/illustration remains.
-
-Resolution note — how the 9:16 frame was filled: like your last few
-stories, these panels are short, wide bands (roughly 740x115-200px),
-so cropping straight to 9:16 would have used only a narrow sliver and
-looked blurry. Each page instead places the real artwork sharp and
-full-width across the upper-middle of the frame, over a softly blurred
-zoomed copy of the same artwork filling the rest of the canvas —
-nothing stretched or distorted.
+Note: a few of your source images (the symptom-icon circles on Page 2,
+the protection shield on Pages 4 and 6) contain simple generic health
+icons — a thermometer, a throat, a bed, a shield-and-cross — drawn
+into the photo/illustration itself. These are treated as part of the
+provided artwork, not as text/headings, so they were left as-is; no
+extra icons were added on top by this build.
 
 FILES IN THIS FOLDER
 -----------------------
-what-is-nutrition-definition-importance-types-benefits.html
+everything-you-need-to-know-about-infectious-diseases.html
 poster.jpg              (720x960, 3:4, from page 1's photo)
 publisher-logo.jpg       (300x300 square, cropped from your logo's icon glyph)
 bg-1.jpg ... bg-6.jpg    (logo-free backgrounds, 720x1280, one per page)
@@ -88,7 +83,8 @@ bg-1.jpg ... bg-6.jpg    (logo-free backgrounds, 720x1280, one per page)
 UPLOAD INSTRUCTIONS
 -----------------------
 1. Upload this ENTIRE folder (all files together) as one unit into the
-   repo at: healthassistentai/healthassistant-ai (branch: main).
+   repo at: healthassistentai/healthassistant-ai (branch: main), so the
+   HTML and its images stay in the same folder.
 2. Do not rename any file.
 3. Do not overwrite any other story's folder in the repo.
 4. Push as ONE fresh commit rather than re-running a failed job, to
@@ -102,14 +98,20 @@ No live AMP validator was reachable from this environment (the
 validator's script host, cdn.ampproject.org, is outside this sandbox's
 allowed network domains). What WAS done instead — a structural self-check:
   - All 6 amp-story-page ids are unique
-  - All 72 element ids in the document are unique
-  - All 66 animate-in-after references resolve to a real id, and each
+  - All 78 element ids in the document are unique
+  - All 72 animate-in-after references resolve to a real id, and each
     one points to an element on its OWN page (no cross-page chains)
-  - Each page carries exactly 9 bullet items, as expected
   - All referenced image files exist in this folder, flat, unprefixed
   - No JavaScript, onclick, or non-AMP tags/attributes were used
-  - amp-custom CSS is ~1.9KB (well under the 75KB AMP limit)
+  - amp-custom CSS is ~2.3KB (well under the 75KB AMP limit)
   - Required amp-story attributes present: title, publisher,
     publisher-logo-src, poster-portrait-src
 Please still run this file through https://validator.ampproject.org
 before publishing.
+
+MEDICAL CONTENT NOTE
+-----------------------
+Page 5 includes the safety line "Antibiotics do not treat viral
+infections," used exactly as you wrote it — this is accurate general
+health guidance and was kept prominent (its own highlighted callout,
+not buried in a bullet list) rather than softened or removed.
