@@ -1,21 +1,21 @@
 AMP Web Story — Package README
 ================================
 
-Title: Everything You Need to Know About Infectious Diseases: Causes, Symptoms, Common Types, Prevention, and Latest Treatment Methods
-Slug: everything-you-need-to-know-about-infectious-diseases
+Title: Mood Swings: A Complete Guide to Causes, Symptoms, Emotional Effects, Mental Health Risks, and Effective Solutions for Lasting Emotional Balance
+Slug: mood-swings-causes-symptoms-effects-solutions-emotional-balance
 Mode: Animated Story (real HTML text/icons animate in per element)
 
 Canonical URL:
-https://www.healthassistentai.com/2026/06/everything-you-need-to-know-about-infectious-diseases.html
+https://www.healthassistentai.com/2026/06/mood-swings-causes-symptoms-effects-solutions-emotional-balance.html
 
 Blog Post URL (same as canonical):
-https://www.healthassistentai.com/2026/06/everything-you-need-to-know-about-infectious-diseases.html
+https://www.healthassistentai.com/2026/06/mood-swings-causes-symptoms-effects-solutions-emotional-balance.html
 
 GitHub File URL (view code only):
-https://github.com/healthassistentai/healthassistant-ai/blob/main/everything-you-need-to-know-about-infectious-diseases/everything-you-need-to-know-about-infectious-diseases.html
+https://github.com/healthassistentai/healthassistant-ai/blob/main/mood-swings-causes-symptoms-effects-solutions-emotional-balance/mood-swings-causes-symptoms-effects-solutions-emotional-balance.html
 
 Live Story URL (real published link once uploaded):
-https://healthassistentai.github.io/healthassistant-ai/everything-you-need-to-know-about-infectious-diseases/everything-you-need-to-know-about-infectious-diseases.html
+https://healthassistentai.github.io/healthassistant-ai/mood-swings-causes-symptoms-effects-solutions-emotional-balance/mood-swings-causes-symptoms-effects-solutions-emotional-balance.html
 
 Slide / page count: 6 amp-story-page elements (matches the default arc —
 your 6 images map one-to-one onto 6 pages)
@@ -23,39 +23,31 @@ Publisher: Goutam Dandapath
 
 PAGE STRUCTURE
 ----------------
-Your copy used different section labels on different pages (not always
-"Symptoms/Causes/Prevention"), so each page keeps its own real labels
-exactly as you wrote them:
+Every page: Heading -> Statistic -> Symptoms (staggered fade-in) ->
+Causes (staggered fade-in) -> Prevention Tips (staggered fade-in) ->
+CTA button (fly-in-bottom). Your "•"-separated inline lists (e.g.
+"Stress • Hormonal changes • Lack of sleep • Life events") were split
+into individual animated bullet items — wording unchanged, just one
+line each so they can animate in one at a time. Page 5's Prevention
+Tips were already a real bulleted list in your copy (not "•"-joined),
+so that page's tips are simply used as given.
 
-  Page 1 — Bullet Points / Cause / Prevention
-  Page 2 — Symptoms / Causes / Prevention
-  Page 3 — Types / Causes / Prevention
-  Page 4 — Prevention Tips / Causes to Avoid
-  Page 5 — Treatment / an "Important:" callout / Prevention
-  Page 6 — Key Points / Prevention
+  Page 1 — What Are Mood Swings? (introduction)
+  Page 2 — What Causes Mood Swings?
+  Page 3 — Common Symptoms of Mood Swings
+  Page 4 — Emotional & Mental Health Effects
+  Page 5 — Effective Ways to Manage Mood Swings
+  Page 6 — Find Lasting Emotional Balance (conclusion)
 
-Your "•"-separated inline lists (e.g. "Viruses • Bacteria • Fungi •
-Parasites") were split into individual animated bullet items — the
-words themselves are unchanged, just given one line each so they can
-animate in one at a time.
-
-Page 5's "Important: Antibiotics do not treat viral infections." line
-wasn't a bullet list in your copy, so it isn't rendered as one — it's a
-single highlighted callout box (amber border, "Important:" label) that
-fades in between the Treatment list and the Prevention list, in the
-same order you wrote it.
-
-Every page: Heading -> Statistic -> [sections in the order above,
-staggered fade-in] -> CTA button (fly-in-bottom). Background image
-animate-in direction cycles zoom-in / fly-in-left / fly-in-right
-across the 6 pages. Opening logo on Page 1, closing logo on Page 6.
+Image order matched your written panel order exactly — no re-pairing
+was needed.
 
 TIMING NOTE
 --------------
-Bullet counts vary per page (8 to 12 items, including the callout).
-All pages use a 12-second auto-advance so even the busiest page (Page 3,
-12 items) finishes animating before the page turns; viewers can still
-tap to advance early at any time.
+Each page carries 11-13 bullets in one continuous animation chain, so
+all 6 pages use a 13-second auto-advance so the slowest page finishes
+before the page turns. Viewers can still tap to advance early at any
+time.
 
 ABOUT THE BACKGROUND IMAGES
 ------------------------------
@@ -66,16 +58,17 @@ out and the logo band cropped off before resizing to 720x1280, so the
 backgrounds are logo-free as Animated Mode requires — the real logo is
 added back as its own animated HTML layer on pages 1 and 6.
 
-Note: a few of your source images (the symptom-icon circles on Page 2,
-the protection shield on Pages 4 and 6) contain simple generic health
-icons — a thermometer, a throat, a bed, a shield-and-cross — drawn
-into the photo/illustration itself. These are treated as part of the
-provided artwork, not as text/headings, so they were left as-is; no
-extra icons were added on top by this build.
+Note: several of your source images (the brain-with-icon-circles on
+Page 2, the mood-face circles on Pages 3 and 6, the stormy-brain icon
+on Page 4, the activity icons on Page 5) contain simple generic icons
+— a DNA strand, a moon, a coffee cup, a dumbbell, colored smiley faces
+— drawn into the illustration itself. These are treated as part of
+the provided artwork, not as text/headings, so they were left as-is;
+no extra icons were added on top by this build.
 
 FILES IN THIS FOLDER
 -----------------------
-everything-you-need-to-know-about-infectious-diseases.html
+mood-swings-causes-symptoms-effects-solutions-emotional-balance.html
 poster.jpg              (720x960, 3:4, from page 1's photo)
 publisher-logo.jpg       (300x300 square, cropped from your logo's icon glyph)
 bg-1.jpg ... bg-6.jpg    (logo-free backgrounds, 720x1280, one per page)
@@ -98,20 +91,20 @@ No live AMP validator was reachable from this environment (the
 validator's script host, cdn.ampproject.org, is outside this sandbox's
 allowed network domains). What WAS done instead — a structural self-check:
   - All 6 amp-story-page ids are unique
-  - All 78 element ids in the document are unique
-  - All 72 animate-in-after references resolve to a real id, and each
+  - All 92 element ids in the document are unique
+  - All 86 animate-in-after references resolve to a real id, and each
     one points to an element on its OWN page (no cross-page chains)
   - All referenced image files exist in this folder, flat, unprefixed
   - No JavaScript, onclick, or non-AMP tags/attributes were used
-  - amp-custom CSS is ~2.3KB (well under the 75KB AMP limit)
+  - amp-custom CSS is ~1.9KB (well under the 75KB AMP limit)
   - Required amp-story attributes present: title, publisher,
     publisher-logo-src, poster-portrait-src
 Please still run this file through https://validator.ampproject.org
 before publishing.
 
-MEDICAL CONTENT NOTE
------------------------
-Page 5 includes the safety line "Antibiotics do not treat viral
-infections," used exactly as you wrote it — this is accurate general
-health guidance and was kept prominent (its own highlighted callout,
-not buried in a bullet list) rather than softened or removed.
+CONTENT NOTE
+---------------
+Page 4 and Page 6 both mention seeking professional support ("Seek
+support early", "Talk with a healthcare professional when needed").
+That framing was kept front and center rather than buried, since this
+topic touches on mental health.
