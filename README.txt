@@ -1,21 +1,21 @@
 AMP Web Story - README
 ======================
-Title:            The Real Reason You're Ageing Faster: Science & AI
-Slug:             why-you-are-ageing-faster-science-and-ai
+Title:            Vonoprazan Triple Therapy: Complete H. Pylori Guide
+Slug:             vonoprazan-triple-therapy-h-pylori-guide
 Mode:             Animated Story (real HTML text/animations over background images)
 Slide count:      6
-Canonical URL:    https://www.healthassistentai.com/2026/08/why-you-are-ageing-faster-science-and-ai.html
-Blog URL:         https://www.healthassistentai.com/2026/08/why-you-are-ageing-faster-science-and-ai.html
-GitHub File URL:  https://github.com/healthassistentai/health-assistant-ai/blob/main/why-you-are-ageing-faster-science-and-ai/why-you-are-ageing-faster-science-and-ai.html
-Live Story URL:   https://healthassistentai.github.io/health-assistant-ai/why-you-are-ageing-faster-science-and-ai/why-you-are-ageing-faster-science-and-ai.html
+Canonical URL:    https://www.healthassistentai.com/2026/08/vonoprazan-triple-therapy-h-pylori-guide.html
+Blog URL:         https://www.healthassistentai.com/2026/08/vonoprazan-triple-therapy-h-pylori-guide.html
+GitHub File URL:  https://github.com/healthassistentai/health-assistant-ai/blob/main/vonoprazan-triple-therapy-h-pylori-guide/vonoprazan-triple-therapy-h-pylori-guide.html
+Live Story URL:   https://healthassistentai.github.io/health-assistant-ai/vonoprazan-triple-therapy-h-pylori-guide/vonoprazan-triple-therapy-h-pylori-guide.html
 Publisher:        Goutam Dandapath
 
 Files (all flat, in this one folder)
-  why-you-are-ageing-faster-science-and-ai.html, README.txt, poster.jpg (720x960), publisher-logo.jpg (300x300),
+  vonoprazan-triple-therapy-h-pylori-guide.html, README.txt, poster.jpg (720x960), publisher-logo.jpg (300x300),
   bg-1.jpg ... bg-6.jpg (720x1280)
 
 Upload instructions
-  1. Upload the WHOLE "why-you-are-ageing-faster-science-and-ai" folder as one unit to the repo root
+  1. Upload the WHOLE "vonoprazan-triple-therapy-h-pylori-guide" folder as one unit to the repo root
      (https://github.com/healthassistentai/health-assistant-ai, branch main).
   2. Do not rename any file or folder.
   3. Do not overwrite or merge into other stories' folders.
